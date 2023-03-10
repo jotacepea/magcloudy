@@ -2,7 +2,7 @@ import streamlit as st
 
 
 def pageconfig():
-    st.set_page_config(page_title="ABC", layout="wide",
+    st.set_page_config(page_title="MagCloudy", layout="wide",
                        initial_sidebar_state="expanded")
 
     hide_menu = """

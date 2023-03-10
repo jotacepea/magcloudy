@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:23.04
 
 # Install all OS dependencies for fully functional notebook server
 RUN apt-get update -y \
