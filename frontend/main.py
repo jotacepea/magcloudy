@@ -1,29 +1,27 @@
 import streamlit as st
-from pages.common.globalconf import pageconfig
+from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-st.write("# Welcome to Streamlit! 👋")
+st.write("# Welcome to MagCloudy! :dizzy:")
 
 st.sidebar.success("Select an option above.")
 
 st.markdown(
     """
-    Streamlit is an open-source app framework built specifically for
-    Machine Learning and Data Science projects.
-
-    **👈 Select a demo from the sidebar** to see some examples
-    of what Streamlit can do!
+    MagCloudy is a tool built specifically for
+    interacting with Adobe Commerce Cloud projects.
 
     ### Want to learn more?
-    - Check out [streamlit.io](https://streamlit.io)
-    - Jump into our [documentation](https://docs.streamlit.io)
-    - Ask a question in our [community
-        forums](https://discuss.streamlit.io)
+    - Check out [cloud-cli](https://experienceleague.adobe.com/docs/commerce-cloud-service/user-guide/dev-tools/cloud-cli.html?lang=en)
+    - Jump into our [documentation](https://experienceleague.adobe.com/docs/commerce-cloud-service/user-guide/overview.html?lang=en)
 
-    ### See more complex demos
-    - Use a neural net to [analyze the Udacity Self-driving Car Image
-        Dataset](https://github.com/streamlit/demo-self-driving)
-    - Explore a [New York City rideshare dataset](https://github.com/streamlit/demo-uber-nyc-pickups)
 """
 )
+
+if 'projectid' not in st.session_state:
+    st.session_state.projectid = 'noprojid'
+if 'environmentid' not in st.session_state:
+    st.session_state.environmentid = 'noenvid'
+
+theend()

@@ -1,10 +1,10 @@
 import streamlit as st
 import requests
-from pages.common.globalconf import pageconfig
+from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-st.write("# Welcome to MagCloudy :blue[Info Page]! 👋")
+st.header("MagCloudy :blue[Info Page]! :nazar_amulet:")
 
 tab1, tab2, tab3 = st.tabs(["Version", "Auth", "List"])
 
@@ -25,3 +25,5 @@ with tab3:
     response = requests.get("http://backend:5000/mgclilist")
     print(response)
     st.write(response.text.splitlines())
+
+theend()

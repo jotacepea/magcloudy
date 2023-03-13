@@ -2,7 +2,8 @@ import streamlit as st
 
 
 def pageconfig():
-    st.set_page_config(page_title="MagCloudy", layout="wide",
+    st.set_page_config(page_title="MagCloudy",
+                       layout="wide",
                        initial_sidebar_state="expanded")
 
     hide_menu = """
@@ -16,3 +17,10 @@ def pageconfig():
     </style>
     """
     st.markdown(hide_menu, unsafe_allow_html=True)
+
+
+def theend():
+    st.sidebar.write(
+        f"Selected Project ID: {st.session_state.projectid}")
+    st.sidebar.write(
+        f"Selected Environment ID: {st.session_state.environmentid}")

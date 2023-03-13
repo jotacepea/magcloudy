@@ -102,5 +102,54 @@ def get_project_info(project_id):
     return result_command_magecloud
 
 
+@app.get('/environments/<project_id>')
+def get_environments(project_id):
+    command_magecloud = f"magento-cloud environments -p {project_id}"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return result_command_magecloud
+
+
+@app.get('/environments/<project_id>/<environment>/info')
+def get_environment_info(project_id, environment):
+    command_magecloud = f"magento-cloud environment:info -p {project_id} -e {environment}"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return result_command_magecloud
+
+
+@app.get('/environments/<project_id>/<environment>/url')
+def get_environment_url(project_id, environment):
+    command_magecloud = f"magento-cloud url -p {project_id} -e {environment}"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return result_command_magecloud
+
+
+@app.get('/webui/<project_id>')
+@app.get('/webui/<project_id>/<environment>')
+def get_webui(project_id, environment='master'):
+    command_magecloud = f"magento-cloud web -p {project_id} -e {environment}"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return result_command_magecloud
+
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True, port=5000)
