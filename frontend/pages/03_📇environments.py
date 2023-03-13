@@ -33,7 +33,7 @@ with tab2:
             f"http://backend:5000/environments/{st.session_state.projectid}/{environment_id_input}/url")
         print(response)
         if response:
-            st.write(f"Cloud Env URL [link]({response.text})")
+            st.write(f"Cloud Env URL {response.text}")
         response = requests.get(
             f"http://backend:5000/environments/{st.session_state.projectid}/{environment_id_input}/info"
         )
