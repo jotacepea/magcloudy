@@ -12,18 +12,18 @@ with tab1:
     st.header("MagCloudy: Cli Version")
     response = requests.get("http://backend:5000/mgcliversion")
     print(response)
-    st.write(response.text.splitlines())
+    st.write(f" ```{response.text}``` ")
 
 with tab2:
     st.header("MagCloudy: Cli Auth Info")
     response = requests.get("http://backend:5000/mgcliauth")
     print(response)
-    st.write(response.text.splitlines())
+    st.write(f" ```{response.text}``` ")
 
 with tab3:
     st.header("MagCloudy: Cli Cmd List")
     response = requests.get("http://backend:5000/mgclilist")
     print(response)
-    st.write(response.text.splitlines())
+    st.write(f" ```{response.text}``` ")
 
 theend()

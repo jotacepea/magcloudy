@@ -17,7 +17,7 @@ with tab1:
             f"http://backend:5000/variables/{st.session_state.projectid}")
         print(response)
         if response:
-            st.write(response.text.splitlines())
+            st.write(f" ```{response.text}``` ")
 
 with tab2:
     st.header("Env Variables at Environment Level")
@@ -28,6 +28,6 @@ with tab2:
             f"http://backend:5000/variables/{st.session_state.projectid}/{st.session_state.environmentid}/e")
         print(response)
         if response:
-            st.write(response.text.splitlines())
+            st.write(f" ```{response.text}``` ")
 
 theend()

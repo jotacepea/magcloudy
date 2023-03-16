@@ -3,6 +3,8 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 import subprocess
 import os
+from strip_ansi import strip_ansi
+
 
 # print(os.environ['MAGENTO_CLOUD_CLI_TOKEN'])
 
@@ -138,6 +140,19 @@ def get_environment_url(project_id, environment):
     return result_command_magecloud
 
 
+@app.get('/files/<project_id>/<environment>')
+@app.get('/files/<project_id>/<environment>/<path:filepath>')
+def get_files(project_id, environment, filepath='/'):
+    command_magecloud = f"magento-cloud read -p {project_id} -e {environment} {filepath}"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return result_command_magecloud
+
+
 @app.get('/variables/<project_id>')
 @app.get('/variables/<project_id>/<environment>')
 @app.get('/variables/<project_id>/<environment>/<level>')
@@ -156,6 +171,95 @@ def get_variables(project_id, environment='master', level='p'):
 @app.get('/webui/<project_id>/<environment>')
 def get_webui(project_id, environment='master'):
     command_magecloud = f"magento-cloud web -p {project_id} -e {environment}"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return result_command_magecloud
+
+
+@app.get('/ssh/<project_id>/<environment>')
+def get_ssh(project_id, environment):
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} --all --pipe"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return result_command_magecloud
+
+
+@app.get('/versions/<project_id>/<environment>/magento')
+def get_versions_magento(project_id, environment):
+    # command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} 'composer licenses | head -3 | grep Version'"
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'bin/magento -V\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+
+@app.get('/versions/<project_id>/<environment>/ece-tools')
+def get_versions_ecetools(project_id, environment):
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'vendor/bin/ece-tools -V\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+
+@app.get('/versions/<project_id>/<environment>/nginx')
+def get_versions_nginx(project_id, environment):
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'/usr/sbin/nginx -v\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+
+@app.get('/versions/<project_id>/<environment>/php')
+def get_versions_php(project_id, environment):
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'php -v | head -1\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+
+@app.get('/services/<project_id>/<environment>')
+def get_services(project_id, environment):
+    command_magecloud = f"magento-cloud services -p {project_id} -e {environment}"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return result_command_magecloud
+
+
+@app.get('/disk/<project_id>/<environment>')
+@app.get('/disk/<project_id>/<environment>/<int:instance>')
+def get_disk(project_id, environment, instance=0):
+    if instance == 0:
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'df -h\'"
+    else:
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -I {instance} \'df -h\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

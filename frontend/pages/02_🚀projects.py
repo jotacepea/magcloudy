@@ -29,7 +29,7 @@ with tab1:
     st.header("My Projects")
     response = requests.get("http://backend:5000/projects")
     print(response)
-    st.write(response.text.splitlines())
+    st.write(f" ```{response.text}``` ")
 with tab2:
     st.header("Project Info")
     info_project_id_input = st.text_input(
@@ -43,6 +43,6 @@ with tab2:
             f"http://backend:5000/projects/{info_project_id_input}/info"
         )
         print(response)
-        st.write(response.text.splitlines())
+        st.write(f" ```{response.text}``` ")
 
 theend()

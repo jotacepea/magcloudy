@@ -1,3 +1,4 @@
 apiflask
 flask
 flask-cors
+strip_ansi

@@ -9,6 +9,7 @@ RUN apt-get update -y \
     unzip \
     vim \
     php8.1 \
+    openssh-client \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/*
@@ -17,6 +18,12 @@ WORKDIR /app
 
 # Cloud
 RUN whoami
+# SSH config
+RUN mkdir ~/.ssh \
+    && touch ~/.ssh/config \
+    && echo "Host *" > ~/.ssh/config \
+    && echo "  StrictHostKeyChecking=no" >> ~/.ssh/config \
+    && echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config
 # Install PHP: verify
 RUN php -v
 # Install cli

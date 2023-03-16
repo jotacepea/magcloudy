@@ -16,7 +16,7 @@ with tab1:
         response = requests.get(
             f"http://backend:5000/environments/{st.session_state.projectid}")
         print(response)
-        st.write(response.text.splitlines())
+        st.write(f" ```{response.text}``` ")
 
 with tab2:
     st.header("Environment Info")
@@ -38,6 +38,6 @@ with tab2:
             f"http://backend:5000/environments/{st.session_state.projectid}/{environment_id_input}/info"
         )
         print(response)
-        st.write(response.text.splitlines())
+        st.write(f" ```{response.text}``` ")
 
 theend()

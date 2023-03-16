@@ -20,7 +20,15 @@ def pageconfig():
 
 
 def theend():
-    st.sidebar.write(
-        f"Selected Project ID: {st.session_state.projectid}")
-    st.sidebar.write(
-        f"Selected Environment ID: {st.session_state.environmentid}")
+    if st.session_state.projectid == 'noprojid':
+        st.sidebar.write(
+            f"Selected Project ID: :red[{st.session_state.projectid}]")
+    else:
+        st.sidebar.write(
+            f"Selected Project ID: :blue[{st.session_state.projectid}]")
+    if st.session_state.environmentid == 'noenvid':
+        st.sidebar.write(
+            f"Selected Environment ID: :red[{st.session_state.environmentid}]")
+    else:
+        st.sidebar.write(
+            f"Selected Environment ID: :green[{st.session_state.environmentid}]")
