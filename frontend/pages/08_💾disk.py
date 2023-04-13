@@ -8,7 +8,7 @@ st.header("MagCloudy :blue[Disk Usage] :floppy_disk:")
 
 
 tab1, tab2 = st.tabs(
-    ["Disk", ""])
+    ["Disk", "Mounts"])
 
 with tab1:
     st.header("Disk Usage per Instance")
@@ -32,5 +32,20 @@ with tab1:
                         f"http://backend:5000/disk/{st.session_state.projectid}/{st.session_state.environmentid}/{indx + 1}")
                     print(indx, inst, response)
                     st.write(f" ```{response.text}``` ")
+with tab2:
+    st.header("Mounts Usage per Instance")
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+        st.write(
+            f"Getting Mounts size for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        response = requests.get(
+            f"http://backend:5000/mounts/{st.session_state.projectid}/{st.session_state.environmentid}")
+        print(response)
+        if response:
+            st.write(f" ```{response.text}``` ")
+        response = requests.get(
+            f"http://backend:5000/mounts/{st.session_state.projectid}/{st.session_state.environmentid}/size")
+        print(response)
+        if response:
+            st.write(f" ```{response.text}``` ")
 
 theend()

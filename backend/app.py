@@ -104,6 +104,18 @@ def get_project_info(project_id):
     return result_command_magecloud
 
 
+@app.get('/projects/<project_id>/settings')
+def get_project_settings(project_id):
+    command_magecloud = f"magento-cloud project:curl -p {project_id} /settings"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return result_command_magecloud
+
+
 @app.get('/environments/<project_id>')
 def get_environments(project_id):
     command_magecloud = f"magento-cloud environments -p {project_id}"
@@ -157,7 +169,7 @@ def get_files(project_id, environment, filepath='/'):
 @app.get('/variables/<project_id>/<environment>')
 @app.get('/variables/<project_id>/<environment>/<level>')
 def get_variables(project_id, environment='master', level='p'):
-    command_magecloud = f"magento-cloud variables -p {project_id} -e {environment} -l {level} -c name,value"
+    command_magecloud = f"magento-cloud variables -p {project_id} -e {environment} -l {level} -c name,value --format plain"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -253,6 +265,18 @@ def get_services(project_id, environment):
     return result_command_magecloud
 
 
+@app.get('/users/<project_id>')
+def get_users(project_id):
+    command_magecloud = f"magento-cloud users -p {project_id}"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return result_command_magecloud
+
+
 @app.get('/disk/<project_id>/<environment>')
 @app.get('/disk/<project_id>/<environment>/<int:instance>')
 def get_disk(project_id, environment, instance=0):
@@ -260,6 +284,74 @@ def get_disk(project_id, environment, instance=0):
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'df -h\'"
     else:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -I {instance} \'df -h\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return result_command_magecloud
+
+
+@app.get('/mounts/<project_id>/<environment>')
+@app.get('/mounts/<project_id>/<environment>/<mountget>')
+def get_mounts(project_id, environment, mountget='list'):
+    if mountget == 'size':
+        command_magecloud = f"magento-cloud mount:{mountget} -p {project_id} -e {environment}"
+    else:
+        command_magecloud = f"magento-cloud mount:list -p {project_id} -e {environment}"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return result_command_magecloud
+
+
+@app.get('/db/<project_id>/<environment>/size')
+def get_db_size(project_id, environment):
+    command_magecloud = f"magento-cloud db:size -p {project_id} -e {environment} -r database"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+
+@app.get('/db/<project_id>/<environment>/version')
+def get_db_version(project_id, environment):
+    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \'SELECT VERSION();\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+
+@app.get('/db/<project_id>/<environment>/process')
+def get_db_process(project_id, environment):
+    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \'SHOW PROCESSLIST;\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+
+@app.get('/commits/<project_id>/<environment>')
+@app.get('/commits/<project_id>/<environment>/<commit>')
+def get_commits(project_id, environment, commit='list'):
+    if commit == 'list':
+        command_magecloud = f"magento-cloud commits -p {project_id} -e {environment} --format plain"
+    else:
+        command_magecloud = f"magento-cloud commit:get -p {project_id} -e {environment} \'{commit}\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

@@ -38,6 +38,11 @@ with tab2:
             f"http://backend:5000/environments/{st.session_state.projectid}/{environment_id_input}/info"
         )
         print(response)
+        for indx, envinfoline in enumerate(response.text.strip().split('\n')):
+            if 'deployment_target' in envinfoline:
+                envinfoline = envinfoline.replace("|", "")
+                print(envinfoline)
+                st.write(f" ```{envinfoline}``` ")
         st.write(f" ```{response.text}``` ")
 
 theend()
