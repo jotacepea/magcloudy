@@ -64,6 +64,11 @@ with tab2:
             f"http://backend:5000/projects/{info_project_id_input}/settings"
         )
         print(response)
+        for indx, projsettline in enumerate(response.text.strip().split('\n')):
+            if 'development_' in projsettline:
+                projsettline = projsettline.replace(",", "")
+                print(projsettline)
+                st.write(f" ```{projsettline}``` ")
         st.write(f" ```{response.text}``` ")
 with tab3:
     st.header("Users")
