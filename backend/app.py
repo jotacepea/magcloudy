@@ -117,8 +117,12 @@ def get_project_settings(project_id):
 
 
 @app.get('/environments/<project_id>')
-def get_environments(project_id):
-    command_magecloud = f"magento-cloud environments -p {project_id}"
+@app.get('/environments/<project_id>/<active>')
+def get_environments(project_id, active='active'):
+    if active == 'all':
+        command_magecloud = f"magento-cloud environments -p {project_id}"
+    else:
+        command_magecloud = f"magento-cloud environments -I -p {project_id}"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
