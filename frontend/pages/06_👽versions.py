@@ -27,7 +27,7 @@ with tab2:
         st.write(
             f"Reading config file for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = requests.get(
-            f"http://backend:5000/versions/{st.session_state.projectid}/{st.session_state.environmentid}/ece-tools")
+            f"http://backend:5000/ece-tools/{st.session_state.projectid}/{st.session_state.environmentid}/version")
         print(response)
         if response:
             st.write(f" ```{response.text.strip()}``` ")

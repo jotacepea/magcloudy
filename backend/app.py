@@ -233,18 +233,6 @@ def get_versions_magento(project_id, environment):
     return strip_ansi(result_command_magecloud)
 
 
-@app.get('/versions/<project_id>/<environment>/ece-tools')
-def get_versions_ecetools(project_id, environment):
-    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'vendor/bin/ece-tools -V\'"
-    try:
-        result_command_magecloud = subprocess.check_output(
-            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
-    except subprocess.CalledProcessError as e:
-        return "An error occurred while trying to shell cmd: %s" % e
-
-    return strip_ansi(result_command_magecloud)
-
-
 @app.get('/versions/<project_id>/<environment>/nginx')
 def get_versions_nginx(project_id, environment):
     command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'/usr/sbin/nginx -v\'"
@@ -375,6 +363,66 @@ def get_commits(project_id, environment, commit='list'):
         return "An error occurred while trying to shell cmd: %s" % e
 
     return result_command_magecloud
+
+
+@app.get('/ece-tools/<project_id>/<environment>/version')
+def get_version_ecetools(project_id, environment):
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'vendor/bin/ece-tools -V\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+
+@app.get('/ece-tools/<project_id>/<environment>/validate')
+def get_validate_ecetools(project_id, environment):
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'vendor/bin/ece-tools cloud:config:validate\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+
+@app.get('/ece-tools/<project_id>/<environment>/config')
+def get_config_ecetools(project_id, environment):
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'vendor/bin/ece-tools env:config:show\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+
+@app.get('/ece-tools/<project_id>/<environment>/error')
+def get_error_ecetools(project_id, environment):
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'vendor/bin/ece-tools error:show\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+
+@app.get('/ece-tools/<project_id>/<environment>/wizards')
+def get_wizards_ecetools(project_id, environment):
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'vendor/bin/ece-tools list wizard|egrep Verifies|cut -dV -f1|xargs -n1 vendor/bin/ece-tools || exit 0\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
 
 
 if __name__ == '__main__':
