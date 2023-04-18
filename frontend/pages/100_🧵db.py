@@ -23,6 +23,8 @@ with tab1:
 
 with tab2:
     st.header("DB Size")
+    st.caption(
+        "**Note:** this section works for containerized environments only :bricks:)")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
             f"Getting DB size for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")

@@ -4,6 +4,7 @@ FROM ubuntu:23.04
 RUN apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get -yq install --no-install-recommends \
     python3-pip \
+    python3-venv \
     curl \
     git \
     unzip \
@@ -14,7 +15,8 @@ RUN apt-get update -y \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/*
 
-WORKDIR /app
+ENV APP_PATH='/app'
+WORKDIR ${APP_PATH}
 
 # Cloud
 RUN whoami
@@ -31,12 +33,17 @@ RUN curl -s -S https://accounts.magento.cloud/cli/installer | php
 RUN cp ~/.magento-cloud/bin/magento-cloud /usr/local/bin/
 RUN magento-cloud -V
 
-# Copies the dependency files to the working directory
-COPY requirements.txt /app/requirements.txt
-# Install dependencies
-RUN pip3 install -r requirements.txt
+# make sure all messages always reach console
+ENV PYTHONUNBUFFERED=1
+# create and activate virtual environment
+RUN python3 -m venv ${APP_PATH}/venv
+ENV PATH="${APP_PATH}/venv/bin:$PATH"
+# install requirements
+COPY requirements.txt .
+RUN pip3 install --no-cache-dir wheel
+RUN pip3 install --no-cache-dir -r requirements.txt
 # Copies everything to the working directory
-COPY . /app
+COPY . ${APP_PATH}
 
 # Command to run on container start    
 CMD [ "python3" , "./app.py" ]

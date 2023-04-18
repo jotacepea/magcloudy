@@ -25,7 +25,8 @@ if st.session_state.projectid != 'noprojid':
         f"http://backend:5000/webui/{st.session_state.projectid}")
     print(response)
     if response:
-        st.write(f"Cloud Web UI [link]({response.text})")
+        st.write(
+            f"### Cloud Project [Web UI]({response.text.strip()}) ###")
 
 
 tab1, tab2, tab3 = st.tabs(

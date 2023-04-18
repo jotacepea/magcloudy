@@ -49,7 +49,8 @@ with tab2:
         response = environments_backend_request(projid=st.session_state.projectid,
                                                 envid=environment_id_input, apiparameter='url')
         if response:
-            st.write(f"Cloud Env URL {response.text}")
+            st.write(
+                f"### Cloud Env [URL]({response.text.strip()}) ###")
         response = environments_backend_request(projid=st.session_state.projectid,
                                                 envid=environment_id_input, apiparameter='info')
         if response:
@@ -58,6 +59,9 @@ with tab2:
                     envinfoline = envinfoline.replace("|", "")
                     print(envinfoline)
                     st.write(f" ```{envinfoline}``` ")
+                    if 'local' in envinfoline:
+                        st.session_state.env_target_type = 'containerized'
+                        st.caption(f"**_{st.session_state.env_target_type}_**")
             st.write(f" ```{response.text}``` ")
 
 theend()
