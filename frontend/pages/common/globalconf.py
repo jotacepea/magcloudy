@@ -32,3 +32,9 @@ def theend():
     else:
         st.sidebar.write(
             f"Selected Environment ID: :green[{st.session_state.environmentid}]")
+    if st.session_state.env_target_type is None:
+        st.sidebar.write(
+            f"Environment Type: :red[{st.session_state.env_target_type}]")
+    else:
+        st.sidebar.write(
+            f"Environment Type: :orange[{st.session_state.env_target_type}]")

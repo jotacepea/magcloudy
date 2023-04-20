@@ -23,5 +23,7 @@ if 'projectid' not in st.session_state:
     st.session_state.projectid = 'noprojid'
 if 'environmentid' not in st.session_state:
     st.session_state.environmentid = 'noenvid'
+if 'env_target_type' not in st.session_state:
+    st.session_state.env_target_type = None
 
 theend()

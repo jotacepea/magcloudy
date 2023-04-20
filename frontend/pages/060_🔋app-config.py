@@ -6,13 +6,11 @@ pageconfig()
 
 
 @st.cache_data(ttl=300)
-def appconfig_backend_request(projid, envid, apiendpoint='files', apiparameter=None):
+def appconfig_backend_request(projid, envid, apiendpoint='binmagento', apiparameter=None):
     if apiparameter is None:
-        resp = requests.get(
-            f"http://backend:5000/{apiendpoint}/{projid}/{envid}")
-    else:
-        resp = requests.get(
-            f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+        apiparameter = 'version'
+    resp = requests.get(
+        f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}")
     print(resp)
     return resp
 
@@ -20,76 +18,56 @@ def appconfig_backend_request(projid, envid, apiendpoint='files', apiparameter=N
 st.header("MagCloudy :blue[App Configuration] :battery:")
 
 
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(
-    ["Project Root", "Mage .app.", "Mage .env.", "Mage -vars-", "Mage -config-", "Mage services", "Mage routes"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(
+    ["Version", "Default URL", "Store Url", "CMS Url", "maintenance Status"])
 
 with tab1:
-    st.header("Config files in App (**Live**)")
+    st.header("Bin Magento Version (**Live**)")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
-            f"Getting project **repos** files for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
-        response = projconfig_backend_request(projid=st.session_state.projectid,
-                                              envid=st.session_state.environmentid)
+            f"Getting Bin Magento Version for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        response = appconfig_backend_request(projid=st.session_state.projectid,
+                                             envid=st.session_state.environmentid)
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```{response.text.strip()}``` ")
 
 with tab2:
-    st.header("Read file .magento.app.yaml (**Repos**)")
+    st.header("Default Url (**Live**)")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
-            f"Getting project **repos** files for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
-        response = projconfig_backend_request(projid=st.session_state.projectid,
-                                              envid=st.session_state.environmentid, apiparameter='.magento.app.yaml')
+            f"Getting app default url for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        response = appconfig_backend_request(projid=st.session_state.projectid,
+                                             envid=st.session_state.environmentid, apiparameter='defaulturl')
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```{response.text.strip()}``` ")
 
 with tab3:
-    st.header("Read file .magento.env.yaml (**Repos**)")
+    st.header("Store Url (**Live**)")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
-            f"Getting project **repos** files for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
-        response = projconfig_backend_request(projid=st.session_state.projectid,
-                                              envid=st.session_state.environmentid, apiparameter='.magento.env.yaml')
+            f"Getting store url for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        response = appconfig_backend_request(projid=st.session_state.projectid,
+                                             envid=st.session_state.environmentid, apiparameter='storeurl')
         if response:
             st.write(f" ```{response.text}``` ")
 
 with tab4:
-    st.header("Read file magento-vars.php (**Repos**)")
+    st.header("Cms Url (**Live**)")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
-            f"Getting project **repos** files for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
-        response = projconfig_backend_request(projid=st.session_state.projectid,
-                                              envid=st.session_state.environmentid, apiparameter='magento-vars.php')
+            f"Getting cms url for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        response = appconfig_backend_request(projid=st.session_state.projectid,
+                                             envid=st.session_state.environmentid, apiparameter='cmspageurl')
         if response:
             st.write(f" ```{response.text}``` ")
 
 with tab5:
-    st.header("Read file config.php (**Repos**)")
+    st.header("Maintenance Status (**Live**)")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
-            f"Getting project **repos** files for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
-        response = projconfig_backend_request(projid=st.session_state.projectid,
-                                              envid=st.session_state.environmentid, apiparameter='app/etc/config.php')
-        if response:
-            st.write(f" ```{response.text}``` ")
-
-with tab6:
-    st.header("Read file .magento/services.yaml (**Repos**)")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
-        st.write(
-            f"Getting project **repos** files for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
-        response = projconfig_backend_request(projid=st.session_state.projectid,
-                                              envid=st.session_state.environmentid, apiparameter='.magento/services.yaml')
-        if response:
-            st.write(f" ```{response.text}``` ")
-
-with tab7:
-    st.header("Read file .magento/routes.yaml (**Repos**)")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
-        st.write(
-            f"Getting project **repos** files for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
-        response = projconfig_backend_request(projid=st.session_state.projectid,
-                                              envid=st.session_state.environmentid, apiparameter='.magento/routes.yaml')
+            f"Getting maintenance status for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        response = appconfig_backend_request(projid=st.session_state.projectid,
+                                             envid=st.session_state.environmentid, apiparameter='maintenance')
         if response:
             st.write(f" ```{response.text}``` ")
 

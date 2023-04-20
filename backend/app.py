@@ -21,6 +21,8 @@ from endpoints.variables import variables_bp
 from endpoints.files import files_bp
 from endpoints.environments import environments_bp
 from endpoints.projects import projects_bp
+from endpoints.binmagento import binmagento_bp
+from endpoints.rabbitmq import rabbitmq_bp
 
 # print(os.environ['MAGENTO_CLOUD_CLI_TOKEN'])
 
@@ -44,6 +46,8 @@ app.register_blueprint(variables_bp)
 app.register_blueprint(files_bp)
 app.register_blueprint(environments_bp)
 app.register_blueprint(projects_bp)
+app.register_blueprint(binmagento_bp)
+app.register_blueprint(rabbitmq_bp)
 
 
 @app.route('/')
