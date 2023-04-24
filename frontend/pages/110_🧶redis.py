@@ -9,8 +9,12 @@ pageconfig()
 def redis_backend_request(projid, envid, apiendpoint='redis', apiparameter=None):
     if apiparameter is None:
         apiparameter = 'ping'
-    resp = requests.get(
-        f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+    if st.session_state.env_target_type == 'containerized':
+        resp = requests.get(
+            f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}?containerized=1")
+    else:
+        resp = requests.get(
+            f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}")
     print(resp)
     return resp
 
@@ -18,8 +22,8 @@ def redis_backend_request(projid, envid, apiendpoint='redis', apiparameter=None)
 st.header("MagCloudy :blue[Redis] :yarn:")
 
 
-tab1, tab2, tab3 = st.tabs(
-    ["Redis Check", "Redis Server Info", "Redis Info"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
+    ["Redis Check", "Redis Server Info", "Redis Info", "Redis BigK", "Redis MemK", "Redis HotK"])
 
 with tab1:
     st.header("Ping")
@@ -29,7 +33,7 @@ with tab1:
         response = redis_backend_request(
             projid=st.session_state.projectid, envid=st.session_state.environmentid)
         if response:
-            st.write(f" ```{response.text.strip()}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab2:
     st.header("Server Info")
@@ -39,7 +43,7 @@ with tab2:
         response = redis_backend_request(
             projid=st.session_state.projectid, envid=st.session_state.environmentid, apiparameter='sinfo')
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 with tab3:
     st.header("Info")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
@@ -48,6 +52,36 @@ with tab3:
         response = redis_backend_request(
             projid=st.session_state.projectid, envid=st.session_state.environmentid, apiparameter='info')
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
+
+with tab4:
+    st.header("Big Keys")
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+        st.write(
+            f"Getting Redis Full Info for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        response = redis_backend_request(
+            projid=st.session_state.projectid, envid=st.session_state.environmentid, apiparameter='bigkeys')
+        if response:
+            st.write(f" ```\n{response.text.strip()}\n``` ")
+
+with tab5:
+    st.header("Mem Keys")
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+        st.write(
+            f"Getting Redis Full Info for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        response = redis_backend_request(
+            projid=st.session_state.projectid, envid=st.session_state.environmentid, apiparameter='memkeys')
+        if response:
+            st.write(f" ```\n{response.text.strip()}\n``` ")
+
+with tab6:
+    st.header("Hot Keys")
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+        st.write(
+            f"Getting Redis Full Info for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        response = redis_backend_request(
+            projid=st.session_state.projectid, envid=st.session_state.environmentid, apiparameter='hotkeys')
+        if response:
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 theend()

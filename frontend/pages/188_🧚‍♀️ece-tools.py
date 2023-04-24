@@ -35,7 +35,7 @@ with tab1:
         response = ecetools_backend_request(projid=st.session_state.projectid,
                                             envid=st.session_state.environmentid)
         if response:
-            st.write(f" ```{response.text.strip()}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab2:
     st.header("ECE Error")
@@ -50,7 +50,7 @@ with tab2:
                     ecetoolerrorline = ecetoolerrorline.replace(":", "")
                     print(ecetoolerrorline)
                     st.write(f" ```{ecetoolerrorline}``` ")
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 with tab3:
     st.header("ECE Config")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
@@ -59,7 +59,7 @@ with tab3:
         response = ecetools_backend_request(projid=st.session_state.projectid,
                                             envid=st.session_state.environmentid, apiparameter='config')
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab4:
     st.header("ECE Validate")
@@ -69,7 +69,7 @@ with tab4:
         response = ecetools_backend_request(projid=st.session_state.projectid,
                                             envid=st.session_state.environmentid, apiparameter='validate')
         if response:
-            st.write(f" ```{response.text.strip()}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab5:
     st.header("ECE Wizards")
@@ -79,6 +79,6 @@ with tab5:
         response = ecetools_backend_request(projid=st.session_state.projectid,
                                             envid=st.session_state.environmentid, apiparameter='wizards')
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 theend()

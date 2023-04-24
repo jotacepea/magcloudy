@@ -31,7 +31,7 @@ with tab1:
         response = projconfig_backend_request(projid=st.session_state.projectid,
                                               envid=st.session_state.environmentid)
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab2:
     st.header("Read file .magento.app.yaml (**Repos**)")
@@ -41,7 +41,7 @@ with tab2:
         response = projconfig_backend_request(projid=st.session_state.projectid,
                                               envid=st.session_state.environmentid, apiparameter='.magento.app.yaml')
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab3:
     st.header("Read file .magento.env.yaml (**Repos**)")
@@ -51,7 +51,7 @@ with tab3:
         response = projconfig_backend_request(projid=st.session_state.projectid,
                                               envid=st.session_state.environmentid, apiparameter='.magento.env.yaml')
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab4:
     st.header("Read file magento-vars.php (**Repos**)")
@@ -61,7 +61,7 @@ with tab4:
         response = projconfig_backend_request(projid=st.session_state.projectid,
                                               envid=st.session_state.environmentid, apiparameter='magento-vars.php')
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab5:
     st.header("Read file config.php (**Repos**)")
@@ -71,7 +71,7 @@ with tab5:
         response = projconfig_backend_request(projid=st.session_state.projectid,
                                               envid=st.session_state.environmentid, apiparameter='app/etc/config.php')
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab6:
     st.header("Read file .magento/services.yaml (**Repos**)")
@@ -81,7 +81,7 @@ with tab6:
         response = projconfig_backend_request(projid=st.session_state.projectid,
                                               envid=st.session_state.environmentid, apiparameter='.magento/services.yaml')
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab7:
     st.header("Read file .magento/routes.yaml (**Repos**)")
@@ -91,6 +91,6 @@ with tab7:
         response = projconfig_backend_request(projid=st.session_state.projectid,
                                               envid=st.session_state.environmentid, apiparameter='.magento/routes.yaml')
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 theend()

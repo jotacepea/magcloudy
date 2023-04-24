@@ -33,7 +33,7 @@ with tab1:
         response = environments_backend_request(
             projid=st.session_state.projectid)
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab2:
     st.header("Environment Info")
@@ -58,10 +58,10 @@ with tab2:
                 if 'deployment_target' in envinfoline:
                     envinfoline = envinfoline.replace("|", "")
                     print(envinfoline)
-                    st.write(f" ```{envinfoline}``` ")
+                    st.write(f" ```\n{envinfoline}\n``` ")
                     if 'local' in envinfoline:
                         st.session_state.env_target_type = 'containerized'
                         st.caption(f"**_{st.session_state.env_target_type}_**")
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 theend()

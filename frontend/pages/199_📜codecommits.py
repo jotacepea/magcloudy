@@ -19,7 +19,7 @@ with tab1:
             f"http://backend:5000/commits/{st.session_state.projectid}/{st.session_state.environmentid}")
         print(response)
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab2:
     st.header("Info")
@@ -35,6 +35,6 @@ with tab2:
             f"http://backend:5000/commits/{st.session_state.projectid}/{st.session_state.environmentid}/{commit_id_input}")
         print(response)
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 theend()

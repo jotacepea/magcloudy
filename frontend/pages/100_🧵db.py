@@ -19,7 +19,7 @@ with tab1:
             f"http://backend:5000/db/{st.session_state.projectid}/{st.session_state.environmentid}/version")
         print(response)
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab2:
     st.header("DB Size")
@@ -32,7 +32,7 @@ with tab2:
             f"http://backend:5000/db/{st.session_state.projectid}/{st.session_state.environmentid}/size")
         print(response)
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 with tab3:
     st.header("DB Process")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
@@ -42,6 +42,6 @@ with tab3:
             f"http://backend:5000/db/{st.session_state.projectid}/{st.session_state.environmentid}/process")
         print(response)
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 theend()

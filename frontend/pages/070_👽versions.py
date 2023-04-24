@@ -19,7 +19,7 @@ with tab1:
             f"http://backend:5000/versions/{st.session_state.projectid}/{st.session_state.environmentid}/magento")
         print(response)
         if response:
-            st.write(f" ```{response.text.strip()}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab2:
     st.header("ece-tools")
@@ -30,7 +30,7 @@ with tab2:
             f"http://backend:5000/ece-tools/{st.session_state.projectid}/{st.session_state.environmentid}/version")
         print(response)
         if response:
-            st.write(f" ```{response.text.strip()}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab3:
     st.header("php")
@@ -41,7 +41,7 @@ with tab3:
             f"http://backend:5000/versions/{st.session_state.projectid}/{st.session_state.environmentid}/php")
         print(response)
         if response:
-            st.write(f" ```{response.text.strip()}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab4:
     st.header("nginx")
@@ -52,7 +52,7 @@ with tab4:
             f"http://backend:5000/versions/{st.session_state.projectid}/{st.session_state.environmentid}/nginx")
         print(response)
         if response:
-            st.write(f" ```{response.text.strip()}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab5:
     st.header("services")
@@ -63,6 +63,6 @@ with tab5:
             f"http://backend:5000/services/{st.session_state.projectid}/{st.session_state.environmentid}")
         print(response)
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 theend()

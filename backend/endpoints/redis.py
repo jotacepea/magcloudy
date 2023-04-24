@@ -1,4 +1,5 @@
 from apiflask import APIBlueprint
+from apiflask.fields import Integer
 import subprocess
 import os
 from strip_ansi import strip_ansi
@@ -43,8 +44,16 @@ def get_redis_server_info(project_id, environment):
 
 
 @redis_bp.get('/redis/<project_id>/<environment>/bigkeys')
-def get_redis_bigkeys(project_id, environment):
-    command_magecloud = f"magento-cloud redis -p {project_id} -e {environment} -r redis \'bigkeys;\'"
+@redis_bp.input(
+    {'containerized': Integer(load_default=0)},
+    location='query'
+)
+def get_redis_bigkeys(project_id, environment, query):
+    print(query['containerized'])
+    if query['containerized'] == 0:
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'redis-cli --bigkeys;\'"
+    else:
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'redis-cli -h redis.internal --bigkeys;\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -55,8 +64,16 @@ def get_redis_bigkeys(project_id, environment):
 
 
 @redis_bp.get('/redis/<project_id>/<environment>/memkeys')
-def get_redis_memkeys(project_id, environment):
-    command_magecloud = f"magento-cloud redis -p {project_id} -e {environment} -r redis \'memkeys;\'"
+@redis_bp.input(
+    {'containerized': Integer(load_default=0)},
+    location='query'
+)
+def get_redis_memkeys(project_id, environment, query):
+    print(query['containerized'])
+    if query['containerized'] == 0:
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'redis-cli --memkeys;\'"
+    else:
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'redis-cli -h redis.internal --memkeys;\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -67,8 +84,16 @@ def get_redis_memkeys(project_id, environment):
 
 
 @redis_bp.get('/redis/<project_id>/<environment>/hotkeys')
-def get_redis_hotkeys(project_id, environment):
-    command_magecloud = f"magento-cloud redis -p {project_id} -e {environment} -r redis \'hotkeys;\'"
+@redis_bp.input(
+    {'containerized': Integer(load_default=0)},
+    location='query'
+)
+def get_redis_hotkeys(project_id, environment, query):
+    print(query['containerized'])
+    if query['containerized'] == 0:
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'redis-cli --hotkeys;\'"
+    else:
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'redis-cli -h redis.internal --hotkeys;\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

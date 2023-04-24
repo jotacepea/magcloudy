@@ -33,7 +33,7 @@ with tab1:
         response = rabbitmq_backend_request(
             projid=st.session_state.projectid, envid=st.session_state.environmentid)
         if response:
-            st.write(f" ```{response.text.strip()}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab2:
     st.header("Info")
@@ -43,7 +43,7 @@ with tab2:
         response = rabbitmq_backend_request(
             projid=st.session_state.projectid, envid=st.session_state.environmentid, apiparameter='show')
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 with tab3:
     st.header("Queues")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
@@ -52,6 +52,6 @@ with tab3:
         response = rabbitmq_backend_request(
             projid=st.session_state.projectid, envid=st.session_state.environmentid, apiparameter='listqueues')
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 theend()

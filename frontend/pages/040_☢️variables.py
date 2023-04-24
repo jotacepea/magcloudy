@@ -29,7 +29,7 @@ with tab1:
         st.write("Getting Env Vars for: ", st.session_state.projectid)
         response = variables_backend_request(projid=st.session_state.projectid)
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab2:
     st.header("Env Variables at Environment Level :exclamation:")
@@ -39,7 +39,7 @@ with tab2:
         response = variables_backend_request(
             projid=st.session_state.projectid, envid=st.session_state.environmentid, apiparameter='e')
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab3:
     st.header("Env Relationships at Environment Level :exclamation:")
@@ -49,6 +49,6 @@ with tab3:
         response = variables_backend_request(apiendpoint='environments', projid=st.session_state.projectid,
                                              envid=st.session_state.environmentid, apiparameter='relationships')
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 theend()

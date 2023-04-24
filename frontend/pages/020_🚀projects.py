@@ -9,7 +9,7 @@ st.header("MagCloudy :blue[Projects] :rocket:")
 st.header("My Projects")
 response = requests.get("http://backend:5000/projects")
 print(response)
-st.write(f" ```{response.text}``` ")
+st.write(f" ```\n{response.text.strip()}\n``` ")
 
 main_project_id_input = st.text_input(
     "Enter project id you want to work with:",
@@ -50,7 +50,7 @@ with tab1:
                 projinfoline = projinfoline.replace("|", "")
                 print(projinfoline)
                 st.write(f" ```{projinfoline}``` ")
-        st.write(f" ```{response.text}``` ")
+        st.write(f" ```\n{response.text.strip()}\n``` ")
 with tab2:
     st.header("Settings")
     settings_project_id_input = st.text_input(
@@ -70,7 +70,7 @@ with tab2:
                 projsettline = projsettline.replace(",", "")
                 print(projsettline)
                 st.write(f" ```{projsettline}``` ")
-        st.write(f" ```{response.text}``` ")
+        st.write(f" ```\n{response.text.strip()}\n``` ")
 with tab3:
     st.header("Users")
     settings_project_id_input = st.text_input(
@@ -85,6 +85,6 @@ with tab3:
             f"http://backend:5000/users/{info_project_id_input}"
         )
         print(response)
-        st.write(f" ```{response.text}``` ")
+        st.write(f" ```\n{response.text.strip()}\n``` ")
 
 theend()

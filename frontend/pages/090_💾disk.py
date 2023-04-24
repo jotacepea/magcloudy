@@ -24,14 +24,14 @@ with tab1:
                 response = requests.get(
                     f"http://backend:5000/disk/{st.session_state.projectid}/{st.session_state.environmentid}")
                 print(response)
-                st.write(f" ```{response.text}``` ")
+                st.write(f" ```\n{response.text.strip()}\n``` ")
             else:
                 for indx, inst in enumerate(response.text.strip().split()):
                     st.write(f" ```HD Usage {inst}``` ")
                     response = requests.get(
                         f"http://backend:5000/disk/{st.session_state.projectid}/{st.session_state.environmentid}/{indx + 1}")
                     print(indx, inst, response)
-                    st.write(f" ```{response.text}``` ")
+                    st.write(f" ```\n{response.text.strip()}\n``` ")
 with tab2:
     st.header("Mounts Usage per Instance")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
@@ -41,11 +41,11 @@ with tab2:
             f"http://backend:5000/mounts/{st.session_state.projectid}/{st.session_state.environmentid}")
         print(response)
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
         response = requests.get(
             f"http://backend:5000/mounts/{st.session_state.projectid}/{st.session_state.environmentid}/size")
         print(response)
         if response:
-            st.write(f" ```{response.text}``` ")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 theend()
