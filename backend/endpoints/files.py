@@ -1,7 +1,6 @@
 from apiflask import APIBlueprint
 import subprocess
 import os
-from strip_ansi import strip_ansi
 
 files_bp = APIBlueprint('files-blueprint', __name__)
 

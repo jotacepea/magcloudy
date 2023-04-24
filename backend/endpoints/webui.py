@@ -1,7 +1,6 @@
 from apiflask import APIBlueprint
 import subprocess
 import os
-from strip_ansi import strip_ansi
 
 webui_bp = APIBlueprint('webui-blueprint', __name__)
 

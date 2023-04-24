@@ -40,3 +40,39 @@ def get_redis_server_info(project_id, environment):
         return "An error occurred while trying to shell cmd: %s" % e
 
     return strip_ansi(result_command_magecloud)
+
+
+@redis_bp.get('/redis/<project_id>/<environment>/bigkeys')
+def get_redis_bigkeys(project_id, environment):
+    command_magecloud = f"magento-cloud redis -p {project_id} -e {environment} -r redis \'bigkeys;\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+
+@redis_bp.get('/redis/<project_id>/<environment>/memkeys')
+def get_redis_memkeys(project_id, environment):
+    command_magecloud = f"magento-cloud redis -p {project_id} -e {environment} -r redis \'memkeys;\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+
+@redis_bp.get('/redis/<project_id>/<environment>/hotkeys')
+def get_redis_hotkeys(project_id, environment):
+    command_magecloud = f"magento-cloud redis -p {project_id} -e {environment} -r redis \'hotkeys;\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
