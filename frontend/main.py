@@ -15,6 +15,10 @@ st.markdown(
     ### Want to learn more?
     - Check out [cloud-cli](https://experienceleague.adobe.com/docs/commerce-cloud-service/user-guide/dev-tools/cloud-cli.html?lang=en)
     - Jump into our [documentation](https://experienceleague.adobe.com/docs/commerce-cloud-service/user-guide/overview.html?lang=en)
+    
+    ### Cloud Projects:
+    - Magento Cloud [projects](https://cloud.magento.com/admin/projectsearch)
+    - Magento Cloud [platform](https://accounts.magento.cloud/admin/platform/projects)
 
 """
 )

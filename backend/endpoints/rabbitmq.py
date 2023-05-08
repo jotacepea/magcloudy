@@ -6,6 +6,9 @@ from strip_ansi import strip_ansi
 
 rabbitmq_bp = APIBlueprint('rabbitmq-blueprint', __name__)
 
+get_rabbit_user_cmd = "echo $MAGENTO_CLOUD_RELATIONSHIPS | base64 -d | jq -r .rabbitmq[].username"
+get_rabbit_pass_cmd = "echo $MAGENTO_CLOUD_RELATIONSHIPS | base64 -d | jq -r .rabbitmq[].password"
+
 
 @rabbitmq_bp.get('/rabbitmq/<project_id>/<environment>/version')
 @rabbitmq_bp.input(
@@ -15,9 +18,11 @@ rabbitmq_bp = APIBlueprint('rabbitmq-blueprint', __name__)
 def get_version_rabbitmq(project_id, environment, query):
     print(query['containerized'])
     if query['containerized'] == 0:
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'rabbitmqadmin --version\'"
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -u $USER:$(" + \
+            f"{get_rabbit_pass_cmd}" + \
+            ") -sk http://localhost:15672/api/overview |jq .|grep version\'"
     else:
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -u guest:guest -sk http://rabbitmq.internal:15672/api/nodes |json_pp|grep -A2 -B2 rabbit_common|grep version\'"
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -u guest:guest -sk http://rabbitmq.internal:15672/api/overview |json_pp |grep version\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -35,11 +40,11 @@ def get_version_rabbitmq(project_id, environment, query):
 def get_listqueues_rabbitmq(project_id, environment, query):
     print(query['containerized'])
     if query['containerized'] == 0:
-        get_rabbit_pass_cmd = "vendor/bin/ece-tools env:config:show services | grep -A7 rabbitmq: | grep passw |cut -d\"|\" -f3"
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'rabbitmqadmin -V $USER -u $USER -p $(" + \
-            f" {get_rabbit_pass_cmd} " + ") list queues\'"
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -u $USER:$(" + \
+            f"{get_rabbit_pass_cmd}" + \
+            ") -sk http://localhost:15672/api/queues |jq -r .[].name\'"
     else:
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -u guest:guest -sk http://rabbitmq.internal:15672/api/queues |json_pp|grep -n name\'"
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -u guest:guest -sk http://rabbitmq.internal:15672/api/queues |json_pp|grep name\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -57,11 +62,11 @@ def get_listqueues_rabbitmq(project_id, environment, query):
 def get_show_rabbitmq(project_id, environment, query):
     print(query['containerized'])
     if query['containerized'] == 0:
-        get_rabbit_pass_cmd = "vendor/bin/ece-tools env:config:show services | grep -A7 rabbitmq: | grep passw |cut -d\"|\" -f3"
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'rabbitmqadmin -V $USER -u $USER -p $(" + \
-            f" {get_rabbit_pass_cmd} " + ") show overview\'"
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -u $USER:$(" + \
+            f"{get_rabbit_pass_cmd}" + \
+            ") -sk http://localhost:15672/api/overview |jq .\'"
     else:
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'rabbitmqadmin -h\'"
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -u guest:guest -sk http://rabbitmq.internal:15672/api/overview |json_pp\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

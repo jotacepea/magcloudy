@@ -43,6 +43,9 @@ def get_redis_server_info(project_id, environment):
     return strip_ansi(result_command_magecloud)
 
 
+get_redis_port_cmd = "echo $MAGENTO_CLOUD_RELATIONSHIPS | base64 -d | jq -r .redis[].port"
+
+
 @redis_bp.get('/redis/<project_id>/<environment>/bigkeys')
 @redis_bp.input(
     {'containerized': Integer(load_default=0)},
@@ -51,7 +54,8 @@ def get_redis_server_info(project_id, environment):
 def get_redis_bigkeys(project_id, environment, query):
     print(query['containerized'])
     if query['containerized'] == 0:
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'redis-cli --bigkeys;\'"
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'redis-cli -p $(" + \
+            f"{get_redis_port_cmd}" + ") --bigkeys;\'"
     else:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'redis-cli -h redis.internal --bigkeys;\'"
     try:
@@ -71,7 +75,8 @@ def get_redis_bigkeys(project_id, environment, query):
 def get_redis_memkeys(project_id, environment, query):
     print(query['containerized'])
     if query['containerized'] == 0:
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'redis-cli --memkeys;\'"
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'redis-cli -p $(" + \
+            f"{get_redis_port_cmd}" + ") --memkeys;\'"
     else:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'redis-cli -h redis.internal --memkeys;\'"
     try:
@@ -91,7 +96,8 @@ def get_redis_memkeys(project_id, environment, query):
 def get_redis_hotkeys(project_id, environment, query):
     print(query['containerized'])
     if query['containerized'] == 0:
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'redis-cli --hotkeys;\'"
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'redis-cli -p $(" + \
+            f"{get_redis_port_cmd}" + ") --hotkeys;\'"
     else:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'redis-cli -h redis.internal --hotkeys;\'"
     try:

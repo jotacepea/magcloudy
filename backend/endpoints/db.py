@@ -30,9 +30,21 @@ def get_db_version(project_id, environment):
     return strip_ansi(result_command_magecloud)
 
 
-@db_bp.get('/db/<project_id>/<environment>/process')
-def get_db_process(project_id, environment):
+@db_bp.get('/db/<project_id>/<environment>/processw')
+def get_db_process_w(project_id, environment):
     command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \'SHOW PROCESSLIST;\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+
+@db_bp.get('/db/<project_id>/<environment>/processr')
+def get_db_process_r(project_id, environment):
+    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database-slave \'SHOW PROCESSLIST;\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

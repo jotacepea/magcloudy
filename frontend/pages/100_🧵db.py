@@ -39,7 +39,12 @@ with tab3:
         st.write(
             f"Getting DB process list for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = requests.get(
-            f"http://backend:5000/db/{st.session_state.projectid}/{st.session_state.environmentid}/process")
+            f"http://backend:5000/db/{st.session_state.projectid}/{st.session_state.environmentid}/processw")
+        print(response)
+        if response:
+            st.write(f" ```\n{response.text.strip()}\n``` ")
+        response = requests.get(
+            f"http://backend:5000/db/{st.session_state.projectid}/{st.session_state.environmentid}/processr")
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")

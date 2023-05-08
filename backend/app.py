@@ -23,6 +23,7 @@ from endpoints.environments import environments_bp
 from endpoints.projects import projects_bp
 from endpoints.binmagento import binmagento_bp
 from endpoints.rabbitmq import rabbitmq_bp
+from endpoints.opensearch import opensearch_bp
 
 # print(os.environ['MAGENTO_CLOUD_CLI_TOKEN'])
 
@@ -48,6 +49,19 @@ app.register_blueprint(environments_bp)
 app.register_blueprint(projects_bp)
 app.register_blueprint(binmagento_bp)
 app.register_blueprint(rabbitmq_bp)
+app.register_blueprint(opensearch_bp)
+
+
+def bootstrap_magecli():
+    command_bootstrap = "magento-cloud ssh-cert:load --no-interaction"
+    try:
+        result_command_bootstrap = subprocess.check_output(
+            [command_bootstrap], shell=True, env=os.environ, universal_newlines=True).split('\n')
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return result_command_bootstrap
+# bootstrap_magecli()
 
 
 @app.route('/')
