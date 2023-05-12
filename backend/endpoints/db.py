@@ -32,7 +32,7 @@ def get_db_version(project_id, environment):
 
 @db_bp.get('/db/<project_id>/<environment>/processw')
 def get_db_process_w(project_id, environment):
-    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \'SHOW PROCESSLIST;\'"
+    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \'select @@hostname\G SHOW PROCESSLIST;\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -44,7 +44,7 @@ def get_db_process_w(project_id, environment):
 
 @db_bp.get('/db/<project_id>/<environment>/processr')
 def get_db_process_r(project_id, environment):
-    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database-slave \'SHOW PROCESSLIST;\'"
+    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database-slave \'select @@hostname\G SHOW PROCESSLIST;\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

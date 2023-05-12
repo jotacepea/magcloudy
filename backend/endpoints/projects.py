@@ -39,3 +39,15 @@ def get_project_settings(project_id):
         return "An error occurred while trying to shell cmd: %s" % e
 
     return result_command_magecloud
+
+
+@projects_bp.get('/projects/<project_id>/subscription')
+def get_project_subscription(project_id):
+    command_magecloud = f"magento-cloud subscription:info -p {project_id}"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return result_command_magecloud

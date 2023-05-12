@@ -12,7 +12,7 @@ print(response)
 st.write(f" ```\n{response.text.strip()}\n``` ")
 
 main_project_id_input = st.text_input(
-    "Enter project id you want to work with:",
+    "Enter project id you want to work with: 👇",
     value=st.session_state.projectid if st.session_state.projectid != 'noprojid' else '',
     max_chars=13,
     placeholder="6fck2obu3244c",
@@ -29,20 +29,15 @@ if st.session_state.projectid != 'noprojid':
             f"### Cloud Project [Web UI]({response.text.strip()}) ###")
 
 
-tab1, tab2, tab3 = st.tabs(
-    ["Project Info", "Project Settings", "Project Users"])
+tab1, tab2, tab3, tab4 = st.tabs(
+    ["Project Info", "Project Subscription", "Project Settings", "Project Users"])
 
 with tab1:
     st.header("Info")
-    info_project_id_input = st.text_input(
-        "Enter some project id 👇",
-        value=st.session_state.projectid if st.session_state.projectid != 'noprojid' else '',
-        placeholder="uyjl6ksvl3koy",
-    )
-    if info_project_id_input:
-        st.write("Getting info for Project ID: ", info_project_id_input)
+    if st.session_state.projectid != 'noprojid':
+        st.write("Getting info for Project ID: ", st.session_state.projectid)
         response = requests.get(
-            f"http://backend:5000/projects/{info_project_id_input}/info"
+            f"http://backend:5000/projects/{st.session_state.projectid}/info"
         )
         print(response)
         for indx, projinfoline in enumerate(response.text.strip().split('\n')):
@@ -52,17 +47,22 @@ with tab1:
                 st.write(f" ```{projinfoline}``` ")
         st.write(f" ```\n{response.text.strip()}\n``` ")
 with tab2:
-    st.header("Settings")
-    settings_project_id_input = st.text_input(
-        "Enter some project id 👇",
-        value=st.session_state.projectid if st.session_state.projectid != 'noprojid' else '',
-        placeholder="uyjl6ksvl3koy",
-        key="settings_project_id_text_input",
-    )
-    if settings_project_id_input:
-        st.write("Getting settings for Project ID: ", info_project_id_input)
+    st.header("Subscription")
+    if st.session_state.projectid != 'noprojid':
+        st.write("Getting Subscription info for Project ID: ",
+                 st.session_state.projectid)
         response = requests.get(
-            f"http://backend:5000/projects/{info_project_id_input}/settings"
+            f"http://backend:5000/projects/{st.session_state.projectid}/subscription"
+        )
+        print(response)
+        st.write(f" ```\n{response.text.strip()}\n``` ")
+with tab3:
+    st.header("Settings")
+    if st.session_state.projectid != 'noprojid':
+        st.write("Getting settings for Project ID: ",
+                 st.session_state.projectid)
+        response = requests.get(
+            f"http://backend:5000/projects/{st.session_state.projectid}/settings"
         )
         print(response)
         for indx, projsettline in enumerate(response.text.strip().split('\n')):
@@ -71,18 +71,12 @@ with tab2:
                 print(projsettline)
                 st.write(f" ```{projsettline}``` ")
         st.write(f" ```\n{response.text.strip()}\n``` ")
-with tab3:
+with tab4:
     st.header("Users")
-    settings_project_id_input = st.text_input(
-        "Enter some project id 👇",
-        value=st.session_state.projectid if st.session_state.projectid != 'noprojid' else '',
-        placeholder="uyjl6ksvl3koy",
-        key="users_project_id_text_input",
-    )
-    if settings_project_id_input:
-        st.write("Getting users for Project ID: ", info_project_id_input)
+    if st.session_state.projectid != 'noprojid':
+        st.write("Getting users for Project ID: ", st.session_state.projectid)
         response = requests.get(
-            f"http://backend:5000/users/{info_project_id_input}"
+            f"http://backend:5000/users/{st.session_state.projectid}"
         )
         print(response)
         st.write(f" ```\n{response.text.strip()}\n``` ")

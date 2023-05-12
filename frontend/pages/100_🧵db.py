@@ -43,10 +43,11 @@ with tab3:
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
-        response = requests.get(
-            f"http://backend:5000/db/{st.session_state.projectid}/{st.session_state.environmentid}/processr")
-        print(response)
-        if response:
-            st.write(f" ```\n{response.text.strip()}\n``` ")
+        if st.session_state.env_target_type != 'containerized':
+            response = requests.get(
+                f"http://backend:5000/db/{st.session_state.projectid}/{st.session_state.environmentid}/processr")
+            print(response)
+            if response:
+                st.write(f" ```\n{response.text.strip()}\n``` ")
 
 theend()
