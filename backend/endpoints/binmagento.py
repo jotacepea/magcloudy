@@ -54,6 +54,18 @@ def get_cmspageurl_binmagento(project_id, environment):
     return strip_ansi(result_command_magecloud)
 
 
+@binmagento_bp.get('/binmagento/<project_id>/<environment>/adminurl')
+def get_adminurl_binmagento(project_id, environment):
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'bin/magento info:adminuri\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+
 @binmagento_bp.get('/binmagento/<project_id>/<environment>/maintenance')
 def get_maintenance_binmagento(project_id, environment):
     command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'bin/magento maintenance:status\'"
