@@ -22,8 +22,8 @@ def appconfig_backend_request(projid, envid, apiendpoint='binmagento', apiparame
 st.header("MagCloudy :blue[App Configuration] :battery:")
 
 
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(
-    ["Version", "Default URL", "Store Url", "CMS Url", "Admin Url", "maintenance Status", "App Etc env.php"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs(
+    ["Version", "Default URL", "Store Url", "CMS Url", "Admin Url", "maintenance Status", "App Etc env.php", "Mage Indexer"])
 
 with tab1:
     st.header("Bin Magento Version (**Live**)")
@@ -94,6 +94,16 @@ with tab7:
                                              projid=st.session_state.projectid,
                                              envid=st.session_state.environmentid,
                                              apiparameter='app/etc/env.php')
+        if response:
+            st.write(f" ```\n{response.text.strip()}\n``` ")
+
+with tab8:
+    st.header("Indexer Status (**Live**)")
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+        st.write(
+            f"Getting magento indexer status for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        response = appconfig_backend_request(projid=st.session_state.projectid,
+                                             envid=st.session_state.environmentid, apiparameter='indexer')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 

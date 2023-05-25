@@ -30,6 +30,10 @@ with tab1:
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
             f"Check Redis for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        st.write(
+            f" ```magento-cloud redis -p {st.session_state.projectid} -e {st.session_state.environmentid} -r redis``` ")
+        st.write(
+            f" ```magento-cloud redis -p {st.session_state.projectid} -e {st.session_state.environmentid} -r redis-slave``` ")
         response = redis_backend_request(
             projid=st.session_state.projectid, envid=st.session_state.environmentid)
         if response:

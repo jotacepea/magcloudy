@@ -64,9 +64,31 @@ def get_show_rabbitmq(project_id, environment, query):
     if query['containerized'] == 0:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -u $USER:$(" + \
             f"{get_rabbit_pass_cmd}" + \
-            ") -sk http://localhost:15672/api/overview |jq .\'"
+            ") -sk http://localhost:15672/api/overview | jq .\'"
     else:
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -u guest:guest -sk http://rabbitmq.internal:15672/api/overview |json_pp\'"
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -u guest:guest -sk http://rabbitmq.internal:15672/api/overview | json_pp\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+
+@rabbitmq_bp.get('/rabbitmq/<project_id>/<environment>/healthchecks')
+@rabbitmq_bp.input(
+    {'containerized': Integer(load_default=0)},
+    location='query'
+)
+def get_healthchecks_rabbitmq(project_id, environment, query):
+    print(query['containerized'])
+    if query['containerized'] == 0:
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -u $USER:$(" + \
+            f"{get_rabbit_pass_cmd}" + \
+            ") -sk http://localhost:15672/api/healthchecks/node | jq .\'"
+    else:
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -u guest:guest -sk http://rabbitmq.internal:15672/api/healthchecks/node | json_pp\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

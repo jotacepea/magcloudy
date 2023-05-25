@@ -80,7 +80,19 @@ def get_maintenance_binmagento(project_id, environment):
 
 @binmagento_bp.get('/binmagento/<project_id>/<environment>/consumers')
 def get_consumers_binmagento(project_id, environment):
-    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'queue:consumers:list\'"
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'bin/magento queue:consumers:list\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+
+@binmagento_bp.get('/binmagento/<project_id>/<environment>/indexer')
+def get_indexer_binmagento(project_id, environment):
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'bin/magento indexer:status\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

@@ -61,9 +61,21 @@ with tab2:
             if len(response.text.strip().split()) == 1:
                 st.write(
                     f" ``` magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid}``` ")
+                reqresponse = ssh_backend_request(projid=st.session_state.projectid,
+                                                  envid=st.session_state.environmentid,
+                                                  apiendpoint='ssh/load',
+                                                  apiparameter=0)
+                print(reqresponse)
+                st.write(f" ```\n{reqresponse.text.strip()}\n``` ")
             else:
                 for indx, inst in enumerate(response.text.strip().split()):
                     st.write(
                         f" ``` magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -I {indx + 1}``` ")
+                    reqresponse = ssh_backend_request(projid=st.session_state.projectid,
+                                                      envid=st.session_state.environmentid,
+                                                      apiendpoint='ssh/load',
+                                                      apiparameter=indx + 1)
+                    print(indx, inst, reqresponse)
+                    st.write(f" ```\n{reqresponse.text.strip()}\n``` ")
 
 theend()

@@ -14,7 +14,7 @@ with tab1:
     st.header("magento")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
-            f"Reading config file for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+            f"Getting Magento version for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = requests.get(
             f"http://backend:5000/versions/{st.session_state.projectid}/{st.session_state.environmentid}/magento")
         print(response)
@@ -25,7 +25,7 @@ with tab2:
     st.header("ece-tools")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
-            f"Reading config file for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+            f"Getting ece-tools version for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = requests.get(
             f"http://backend:5000/ece-tools/{st.session_state.projectid}/{st.session_state.environmentid}/version")
         print(response)
@@ -36,7 +36,7 @@ with tab3:
     st.header("php")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
-            f"Reading config file for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+            f"Getting php version for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = requests.get(
             f"http://backend:5000/versions/{st.session_state.projectid}/{st.session_state.environmentid}/php")
         print(response)
@@ -47,7 +47,7 @@ with tab4:
     st.header("nginx")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
-            f"Reading config file for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+            f"Getting nginx version for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = requests.get(
             f"http://backend:5000/versions/{st.session_state.projectid}/{st.session_state.environmentid}/nginx")
         print(response)
@@ -58,7 +58,7 @@ with tab5:
     st.header("services")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
-            f"Reading config file for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+            f"Getting env services definition for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = requests.get(
             f"http://backend:5000/services/{st.session_state.projectid}/{st.session_state.environmentid}")
         print(response)
