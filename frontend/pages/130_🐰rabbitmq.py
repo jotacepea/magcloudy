@@ -19,6 +19,18 @@ def rabbitmq_backend_request(projid, envid, apiendpoint='rabbitmq', apiparameter
     return resp
 
 
+@st.cache_data(ttl=60)
+def ssh_backend_request(projid, envid, apiendpoint='ssh', apiparameter=None):
+    if apiparameter is None:
+        resp = requests.get(
+            f"http://backend:5000/{apiendpoint}/{projid}/{envid}")
+    else:
+        resp = requests.get(
+            f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+    print(resp)
+    return resp
+
+
 st.header("MagCloudy :blue[RabbitMQ] :rabbit:")
 
 
@@ -30,6 +42,18 @@ with tab1:
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
             f"Get Rabbit Version for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        response = ssh_backend_request(projid=st.session_state.projectid,
+                                       envid=st.session_state.environmentid)
+        print(response)
+        if response:
+            if len(response.text.strip().split()) == 1:
+                st.write(
+                    f"Local Forward Port MQP UI:\n ```ssh -L 15672:localhost:15672 {response.text.strip()}``` ")
+            else:
+                for indx, inst in enumerate(response.text.strip().split()):
+                    st.write(
+                        f"Local Forward Port MQP UI:\n ```ssh -L 15672:localhost:15672 {inst}``` ")
+
         response = rabbitmq_backend_request(
             projid=st.session_state.projectid,
             envid=st.session_state.environmentid)
@@ -71,7 +95,7 @@ with tab4:
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
-with tab4:
+with tab5:
     st.header("Healthchecks")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
