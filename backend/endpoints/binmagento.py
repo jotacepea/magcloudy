@@ -100,3 +100,15 @@ def get_indexer_binmagento(project_id, environment):
         return "An error occurred while trying to shell cmd: %s" % e
 
     return strip_ansi(result_command_magecloud)
+
+
+@binmagento_bp.get('/binmagento/<project_id>/<environment>/searchengine')
+def get_searchengine_binmagento(project_id, environment):
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'bin/magento config:show catalog/search/engine\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)

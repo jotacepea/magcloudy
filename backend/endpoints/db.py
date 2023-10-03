@@ -30,6 +30,54 @@ def get_db_version(project_id, environment):
     return strip_ansi(result_command_magecloud)
 
 
+@db_bp.get('/db/<project_id>/<environment>/status')
+def get_db_status(project_id, environment):
+    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \'status;\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+
+@db_bp.get('/db/<project_id>/<environment>/tablesize')
+def get_db_tablesize(project_id, environment):
+    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \'SELECT table_schema as `Database`, table_name AS `Table`, ROUND(((data_length + index_length) / 1024 / 1024), 2) `Size in MB` FROM information_schema.TABLES ORDER BY (data_length + index_length) DESC LIMIT 15;\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+
+@db_bp.get('/db/<project_id>/<environment>/myisam')
+def get_db_myisam(project_id, environment):
+    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \"SELECT table_schema, CONCAT(ROUND((index_length+data_length)/1024/1024),'MB') AS total_size FROM information_schema. TABLES WHERE engine='myisam' AND table_schema NOT IN ('mysql', 'information_schema', 'performance_schema', 'sys');\""
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+
+@db_bp.get('/db/<project_id>/<environment>/primarykey')
+def get_db_primarykey(project_id, environment):
+    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \"SELECT table_catalog, table_schema, table_name, engine FROM information_schema.tables WHERE (table_catalog, table_schema, table_name) NOT IN (SELECT table_catalog, table_schema, table_name FROM information_schema.table_constraints  WHERE constraint_type = 'PRIMARY KEY') AND table_schema NOT IN ('information_schema', 'pg_catalog');\""
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+
 @db_bp.get('/db/<project_id>/<environment>/wsrep')
 def get_db_wsrep(project_id, environment):
     command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \'SHOW STATUS WHERE Variable_name LIKE \"wsrep%\";\'"

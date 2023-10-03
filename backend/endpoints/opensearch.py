@@ -12,9 +12,9 @@ opensearch_bp = APIBlueprint('opensearch-blueprint', __name__)
     {'containerized': Integer(load_default=0)},
     location='query'
 )
-def get_version_opensearch(project_id, environment, query):
-    print(query['containerized'])
-    if query['containerized'] == 0:
+def get_version_opensearch(project_id, environment, query_data):
+    print(query_data['containerized'])
+    if query_data['containerized'] == 0:  # Unified Cluster
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -sk http://localhost:9200/ |jq\'"
     else:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -sk http://opensearch.internal:9200/ |json_pp\'"
@@ -32,9 +32,9 @@ def get_version_opensearch(project_id, environment, query):
     {'containerized': Integer(load_default=0)},
     location='query'
 )
-def get_health_opensearch(project_id, environment, query):
-    print(query['containerized'])
-    if query['containerized'] == 0:
+def get_health_opensearch(project_id, environment, query_data):
+    print(query_data['containerized'])
+    if query_data['containerized'] == 0:  # Unified Cluster
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -sk http://localhost:9200/_cluster/health |jq\'"
     else:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -sk http://opensearch.internal:9200/_cluster/health |json_pp\'"
@@ -52,9 +52,9 @@ def get_health_opensearch(project_id, environment, query):
     {'containerized': Integer(load_default=0)},
     location='query'
 )
-def get_indices_opensearch(project_id, environment, query):
-    print(query['containerized'])
-    if query['containerized'] == 0:
+def get_indices_opensearch(project_id, environment, query_data):
+    print(query_data['containerized'])
+    if query_data['containerized'] == 0:  # Unified Cluster
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -sk http://localhost:9200/_cat/indices?v\'"
     else:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -sk http://opensearch.internal:9200/_cat/indices?v\'"

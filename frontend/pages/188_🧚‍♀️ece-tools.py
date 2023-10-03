@@ -32,6 +32,7 @@ with tab1:
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
             f"Reading ece-tools version for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        st.write("https://github.com/magento/ece-tools/releases")
         response = ecetools_backend_request(projid=st.session_state.projectid,
                                             envid=st.session_state.environmentid)
         if response:

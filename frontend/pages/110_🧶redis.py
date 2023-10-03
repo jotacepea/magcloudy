@@ -32,8 +32,9 @@ with tab1:
             f"Check Redis for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         st.write(
             f" ```magento-cloud redis -p {st.session_state.projectid} -e {st.session_state.environmentid} -r redis``` ")
-        st.write(
-            f" ```magento-cloud redis -p {st.session_state.projectid} -e {st.session_state.environmentid} -r redis-slave``` ")
+        if st.session_state.env_target_type != 'containerized':
+            st.write(
+                f" ```magento-cloud redis -p {st.session_state.projectid} -e {st.session_state.environmentid} -r redis-slave``` ")
         response = redis_backend_request(
             projid=st.session_state.projectid, envid=st.session_state.environmentid)
         if response:

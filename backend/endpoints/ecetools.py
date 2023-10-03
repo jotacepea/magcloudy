@@ -8,7 +8,7 @@ ecetools_bp = APIBlueprint('ece-tools-blueprint', __name__)
 
 @ecetools_bp.get('/ece-tools/<project_id>/<environment>/version')
 def get_version_ecetools(project_id, environment):
-    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'vendor/bin/ece-tools -V\'"
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'grep version vendor/magento/ece-tools/composer.json\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

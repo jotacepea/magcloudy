@@ -15,6 +15,8 @@ with tab1:
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
             f"Reading Commits for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        st.write(
+            f" ```magento-cloud get -p {st.session_state.projectid} -e {st.session_state.environmentid}``` ")
         response = requests.get(
             f"http://backend:5000/commits/{st.session_state.projectid}/{st.session_state.environmentid}")
         print(response)

@@ -20,8 +20,8 @@ def projconfig_backend_request(projid, envid, apiendpoint='files', apiparameter=
 st.header("MagCloudy :blue[Project Configuration] :pencil2:")
 
 
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(
-    ["Project Root", "Mage .app.", "Mage .env.", "Mage -vars-", "Mage -config-", "Mage services", "Mage routes"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs(
+    ["Project Root", "Mage .app.", "Mage .env.", "Mage -vars-", "Mage -config-", "Mage services", "Mage routes", "Mage php.ini"])
 
 with tab1:
     st.header("Repo files in Project (**Repos**)")
@@ -90,6 +90,16 @@ with tab7:
             f"Getting project **repos** files for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = projconfig_backend_request(projid=st.session_state.projectid,
                                               envid=st.session_state.environmentid, apiparameter='.magento/routes.yaml')
+        if response:
+            st.write(f" ```\n{response.text.strip()}\n``` ")
+
+with tab8:
+    st.header("Read file php.ini (**Repos**)")
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+        st.write(
+            f"Getting project **repos** files for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        response = projconfig_backend_request(projid=st.session_state.projectid,
+                                              envid=st.session_state.environmentid, apiparameter='php.ini')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 

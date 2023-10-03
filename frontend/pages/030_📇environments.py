@@ -45,7 +45,7 @@ with tab2:
     if environment_id_input:
         st.session_state.environmentid = environment_id_input
     if environment_id_input and st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
-        st.write("Getting info for Environment: ", environment_id_input)
+        st.write(f"Getting info for Environment: **{environment_id_input}**")
         response = environments_backend_request(projid=st.session_state.projectid,
                                                 envid=environment_id_input, apiparameter='url')
         if response:
@@ -58,9 +58,12 @@ with tab2:
                 if 'deployment_target' in envinfoline:
                     envinfoline = envinfoline.replace("|", "")
                     print(envinfoline)
-                    st.write(f" ```\n{envinfoline}\n``` ")
+                    st.write(f" ```{envinfoline}``` ")
                     if 'local' in envinfoline:
-                        st.session_state.env_target_type = 'containerized'
+                        st.session_state.env_target_type = 'Containerized'
+                        st.caption(f"**_{st.session_state.env_target_type}_**")
+                    else:
+                        st.session_state.env_target_type = 'Instances (Unified Cluster)'
                         st.caption(f"**_{st.session_state.env_target_type}_**")
             st.write(f" ```\n{response.text.strip()}\n``` ")
 

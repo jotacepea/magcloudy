@@ -26,7 +26,7 @@ tab1, tab2, tab3 = st.tabs(
 with tab1:
     st.header("Env Variables at Project Level :exclamation:")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
-        st.write("Getting Env Vars for: ", st.session_state.projectid)
+        st.write(f"Getting Env Vars for:  **{st.session_state.projectid}**")
         response = variables_backend_request(projid=st.session_state.projectid)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
@@ -34,8 +34,8 @@ with tab1:
 with tab2:
     st.header("Env Variables at Environment Level :exclamation:")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
-        st.write("Getting Env Vars for: ", st.session_state.projectid,
-                 "in", st.session_state.environmentid)
+        st.write(
+            f"Getting Env Vars for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = variables_backend_request(
             projid=st.session_state.projectid, envid=st.session_state.environmentid, apiparameter='e')
         if response:
@@ -44,8 +44,8 @@ with tab2:
 with tab3:
     st.header("Env Relationships at Environment Level :exclamation:")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
-        st.write("Getting Env Relationships values for: ", st.session_state.projectid,
-                 "in", st.session_state.environmentid)
+        st.write(
+            f"Getting Env Relationships values for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = variables_backend_request(apiendpoint='environments', projid=st.session_state.projectid,
                                              envid=st.session_state.environmentid, apiparameter='relationships')
         if response:

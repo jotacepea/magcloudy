@@ -29,7 +29,7 @@ RUN mkdir ~/.ssh \
 # Install PHP: verify
 RUN php -v
 # Install cli
-RUN curl -s -S https://accounts.magento.cloud/cli/installer | php
+RUN curl -s -S https://accounts.magento.cloud/cli/installer | php -- --min 1.43.0 --no-interaction
 RUN cp ~/.magento-cloud/bin/magento-cloud /usr/local/bin/
 RUN magento-cloud -V
 

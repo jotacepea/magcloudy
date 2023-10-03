@@ -51,9 +51,9 @@ get_redis_port_cmd = "echo $MAGENTO_CLOUD_RELATIONSHIPS | base64 -d | jq -r .red
     {'containerized': Integer(load_default=0)},
     location='query'
 )
-def get_redis_bigkeys(project_id, environment, query):
-    print(query['containerized'])
-    if query['containerized'] == 0:
+def get_redis_bigkeys(project_id, environment, query_data):
+    print(query_data['containerized'])
+    if query_data['containerized'] == 0:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'redis-cli -p $(" + \
             f"{get_redis_port_cmd}" + ") --bigkeys;\'"
     else:
@@ -72,9 +72,9 @@ def get_redis_bigkeys(project_id, environment, query):
     {'containerized': Integer(load_default=0)},
     location='query'
 )
-def get_redis_memkeys(project_id, environment, query):
-    print(query['containerized'])
-    if query['containerized'] == 0:
+def get_redis_memkeys(project_id, environment, query_data):
+    print(query_data['containerized'])
+    if query_data['containerized'] == 0:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'redis-cli -p $(" + \
             f"{get_redis_port_cmd}" + ") --memkeys;\'"
     else:
@@ -93,9 +93,9 @@ def get_redis_memkeys(project_id, environment, query):
     {'containerized': Integer(load_default=0)},
     location='query'
 )
-def get_redis_hotkeys(project_id, environment, query):
-    print(query['containerized'])
-    if query['containerized'] == 0:
+def get_redis_hotkeys(project_id, environment, query_data):
+    print(query_data['containerized'])
+    if query_data['containerized'] == 0:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'redis-cli -p $(" + \
             f"{get_redis_port_cmd}" + ") --hotkeys;\'"
     else:

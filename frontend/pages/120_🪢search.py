@@ -6,12 +6,24 @@ pageconfig()
 
 
 @st.cache_data(ttl=300)
-def rabbitmq_backend_request(projid, envid, apiendpoint='opensearch', apiparameter=None):
+def search_backend_request(projid, envid, apiendpoint='opensearch', apiparameter=None):
     if apiparameter is None:
         apiparameter = 'version'
     if st.session_state.env_target_type == 'containerized':
         resp = requests.get(
             f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}?containerized=1")
+    else:
+        resp = requests.get(
+            f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+    print(resp)
+    return resp
+
+
+@st.cache_data(ttl=60)
+def ssh_backend_request(projid, envid, apiendpoint='ssh', apiparameter=None):
+    if apiparameter is None:
+        resp = requests.get(
+            f"http://backend:5000/{apiendpoint}/{projid}/{envid}")
     else:
         resp = requests.get(
             f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}")
@@ -29,8 +41,22 @@ with tab1:
     st.header("Version")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
-            f"Get Rabbit Version for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
-        response = rabbitmq_backend_request(
+            f"Get Opensearch Version for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        response = ssh_backend_request(projid=st.session_state.projectid,
+                                       envid=st.session_state.environmentid)
+        print(response)
+        if response:
+            st.caption(
+                f"Local Forward Port OpenSearch Web API:")
+            if len(response.text.strip().split()) == 1:
+                st.write(
+                    f" ```ssh -L 19200:opensearch.internal:9200 {response.text.strip()}``` ")
+            else:
+                for indx, inst in enumerate(response.text.strip().split()):
+                    st.write(
+                        f" ```ssh -L 19200:localhost:9200 {inst}``` ")
+
+        response = search_backend_request(
             projid=st.session_state.projectid, envid=st.session_state.environmentid)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
@@ -39,8 +65,8 @@ with tab2:
     st.header("Health")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
-            f"Getting RabbitMQ Info for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
-        response = rabbitmq_backend_request(
+            f"Getting Opensearch Health for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        response = search_backend_request(
             projid=st.session_state.projectid, envid=st.session_state.environmentid, apiparameter='health')
         if response:
             for indx, openhealthline in enumerate(response.text.strip().split('\n')):
@@ -60,8 +86,8 @@ with tab3:
     st.header("Indices")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
-            f"Getting RabbitMQ Queues for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
-        response = rabbitmq_backend_request(
+            f"Getting Opensearch Indices for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        response = search_backend_request(
             projid=st.session_state.projectid, envid=st.session_state.environmentid, apiparameter='indices')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")

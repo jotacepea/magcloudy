@@ -46,13 +46,15 @@ with tab1:
                                        envid=st.session_state.environmentid)
         print(response)
         if response:
+            st.caption(
+                f"Local Forward Port MQP UI:")
             if len(response.text.strip().split()) == 1:
                 st.write(
-                    f"Local Forward Port MQP UI:\n ```ssh -L 15672:localhost:15672 {response.text.strip()}``` ")
+                    f" ```ssh -L 15672:rabbitmq.internal:15672 {response.text.strip()}``` ")
             else:
                 for indx, inst in enumerate(response.text.strip().split()):
                     st.write(
-                        f"Local Forward Port MQP UI:\n ```ssh -L 15672:localhost:15672 {inst}``` ")
+                        f" ```ssh -L 15672:localhost:15672 {inst}``` ")
 
         response = rabbitmq_backend_request(
             projid=st.session_state.projectid,

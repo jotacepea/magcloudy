@@ -59,6 +59,8 @@ with tab5:
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
             f"Getting env services definition for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        st.caption(
+            f"**Note:** if :red[NOT] containerized environment... _please verify those versions!!!_")
         response = requests.get(
             f"http://backend:5000/services/{st.session_state.projectid}/{st.session_state.environmentid}")
         print(response)
