@@ -9,16 +9,21 @@ pageconfig()
 def ssh_backend_request(projid, envid, apiendpoint='ssh', apiparameter=None):
     if apiparameter is None:
         resp = requests.get(
-            f"http://backend:5000/{apiendpoint}/{projid}/{envid}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}")
     else:
         resp = requests.get(
-            f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
     print(resp)
     return resp
 
 
 st.header("MagCloudy :blue[Secure Shell] :computer:")
 
+if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    st.caption(
+        f"**pdsh -d -w $(magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} --all --pipe | tr '\\n' ',') date**")
+    st.caption(
+        f"**clush -LNw $(magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} --all --pipe | tr '\\n' ',' | rev | cut -c2- | rev) 'date'**")
 
 tab1, tab2, tab3, tab4, tab5 = st.tabs(
     ["SSH CMD", "SSH CLI", "SSH Crontab", "SSH php-fpm", "SSH CpuInfo"])

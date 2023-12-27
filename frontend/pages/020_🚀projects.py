@@ -7,7 +7,7 @@ pageconfig()
 st.header("MagCloudy :blue[Projects] :rocket:")
 
 st.header("My Projects")
-response = requests.get("http://backend:5000/projects")
+response = requests.get(f"http://{st.session_state.default_api_backend_name}:{st.session_state.default_api_backend_port}/projects")
 print(response)
 st.write(f" ```\n{response.text.strip()}\n``` ")
 
@@ -22,11 +22,11 @@ if main_project_id_input:
 
 if st.session_state.projectid != 'noprojid':
     response = requests.get(
-        f"http://backend:5000/webui/{st.session_state.projectid}")
+        f"http://{st.session_state.default_api_backend_name}:{st.session_state.default_api_backend_port}/webui/{st.session_state.projectid}")
     print(response)
     if response:
         st.write(
-            f"### Cloud Project [Web UI]({response.text.strip()}) ###")
+            f"### Cloud Project [Web UI]({response.text.strip()}) [ACC Tools](https://acc-tools.corp.adobe.com/project/{st.session_state.projectid}/cluster) ###")
 
 
 tab1, tab2, tab3, tab4 = st.tabs(
@@ -37,7 +37,7 @@ with tab1:
     if st.session_state.projectid != 'noprojid':
         st.write("Getting info for Project ID: ", st.session_state.projectid)
         response = requests.get(
-            f"http://backend:5000/projects/{st.session_state.projectid}/info"
+            f"http://{st.session_state.default_api_backend_name}:{st.session_state.default_api_backend_port}/projects/{st.session_state.projectid}/info"
         )
         print(response)
         for indx, projinfoline in enumerate(response.text.strip().split('\n')):
@@ -52,7 +52,7 @@ with tab2:
         st.write("Getting Subscription info for Project ID: ",
                  st.session_state.projectid)
         response = requests.get(
-            f"http://backend:5000/projects/{st.session_state.projectid}/subscription"
+            f"{st.session_state.reqfqdn}/projects/{st.session_state.projectid}/subscription"
         )
         print(response)
         st.write(f" ```\n{response.text.strip()}\n``` ")
@@ -62,7 +62,7 @@ with tab3:
         st.write("Getting settings for Project ID: ",
                  st.session_state.projectid)
         response = requests.get(
-            f"http://backend:5000/projects/{st.session_state.projectid}/settings"
+            f"{st.session_state.reqfqdn}/projects/{st.session_state.projectid}/settings"
         )
         print(response)
         for indx, projsettline in enumerate(response.text.strip().split('\n')):
@@ -76,7 +76,7 @@ with tab4:
     if st.session_state.projectid != 'noprojid':
         st.write("Getting users for Project ID: ", st.session_state.projectid)
         response = requests.get(
-            f"http://backend:5000/users/{st.session_state.projectid}"
+            f"{st.session_state.reqfqdn}/users/{st.session_state.projectid}"
         )
         print(response)
         st.write(f" ```\n{response.text.strip()}\n``` ")

@@ -11,10 +11,10 @@ def appconfig_backend_request(projid, envid, apiendpoint='binmagento', apiparame
         apiparameter = 'version'
     if apiendpoint == 'files':
         resp = requests.get(
-            f"http://backend:5000/{apiendpoint}/live/{projid}/{envid}/{apiparameter}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/live/{projid}/{envid}/{apiparameter}")
     else:
         resp = requests.get(
-            f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
     print(resp)
     return resp
 

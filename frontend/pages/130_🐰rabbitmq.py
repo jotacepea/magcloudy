@@ -9,12 +9,12 @@ pageconfig()
 def rabbitmq_backend_request(projid, envid, apiendpoint='rabbitmq', apiparameter=None):
     if apiparameter is None:
         apiparameter = 'version'
-    if st.session_state.env_target_type == 'containerized' and apiendpoint == 'rabbitmq':
+    if st.session_state.env_target_type.lower() == 'containerized' and apiendpoint == 'rabbitmq':
         resp = requests.get(
-            f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}?containerized=1")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}?containerized=1")
     else:
         resp = requests.get(
-            f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
     print(resp)
     return resp
 
@@ -23,10 +23,10 @@ def rabbitmq_backend_request(projid, envid, apiendpoint='rabbitmq', apiparameter
 def ssh_backend_request(projid, envid, apiendpoint='ssh', apiparameter=None):
     if apiparameter is None:
         resp = requests.get(
-            f"http://backend:5000/{apiendpoint}/{projid}/{envid}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}")
     else:
         resp = requests.get(
-            f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
     print(resp)
     return resp
 

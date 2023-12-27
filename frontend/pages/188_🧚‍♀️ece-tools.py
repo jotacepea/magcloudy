@@ -12,7 +12,7 @@ def ecetools_backend_request(projid, envid, apiendpoint='ece-tools', apiparamete
     if apiendpoint == 'variables' and apiparameter is None:
         apiparameter = 'p'
     resp = requests.get(
-        f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+        f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
     print(resp)
     return resp
 

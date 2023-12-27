@@ -18,7 +18,7 @@ with tab1:
         st.write(
             f" ```magento-cloud get -p {st.session_state.projectid} -e {st.session_state.environmentid}``` ")
         response = requests.get(
-            f"http://backend:5000/commits/{st.session_state.projectid}/{st.session_state.environmentid}")
+            f"{st.session_state.reqfqdn}/commits/{st.session_state.projectid}/{st.session_state.environmentid}")
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
@@ -34,7 +34,7 @@ with tab2:
         st.write(
             f"Getting Commit info for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = requests.get(
-            f"http://backend:5000/commits/{st.session_state.projectid}/{st.session_state.environmentid}/{commit_id_input}")
+            f"{st.session_state.reqfqdn}/commits/{st.session_state.projectid}/{st.session_state.environmentid}/{commit_id_input}")
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")

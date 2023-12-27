@@ -9,10 +9,10 @@ pageconfig()
 def projconfig_backend_request(projid, envid, apiendpoint='files', apiparameter=None):
     if apiparameter is None:
         resp = requests.get(
-            f"http://backend:5000/{apiendpoint}/{projid}/{envid}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}")
     else:
         resp = requests.get(
-            f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
     print(resp)
     return resp
 

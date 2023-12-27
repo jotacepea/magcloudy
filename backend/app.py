@@ -14,6 +14,8 @@ from endpoints.redis import redis_bp
 from endpoints.mounts import mounts_bp
 from endpoints.disk import disk_bp
 from endpoints.users import users_bp
+from endpoints.apps import apps_bp
+from endpoints.workers import workers_bp
 from endpoints.services import services_bp
 from endpoints.versions import versions_bp
 from endpoints.ssh import ssh_bp
@@ -27,6 +29,7 @@ from endpoints.rabbitmq import rabbitmq_bp
 from endpoints.opensearch import opensearch_bp
 
 # print(os.environ['MAGENTO_CLOUD_CLI_TOKEN'])
+default_service_port = os.environ.get("DEFAULT_SERVICE_PORT", "5000")
 
 # app = Flask(__name__)
 app = APIFlask(__name__, title='MagCloudy API', version='0.0.1')
@@ -41,6 +44,8 @@ app.register_blueprint(redis_bp)
 app.register_blueprint(mounts_bp)
 app.register_blueprint(disk_bp)
 app.register_blueprint(users_bp)
+app.register_blueprint(apps_bp)
+app.register_blueprint(workers_bp)
 app.register_blueprint(services_bp)
 app.register_blueprint(versions_bp)
 app.register_blueprint(ssh_bp)
@@ -122,4 +127,4 @@ def get_check():
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", debug=True, port=5000)
+    app.run(host="0.0.0.0", debug=True, port=default_service_port)

@@ -9,13 +9,13 @@ pageconfig()
 def environments_backend_request(projid, apiendpoint='environments', envid=None, apiparameter=None):
     if apiparameter is None:
         resp = requests.get(
-            f"http://backend:5000/{apiendpoint}/{projid}/{envid}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}")
         if envid is None:
             resp = requests.get(
-                f"http://backend:5000/{apiendpoint}/{projid}")
+                f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}")
     else:
         resp = requests.get(
-            f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
 
     print(resp)
     return resp
@@ -60,7 +60,7 @@ with tab2:
                     print(envinfoline)
                     st.write(f" ```{envinfoline}``` ")
                     if 'local' in envinfoline:
-                        st.session_state.env_target_type = 'Containerized'
+                        st.session_state.env_target_type = 'containerized'
                         st.caption(f"**_{st.session_state.env_target_type}_**")
                     else:
                         st.session_state.env_target_type = 'Instances (Unified Cluster)'

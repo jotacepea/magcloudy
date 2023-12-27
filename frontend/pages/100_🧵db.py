@@ -17,11 +17,11 @@ with tab1:
             f"Reading DB version for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         st.write(
             f" ```magento-cloud sql -p {st.session_state.projectid} -e {st.session_state.environmentid} -r database``` ")
-        if st.session_state.env_target_type != 'containerized':
+        if st.session_state.env_target_type.lower() != 'containerized':
             st.write(
                 f" ```magento-cloud sql -p {st.session_state.projectid} -e {st.session_state.environmentid} -r database-slave``` ")
         response = requests.get(
-            f"http://backend:5000/db/{st.session_state.projectid}/{st.session_state.environmentid}/version")
+            f"{st.session_state.reqfqdn}/db/{st.session_state.projectid}/{st.session_state.environmentid}/version")
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
@@ -34,7 +34,7 @@ with tab2:
         st.caption(
             "**Note:** this section works for containerized environments only :bricks:)")
         response = requests.get(
-            f"http://backend:5000/db/{st.session_state.projectid}/{st.session_state.environmentid}/size")
+            f"{st.session_state.reqfqdn}/db/{st.session_state.projectid}/{st.session_state.environmentid}/size")
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
@@ -45,7 +45,7 @@ with tab3:
         st.write(
             f"Getting DB Tables size for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = requests.get(
-            f"http://backend:5000/db/{st.session_state.projectid}/{st.session_state.environmentid}/tablesize")
+            f"{st.session_state.reqfqdn}/db/{st.session_state.projectid}/{st.session_state.environmentid}/tablesize")
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
@@ -56,14 +56,14 @@ with tab4:
         st.write(
             f"Getting DB process list for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = requests.get(
-            f"http://backend:5000/db/{st.session_state.projectid}/{st.session_state.environmentid}/processw")
+            f"{st.session_state.reqfqdn}/db/{st.session_state.projectid}/{st.session_state.environmentid}/processw")
         print(response)
         if response:
             st.write("Write connection...")
             st.write(f" ```\n{response.text.strip()}\n``` ")
-        if st.session_state.env_target_type != 'containerized':
+        if st.session_state.env_target_type.lower() != 'containerized':
             response = requests.get(
-                f"http://backend:5000/db/{st.session_state.projectid}/{st.session_state.environmentid}/processr")
+                f"{st.session_state.reqfqdn}/db/{st.session_state.projectid}/{st.session_state.environmentid}/processr")
             print(response)
             if response:
                 st.write("Read connection...")
@@ -71,11 +71,11 @@ with tab4:
 
 with tab5:
     st.header("DB Stats")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.env_target_type != 'containerized':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.env_target_type.lower() != 'containerized':
         st.write(
             f"Getting DB cluster status for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = requests.get(
-            f"http://backend:5000/db/{st.session_state.projectid}/{st.session_state.environmentid}/status")
+            f"{st.session_state.reqfqdn}/db/{st.session_state.projectid}/{st.session_state.environmentid}/status")
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
@@ -84,11 +84,11 @@ with tab5:
 
 with tab6:
     st.header("DB Cluster Status")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.env_target_type != 'containerized':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.env_target_type.lower() != 'containerized':
         st.write(
             f"Getting DB cluster status for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = requests.get(
-            f"http://backend:5000/db/{st.session_state.projectid}/{st.session_state.environmentid}/wsrep")
+            f"{st.session_state.reqfqdn}/db/{st.session_state.projectid}/{st.session_state.environmentid}/wsrep")
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
@@ -97,11 +97,11 @@ with tab6:
 
 with tab7:
     st.header("Check MyISAM tables")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.env_target_type != 'containerized':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.env_target_type.lower() != 'containerized':
         st.write(
             f"Getting DB tables status for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = requests.get(
-            f"http://backend:5000/db/{st.session_state.projectid}/{st.session_state.environmentid}/myisam")
+            f"{st.session_state.reqfqdn}/db/{st.session_state.projectid}/{st.session_state.environmentid}/myisam")
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
@@ -110,11 +110,11 @@ with tab7:
 
 with tab8:
     st.header("Check Primary KEY on tables")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.env_target_type != 'containerized':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.env_target_type.lower() != 'containerized':
         st.write(
             f"Getting DB tables status for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = requests.get(
-            f"http://backend:5000/db/{st.session_state.projectid}/{st.session_state.environmentid}/primarykey")
+            f"{st.session_state.reqfqdn}/db/{st.session_state.projectid}/{st.session_state.environmentid}/primarykey")
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
@@ -124,17 +124,17 @@ with tab8:
 
 with tab9:
     st.header("PT MySQL Summary")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.env_target_type != 'containerized':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.env_target_type.lower() != 'containerized':
         st.write(
             f"Getting PT Summary for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = requests.get(
-            f"http://backend:5000/ssh/ptmysqlsummary/{st.session_state.projectid}/{st.session_state.environmentid}/1")
+            f"{st.session_state.reqfqdn}/ssh/ptmysqlsummary/{st.session_state.projectid}/{st.session_state.environmentid}/1")
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
     else:
         response = requests.get(
-            f"http://backend:5000/ssh/ptmysqlsummary/{st.session_state.projectid}/{st.session_state.environmentid}")
+            f"{st.session_state.reqfqdn}/ssh/ptmysqlsummary/{st.session_state.projectid}/{st.session_state.environmentid}")
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")

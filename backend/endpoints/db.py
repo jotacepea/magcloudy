@@ -56,7 +56,7 @@ def get_db_tablesize(project_id, environment):
 
 @db_bp.get('/db/<project_id>/<environment>/myisam')
 def get_db_myisam(project_id, environment):
-    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \"SELECT table_schema, CONCAT(ROUND((index_length+data_length)/1024/1024),'MB') AS total_size FROM information_schema. TABLES WHERE engine='myisam' AND table_schema NOT IN ('mysql', 'information_schema', 'performance_schema', 'sys');\""
+    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \"SELECT TABLE_SCHEMA, TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE engine = 'MyISAM' AND TABLE_SCHEMA <> 'mysql';\""
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -68,7 +68,7 @@ def get_db_myisam(project_id, environment):
 
 @db_bp.get('/db/<project_id>/<environment>/primarykey')
 def get_db_primarykey(project_id, environment):
-    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \"SELECT table_catalog, table_schema, table_name, engine FROM information_schema.tables WHERE (table_catalog, table_schema, table_name) NOT IN (SELECT table_catalog, table_schema, table_name FROM information_schema.table_constraints  WHERE constraint_type = 'PRIMARY KEY') AND table_schema NOT IN ('information_schema', 'pg_catalog');\""
+    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \"SELECT table_schema, table_name, engine, 'NoPrimKey!!!' FROM information_schema.tables WHERE (table_schema, table_name) NOT IN (SELECT table_schema, table_name FROM information_schema.table_constraints  WHERE constraint_type = 'PRIMARY KEY') AND table_schema NOT IN ('information_schema', 'pg_catalog');\""
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

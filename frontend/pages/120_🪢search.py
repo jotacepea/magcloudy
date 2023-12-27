@@ -9,12 +9,12 @@ pageconfig()
 def search_backend_request(projid, envid, apiendpoint='opensearch', apiparameter=None):
     if apiparameter is None:
         apiparameter = 'version'
-    if st.session_state.env_target_type == 'containerized':
+    if st.session_state.env_target_type.lower() == 'containerized':
         resp = requests.get(
-            f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}?containerized=1")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}?containerized=1")
     else:
         resp = requests.get(
-            f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
     print(resp)
     return resp
 
@@ -23,10 +23,10 @@ def search_backend_request(projid, envid, apiendpoint='opensearch', apiparameter
 def ssh_backend_request(projid, envid, apiendpoint='ssh', apiparameter=None):
     if apiparameter is None:
         resp = requests.get(
-            f"http://backend:5000/{apiendpoint}/{projid}/{envid}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}")
     else:
         resp = requests.get(
-            f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
     print(resp)
     return resp
 
@@ -55,7 +55,7 @@ with tab1:
                 for indx, inst in enumerate(response.text.strip().split()):
                     st.write(
                         f" ```ssh -L 19200:localhost:9200 {inst}``` ")
-
+        st.write(st.session_state.env_target_type)
         response = search_backend_request(
             projid=st.session_state.projectid, envid=st.session_state.environmentid)
         if response:

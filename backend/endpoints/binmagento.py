@@ -8,7 +8,7 @@ binmagento_bp = APIBlueprint('binmagento-blueprint', __name__)
 
 @binmagento_bp.get('/binmagento/<project_id>/<environment>/version')
 def get_version_binmagento(project_id, environment):
-    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'bin/magento -V\'"
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} --no-interaction \'bin/magento -V\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -20,7 +20,7 @@ def get_version_binmagento(project_id, environment):
 
 @binmagento_bp.get('/binmagento/<project_id>/<environment>/defaulturl')
 def get_defaulturl_binmagento(project_id, environment):
-    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'bin/magento config:show:default-url\'"
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} --no-interaction \'bin/magento config:show:default-url\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -32,7 +32,7 @@ def get_defaulturl_binmagento(project_id, environment):
 
 @binmagento_bp.get('/binmagento/<project_id>/<environment>/storeurl')
 def get_storeurl_binmagento(project_id, environment):
-    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'bin/magento config:show:store-url | json_pp\'"
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} --no-interaction \'bin/magento config:show:store-url | json_pp\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -44,7 +44,7 @@ def get_storeurl_binmagento(project_id, environment):
 
 @binmagento_bp.get('/binmagento/<project_id>/<environment>/cmspageurl')
 def get_cmspageurl_binmagento(project_id, environment):
-    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'bin/magento config:show:urls --entity-type cms-page | json_pp\'"
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} --no-interaction \'bin/magento config:show:urls --entity-type cms-page | json_pp\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -56,7 +56,7 @@ def get_cmspageurl_binmagento(project_id, environment):
 
 @binmagento_bp.get('/binmagento/<project_id>/<environment>/adminurl')
 def get_adminurl_binmagento(project_id, environment):
-    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'bin/magento info:adminuri\'"
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} --no-interaction \'bin/magento info:adminuri\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -68,7 +68,7 @@ def get_adminurl_binmagento(project_id, environment):
 
 @binmagento_bp.get('/binmagento/<project_id>/<environment>/maintenance')
 def get_maintenance_binmagento(project_id, environment):
-    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'bin/magento maintenance:status\'"
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} --no-interaction \'bin/magento maintenance:status\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -80,7 +80,7 @@ def get_maintenance_binmagento(project_id, environment):
 
 @binmagento_bp.get('/binmagento/<project_id>/<environment>/consumers')
 def get_consumers_binmagento(project_id, environment):
-    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'bin/magento queue:consumers:list\'"
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} --no-interaction \'bin/magento queue:consumers:list\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -92,7 +92,7 @@ def get_consumers_binmagento(project_id, environment):
 
 @binmagento_bp.get('/binmagento/<project_id>/<environment>/indexer')
 def get_indexer_binmagento(project_id, environment):
-    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'bin/magento indexer:status\'"
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} --no-interaction \'bin/magento indexer:status\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -104,7 +104,7 @@ def get_indexer_binmagento(project_id, environment):
 
 @binmagento_bp.get('/binmagento/<project_id>/<environment>/searchengine')
 def get_searchengine_binmagento(project_id, environment):
-    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'bin/magento config:show catalog/search/engine\'"
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} --no-interaction \'bin/magento config:show catalog/search/engine\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

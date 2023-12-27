@@ -6,6 +6,7 @@ RUN apt-get update -y \
     python3-pip \
     python3-venv \
     curl \
+    wget \
     git \
     unzip \
     vim \
@@ -33,6 +34,12 @@ RUN curl -s -S https://accounts.magento.cloud/cli/installer | php -- --min 1.43.
 RUN cp ~/.magento-cloud/bin/magento-cloud /usr/local/bin/
 RUN magento-cloud -V
 
+# Install Fastly cli
+ENV FASTLY_CLI_VER='10.7.0'
+RUN wget https://github.com/fastly/cli/releases/download/v${FASTLY_CLI_VER}/fastly_${FASTLY_CLI_VER}_linux_arm64.deb
+RUN apt-get install -y ./fastly_${FASTLY_CLI_VER}_linux_arm64.deb
+RUN fastly version
+
 # make sure all messages always reach console
 ENV PYTHONUNBUFFERED=1
 # create and activate virtual environment
@@ -45,5 +52,6 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 # Copies everything to the working directory
 COPY . ${APP_PATH}
 
+ENV DEFAULT_SERVICE_PORT='5000'
 # Command to run on container start    
 CMD [ "python3" , "./app.py" ]

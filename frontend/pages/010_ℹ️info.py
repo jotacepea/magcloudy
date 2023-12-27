@@ -10,19 +10,19 @@ tab1, tab2, tab3 = st.tabs(["Version", "Auth", "List"])
 
 with tab1:
     st.header("MagCloudy: Cli Version")
-    response = requests.get("http://backend:5000/mgcliversion")
+    response = requests.get(f"{st.session_state.reqfqdn}/mgcliversion")
     print(response)
     st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab2:
     st.header("MagCloudy: Cli Auth Info")
-    response = requests.get("http://backend:5000/mgcliauth")
+    response = requests.get(f"{st.session_state.reqfqdn}/mgcliauth")
     print(response)
     st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab3:
     st.header("MagCloudy: Cli Cmd List")
-    response = requests.get("http://backend:5000/mgclilist")
+    response = requests.get(f"{st.session_state.reqfqdn}/mgclilist")
     print(response)
     st.write(f" ```\n{response.text.strip()}\n``` ")
 

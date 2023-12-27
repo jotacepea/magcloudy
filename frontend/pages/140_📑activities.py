@@ -20,7 +20,7 @@ with tab1:
         st.write(
             f"Reading activities for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = requests.get(
-            f"http://backend:5000/activities/{st.session_state.projectid}/{st.session_state.environmentid}")
+            f"{st.session_state.reqfqdn}/activities/{st.session_state.projectid}/{st.session_state.environmentid}")
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
@@ -32,10 +32,10 @@ with tab2:
             f"Getting Activity info for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         if activity_id_input:
             response = requests.get(
-                f"http://backend:5000/activities/{st.session_state.projectid}/{st.session_state.environmentid}/{activity_id_input}")
+                f"{st.session_state.reqfqdn}/activities/{st.session_state.projectid}/{st.session_state.environmentid}/{activity_id_input}")
         else:
             response = requests.get(
-                f"http://backend:5000/activities/{st.session_state.projectid}/{st.session_state.environmentid}/last")
+                f"{st.session_state.reqfqdn}/activities/{st.session_state.projectid}/{st.session_state.environmentid}/last")
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
@@ -48,10 +48,10 @@ with tab3:
             f"Getting Avtivity log for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         if activity_id_input:
             response = requests.get(
-                f"http://backend:5000/activities/log/{st.session_state.projectid}/{st.session_state.environmentid}/{activity_id_input}")
+                f"{st.session_state.reqfqdn}/activities/log/{st.session_state.projectid}/{st.session_state.environmentid}/{activity_id_input}")
         else:
             response = requests.get(
-                f"http://backend:5000/activities/log/{st.session_state.projectid}/{st.session_state.environmentid}/last")
+                f"{st.session_state.reqfqdn}/activities/log/{st.session_state.projectid}/{st.session_state.environmentid}/last")
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")

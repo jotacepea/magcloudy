@@ -9,12 +9,12 @@ pageconfig()
 def redis_backend_request(projid, envid, apiendpoint='redis', apiparameter=None):
     if apiparameter is None:
         apiparameter = 'ping'
-    if st.session_state.env_target_type == 'containerized':
+    if st.session_state.env_target_type.lower() == 'containerized':
         resp = requests.get(
-            f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}?containerized=1")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}?containerized=1")
     else:
         resp = requests.get(
-            f"http://backend:5000/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
     print(resp)
     return resp
 
@@ -32,7 +32,7 @@ with tab1:
             f"Check Redis for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         st.write(
             f" ```magento-cloud redis -p {st.session_state.projectid} -e {st.session_state.environmentid} -r redis``` ")
-        if st.session_state.env_target_type != 'containerized':
+        if st.session_state.env_target_type.lower() != 'containerized':
             st.write(
                 f" ```magento-cloud redis -p {st.session_state.projectid} -e {st.session_state.environmentid} -r redis-slave``` ")
         response = redis_backend_request(

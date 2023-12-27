@@ -16,7 +16,7 @@ with tab1:
         st.write(
             f"Getting Magento version for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = requests.get(
-            f"http://backend:5000/versions/{st.session_state.projectid}/{st.session_state.environmentid}/magento")
+            f"{st.session_state.reqfqdn}/versions/{st.session_state.projectid}/{st.session_state.environmentid}/magento")
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
@@ -27,7 +27,7 @@ with tab2:
         st.write(
             f"Getting ece-tools version for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = requests.get(
-            f"http://backend:5000/ece-tools/{st.session_state.projectid}/{st.session_state.environmentid}/version")
+            f"{st.session_state.reqfqdn}/ece-tools/{st.session_state.projectid}/{st.session_state.environmentid}/version")
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
@@ -38,7 +38,7 @@ with tab3:
         st.write(
             f"Getting php version for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = requests.get(
-            f"http://backend:5000/versions/{st.session_state.projectid}/{st.session_state.environmentid}/php")
+            f"{st.session_state.reqfqdn}/versions/{st.session_state.projectid}/{st.session_state.environmentid}/php")
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
@@ -49,7 +49,7 @@ with tab4:
         st.write(
             f"Getting nginx version for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = requests.get(
-            f"http://backend:5000/versions/{st.session_state.projectid}/{st.session_state.environmentid}/nginx")
+            f"{st.session_state.reqfqdn}/versions/{st.session_state.projectid}/{st.session_state.environmentid}/nginx")
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
@@ -62,7 +62,7 @@ with tab5:
         st.caption(
             f"**Note:** if :red[NOT] containerized environment... _please verify those versions!!!_")
         response = requests.get(
-            f"http://backend:5000/services/{st.session_state.projectid}/{st.session_state.environmentid}")
+            f"{st.session_state.reqfqdn}/services/{st.session_state.projectid}/{st.session_state.environmentid}")
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
