@@ -40,6 +40,16 @@ RUN wget https://github.com/fastly/cli/releases/download/v${FASTLY_CLI_VER}/fast
 RUN apt-get install -y ./fastly_${FASTLY_CLI_VER}_linux_arm64.deb
 RUN fastly version
 
+# Install NewRelic cli
+ENV NR_CLI_VER='0.78.1'
+ENV NR_OS='Linux'
+ENV NR_ARCH='arm64'
+ENV NR_RELEASE_URL="https://download.newrelic.com/install/newrelic-cli/v${NR_CLI_VER}/newrelic-cli_${NR_CLI_VER}_${NR_OS}_${NR_ARCH}.tar.gz"
+RUN wget "${NR_RELEASE_URL}"
+RUN tar -xzvf newrelic-cli_${NR_CLI_VER}_${NR_OS}_${NR_ARCH}.tar.gz
+RUN mv newrelic /usr/local/bin/newrelic-cli && chmod +x /usr/local/bin/newrelic-cli && chown root:0 /usr/local/bin/newrelic-cli
+RUN newrelic-cli help
+
 # make sure all messages always reach console
 ENV PYTHONUNBUFFERED=1
 # create and activate virtual environment

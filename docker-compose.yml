@@ -21,6 +21,7 @@ services:
         - "APP_ENV=${APP_ENV}"
     environment:
       - MAGENTO_CLOUD_CLI_TOKEN=${MAGENTO_CLOUD_CLI_TOKEN}
+      - NEW_RELIC_API_KEY=${NEW_RELIC_API_KEY}
     ports:
       - "${DOCKER_BACKEND_PORT_FORWARD}:${BACKEND_PORT}"
     healthcheck:
