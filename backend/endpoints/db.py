@@ -112,3 +112,14 @@ def get_db_process_r(project_id, environment):
         return "An error occurred while trying to shell cmd: %s" % e
 
     return strip_ansi(result_command_magecloud)
+
+@db_bp.get('/db/<project_id>/<environment>/indexercron')
+def get_db_indexercron(project_id, environment):
+    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \"SELECT * FROM cron_schedule WHERE job_code LIKE 'indexer_%' LIMIT 100;\""
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)

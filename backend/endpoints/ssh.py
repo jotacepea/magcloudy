@@ -119,3 +119,17 @@ def get_ssh_ptmysqlsummary(project_id, environment, instance=0):
         return "An error occurred while trying to shell cmd: %s" % e
 
     return strip_ansi(result_command_magecloud)
+
+@ssh_bp.get('/ssh/platformcluster/<project_id>/<environment>/<int:instance>')
+def get_ssh_platform_cluster(project_id, environment, instance=0):
+    if instance == 0:
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \"grep 'PLATFORM_CLUSTER=' /etc/profile.d/motd.sh | awk -F'=' '{{print \$2}}'  \""
+    else:
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -I {instance} \'echo $PLATFORM_CLUSTER\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)

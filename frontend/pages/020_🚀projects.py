@@ -26,7 +26,7 @@ if st.session_state.projectid != 'noprojid':
     print(response)
     if response:
         st.write(
-            f"### Cloud Project [Web UI]({response.text.strip()}) [ACC Tools](https://acc-tools.corp.adobe.com/project/{st.session_state.projectid}/cluster) ###")
+            f"### Cloud Project [Web UI]({response.text.strip()}) // [ACC Tools](https://acc-tools.corp.adobe.com/project/{st.session_state.projectid}/cluster) ###")
 
 
 tab1, tab2, tab3, tab4 = st.tabs(

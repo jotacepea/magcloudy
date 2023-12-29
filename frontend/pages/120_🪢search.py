@@ -18,6 +18,14 @@ def search_backend_request(projid, envid, apiendpoint='opensearch', apiparameter
     print(resp)
     return resp
 
+@st.cache_data(ttl=150)
+def appconfig_backend_request(projid, envid, apiendpoint='binmagento', apiparameter=None):
+    if apiparameter == None:
+        apiparameter = 'version'
+    resp = requests.get(
+        f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+    print(resp)
+    return resp
 
 @st.cache_data(ttl=60)
 def ssh_backend_request(projid, envid, apiendpoint='ssh', apiparameter=None):
@@ -34,10 +42,21 @@ def ssh_backend_request(projid, envid, apiendpoint='ssh', apiparameter=None):
 st.header("MagCloudy :blue[OpenSearch] :knot:")
 st.caption("**_In older versions could be ElasticSearch_**")
 
-tab1, tab2, tab3 = st.tabs(
-    ["Opensearch Version", "Opensearch Health", "Opensearch Indices"])
+tab1, tab2, tab3, tab4 = st.tabs(
+    ["Search Engine", "Opensearch Version", "Opensearch Health", "Opensearch Indices"])
 
 with tab1:
+    st.header("Search Engine Defined")
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+        st.write(
+            f"Getting magento search engine defined for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        response = appconfig_backend_request(projid=st.session_state.projectid,
+                                             envid=st.session_state.environmentid,
+                                             apiparameter='searchengine')
+        if response:
+            st.write(f" ```\n{response.text.strip()}\n``` ")
+
+with tab2:
     st.header("Version")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
@@ -61,7 +80,7 @@ with tab1:
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
-with tab2:
+with tab3:
     st.header("Health")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
@@ -82,7 +101,7 @@ with tab2:
                     print(mkdbody)
                     st.markdown(mkdbody)
             st.write(f" ```\n{response.text.strip()}\n``` ")
-with tab3:
+with tab4:
     st.header("Indices")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
