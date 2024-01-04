@@ -82,6 +82,19 @@ def get_ssh_cpu(project_id, environment, instance=0):
 
     return strip_ansi(result_command_magecloud)
 
+@ssh_bp.get('/ssh/free/<project_id>/<environment>/<int:instance>')
+def get_ssh_free(project_id, environment, instance=0):
+    if instance == 0:
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'free -h\'"
+    else:
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -I {instance} \'free -h\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
 
 @ssh_bp.get('/ssh/crontab/<project_id>/<environment>/<int:instance>')
 def get_ssh_crontab(project_id, environment, instance=0):

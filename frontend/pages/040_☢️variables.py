@@ -27,6 +27,12 @@ def apps_backend_request(projid, envid, apiendpoint='apps', formatvalue='plain',
 
 st.header("MagCloudy :blue[Environment Variables] :radioactive_sign:")
 
+if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    st.info(f"**magento-cloud var -p {st.session_state.projectid} -e {st.session_state.environmentid}**")
+    st.info(f"**magento-cloud vget -p {st.session_state.projectid} -e {st.session_state.environmentid} ADMIN_FIRSTNAME**")
+
+    st.info(f"**magento-cloud environment\:relationships -p {st.session_state.projectid} -e {st.session_state.environmentid} --no-interaction --property database.0**")
+    st.info(f"**magento-cloud environment\:relationships -p {st.session_state.projectid} -e {st.session_state.environmentid} --no-interaction --property redis.0**")
 
 tab1, tab2, tab3 = st.tabs(
     ["Project Vars", "Environment Vars", "Env Relationships"])
@@ -59,10 +65,6 @@ with tab3:
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
             f"Getting Env Relationships values for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
-        st.write(
-            f" ```magento-cloud environment:relationships -p {st.session_state.projectid} -e {st.session_state.environmentid} --no-interaction --property database.0``` ")
-        st.write(
-            f" ```magento-cloud environment:relationships -p {st.session_state.projectid} -e {st.session_state.environmentid} --no-interaction --property redis.0``` ")
         if response_apps:
             if len(response_apps.text.strip().split()) == 1:
                 reqresponse = variables_backend_request(apiendpoint='environments', projid=st.session_state.projectid,

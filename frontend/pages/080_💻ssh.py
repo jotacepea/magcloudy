@@ -20,10 +20,8 @@ def ssh_backend_request(projid, envid, apiendpoint='ssh', apiparameter=None):
 st.header("MagCloudy :blue[Secure Shell] :computer:")
 
 if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
-    st.caption(
-        f"**pdsh -d -w $(magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} --all --pipe | tr '\\n' ',') date**")
-    st.caption(
-        f"**clush -LNw $(magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} --all --pipe | tr '\\n' ',' | rev | cut -c2- | rev) 'date'**")
+    st.info(f"**clush -LNw $(magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} --all --pipe |\
+            tr '\\n' ',' | rev | cut -c2- | rev) 'date'**", icon="ℹ️")
 
 tab1, tab2, tab3, tab4, tab5 = st.tabs(
     ["SSH CMD", "SSH CLI", "SSH Crontab", "SSH php-fpm", "SSH CpuInfo"])

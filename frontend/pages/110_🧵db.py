@@ -6,6 +6,10 @@ pageconfig()
 
 st.header("MagCloudy :blue[DB] :thread:")
 
+if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    st.info(f"**magento-cloud sql -p {st.session_state.projectid} -e {st.session_state.environmentid} -r database**")
+    if st.session_state.env_target_type.lower() != 'containerized':
+        st.info(f"**magento-cloud sql -p {st.session_state.projectid} -e {st.session_state.environmentid} -r database-slave**")
 
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs(
     ["Db Version", "Db Size", "Db Tables Size", "Db Process", "DB Status", "Cluster Status", "MyISAM tables", "Primary Key on tables", "Percona Tool MySQL Summary"])
@@ -15,11 +19,6 @@ with tab1:
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
             f"Reading DB version for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
-        st.write(
-            f" ```magento-cloud sql -p {st.session_state.projectid} -e {st.session_state.environmentid} -r database``` ")
-        if st.session_state.env_target_type.lower() != 'containerized':
-            st.write(
-                f" ```magento-cloud sql -p {st.session_state.projectid} -e {st.session_state.environmentid} -r database-slave``` ")
         response = requests.get(
             f"{st.session_state.reqfqdn}/db/{st.session_state.projectid}/{st.session_state.environmentid}/version")
         print(response)

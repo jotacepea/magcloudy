@@ -21,6 +21,10 @@ def redis_backend_request(projid, envid, apiendpoint='redis', apiparameter=None)
 
 st.header("MagCloudy :blue[Redis] :yarn:")
 
+if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    st.info(f"**magento-cloud sql -p {st.session_state.projectid} -e {st.session_state.environmentid} -r redis**")
+    if st.session_state.env_target_type.lower() != 'containerized':
+        st.info(f"**magento-cloud sql -p {st.session_state.projectid} -e {st.session_state.environmentid} -r redis-slave**")
 
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
     ["Redis Check", "Redis Server Info", "Redis Info", "Redis BigK", "Redis MemK", "Redis HotK"])
@@ -30,11 +34,6 @@ with tab1:
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
             f"Check Redis for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
-        st.write(
-            f" ```magento-cloud redis -p {st.session_state.projectid} -e {st.session_state.environmentid} -r redis``` ")
-        if st.session_state.env_target_type.lower() != 'containerized':
-            st.write(
-                f" ```magento-cloud redis -p {st.session_state.projectid} -e {st.session_state.environmentid} -r redis-slave``` ")
         response = redis_backend_request(
             projid=st.session_state.projectid, envid=st.session_state.environmentid)
         if response:
