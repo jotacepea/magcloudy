@@ -219,3 +219,19 @@ def get_fastly_vclsnippet(project_id,fastly_service_id, query_data):
 
     return result_command_magecloud
 
+@fastly_bp.get('/fastly/<project_id>/<fastly_service_id>/acl')
+@fastly_bp.input(
+    {'fast_token': String(load_default='tata-123-error-tata-123')},
+    location='query'
+)    
+def get_fastly_acl(project_id,fastly_service_id, query_data):
+    print(query_data['fast_token'])
+    fast_token = query_data['fast_token']
+    command_magecloud = f"fastly acl list --version active -iq --service-id {fastly_service_id} --token {fast_token}"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return result_command_magecloud

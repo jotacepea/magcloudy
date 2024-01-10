@@ -11,8 +11,14 @@ def pageconfig():
     #MainMenu {
         visibility:hidden;
     }
+    .stDeployButton {
+        display:none;
+    }
     footer{
         visibility:hidden;
+    }
+    #stDecoration {
+        display:none;
     }
     </style>
     """

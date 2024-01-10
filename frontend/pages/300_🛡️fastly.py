@@ -21,9 +21,9 @@ st.header("MagCloudy :blue[Fastly] :shield:")
 
 st.caption(
     f"[Fastly GUI](https://manage.fastly.com/) // \
-    [Fastly Cli](https://github.com/fastly/cli/releases)")
+    [Fastly Cli](https://developer.fastly.com/reference/cli/)")
 
-tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10, tab11 = st.tabs(
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10, tab11, tab12 = st.tabs(
     ["Fastly Module",
      "Fastly Credentials",
      "Fastly Service",
@@ -31,6 +31,7 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10, tab11 = st.tabs(
      "Fastly Domains",
      "Fastly Stats",
      "Fastly VLC Objects",
+     "Fastly ACLs",
      "Fastly Products",
      "Fastly TLS Configurations",
      "Fastly Rate Limit",
@@ -148,6 +149,17 @@ with tab7:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab8:
+    st.header("Fastly ACLs")
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+        st.write(
+            f"Getting fastly acls info for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        response = fastly_backend_request(projid=fast_srv_name,
+                                            envid=fast_srv_id,
+                                            apiparameter=f'acl?fast_token={fast_token}')
+        if response:
+            st.write(f" ```\n{response.text.strip()}\n``` ")
+
+with tab9:
     st.header("Fastly Products")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
@@ -158,7 +170,7 @@ with tab8:
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
-with tab9:
+with tab10:
     st.header("Fastly TLS Configurations")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
@@ -169,7 +181,7 @@ with tab9:
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
-with tab10:
+with tab11:
     st.header("Fastly Rate Limit")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
@@ -180,7 +192,7 @@ with tab10:
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
-with tab11:
+with tab12:
     st.header("Fastly Healthchecks")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
