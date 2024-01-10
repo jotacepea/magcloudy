@@ -8,6 +8,8 @@ st.session_state.reqfqdn = f"http://{st.session_state.default_api_backend_name}:
 
 pageconfig()
 
+st.warning('This is a MagCloudy Beta Version!!!', icon="⚠️")
+
 st.snow()
 
 st.write("# Welcome to MagCloudy! :dizzy:")

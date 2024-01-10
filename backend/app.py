@@ -29,6 +29,7 @@ from endpoints.rabbitmq import rabbitmq_bp
 from endpoints.opensearch import opensearch_bp
 from endpoints.sendgrid import sendgrid_bp
 from endpoints.newrelic import newrelic_bp
+from endpoints.fastly import fastly_bp
 
 # print(os.environ['MAGENTO_CLOUD_CLI_TOKEN'])
 default_service_port = os.environ.get("DEFAULT_SERVICE_PORT", "5000")
@@ -61,7 +62,7 @@ app.register_blueprint(rabbitmq_bp)
 app.register_blueprint(opensearch_bp)
 app.register_blueprint(sendgrid_bp)
 app.register_blueprint(newrelic_bp)
-
+app.register_blueprint(fastly_bp)
 
 def bootstrap_magecli():
     command_bootstrap = "magento-cloud ssh-cert:load --no-interaction"

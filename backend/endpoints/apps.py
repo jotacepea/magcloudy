@@ -2,7 +2,6 @@ from apiflask import APIBlueprint
 from apiflask.fields import Integer, String
 import subprocess
 import os
-from strip_ansi import strip_ansi
 
 apps_bp = APIBlueprint('apps-blueprint', __name__)
 
