@@ -38,7 +38,7 @@ def get_fastly_credentials(project_id, environment):
 def get_fastly_service(project_id, fastly_service_id, query_data):
     print(query_data['fast_token'])
     fast_token = query_data['fast_token']
-    command_magecloud = f"fastly service describe --non-interactive --quiet --service-id {fastly_service_id} --token {fast_token}"
+    command_magecloud = f"fastly service describe --non-interactive --quiet --service-id {fastly_service_id} --token='{fast_token}'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -55,7 +55,7 @@ def get_fastly_service(project_id, fastly_service_id, query_data):
 def get_fastly_backend(project_id, fastly_service_id, query_data):
     print(query_data['fast_token'])
     fast_token = query_data['fast_token']
-    command_magecloud = f"fastly backend list --version active --non-interactive --quiet --service-id {fastly_service_id} --token {fast_token}"
+    command_magecloud = f"fastly backend list --version active --non-interactive -q -s {fastly_service_id} --token='{fast_token}'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -72,7 +72,7 @@ def get_fastly_backend(project_id, fastly_service_id, query_data):
 def get_fastly_domain(project_id, fastly_service_id, query_data):
     print(query_data['fast_token'])
     fast_token = query_data['fast_token']
-    command_magecloud = f"fastly domain list --version active -iq --service-id {fastly_service_id} --token {fast_token}"
+    command_magecloud = f"fastly domain list --version active -iq -s {fastly_service_id} --token='{fast_token}'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -89,7 +89,7 @@ def get_fastly_domain(project_id, fastly_service_id, query_data):
 def get_fastly_healthcheck(project_id, fastly_service_id, query_data):
     print(query_data['fast_token'])
     fast_token = query_data['fast_token']
-    command_magecloud = f"fastly healthcheck list --version active -iq --service-id {fastly_service_id} --token {fast_token}"
+    command_magecloud = f"fastly healthcheck list --version active -iq -s {fastly_service_id} --token='{fast_token}'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -106,7 +106,7 @@ def get_fastly_healthcheck(project_id, fastly_service_id, query_data):
 def get_fastly_products(project_id, fastly_service_id, query_data):
     print(query_data['fast_token'])
     fast_token = query_data['fast_token']
-    command_magecloud = f"fastly products -iq --service-id {fastly_service_id} --token {fast_token}"
+    command_magecloud = f"fastly products -iq -s {fastly_service_id} --token='{fast_token}'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -123,7 +123,7 @@ def get_fastly_products(project_id, fastly_service_id, query_data):
 def get_fastly_ratelimit(project_id, fastly_service_id, query_data):
     print(query_data['fast_token'])
     fast_token = query_data['fast_token']
-    command_magecloud = f"fastly rate-limit list --version active -iq --service-id {fastly_service_id} --token {fast_token}"
+    command_magecloud = f"fastly rate-limit list --version active -iq -s {fastly_service_id} --token='{fast_token}'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -140,7 +140,7 @@ def get_fastly_ratelimit(project_id, fastly_service_id, query_data):
 def get_fastly_stats(project_id, fastly_service_id, query_data):
     print(query_data['fast_token'])
     fast_token = query_data['fast_token']
-    command_magecloud = f"fastly stats historical -iq --service-id {fastly_service_id} --token {fast_token}"
+    command_magecloud = f"fastly stats historical -iq -s {fastly_service_id} --token='{fast_token}'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -158,7 +158,7 @@ def get_fastly_stats(project_id, fastly_service_id, query_data):
 def get_fastly_tlsconfig(project_id,fastly_service_id, query_data):
     print(query_data['fast_token'])
     fast_token = query_data['fast_token']
-    command_magecloud = f"fastly tls-config list -iq --token {fast_token}"
+    command_magecloud = f"fastly tls-config list -iq --token='{fast_token}'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -176,7 +176,7 @@ def get_fastly_tlsconfig(project_id,fastly_service_id, query_data):
 def get_fastly_vclcondition(project_id,fastly_service_id, query_data):
     print(query_data['fast_token'])
     fast_token = query_data['fast_token']
-    command_magecloud = f"fastly vcl condition list --version active -iq --service-id {fastly_service_id} --token {fast_token}"
+    command_magecloud = f"fastly vcl condition list --version active -iq -s {fastly_service_id} --token='{fast_token}'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -193,7 +193,7 @@ def get_fastly_vclcondition(project_id,fastly_service_id, query_data):
 def get_fastly_vclcustom(project_id,fastly_service_id, query_data):
     print(query_data['fast_token'])
     fast_token = query_data['fast_token']
-    command_magecloud = f"fastly vcl custom list --version active -iq --service-id {fastly_service_id} --token {fast_token}"
+    command_magecloud = f"fastly vcl custom list --version active -iq -s {fastly_service_id} --token='{fast_token}'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -210,7 +210,7 @@ def get_fastly_vclcustom(project_id,fastly_service_id, query_data):
 def get_fastly_vclsnippet(project_id,fastly_service_id, query_data):
     print(query_data['fast_token'])
     fast_token = query_data['fast_token']
-    command_magecloud = f"fastly vcl snippet list --version active -iq --service-id {fastly_service_id} --token {fast_token}"
+    command_magecloud = f"fastly vcl snippet list --version active -iq -s {fastly_service_id} --token='{fast_token}'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -227,7 +227,7 @@ def get_fastly_vclsnippet(project_id,fastly_service_id, query_data):
 def get_fastly_acl(project_id,fastly_service_id, query_data):
     print(query_data['fast_token'])
     fast_token = query_data['fast_token']
-    command_magecloud = f"fastly acl list --version active -iq --service-id {fastly_service_id} --token {fast_token}"
+    command_magecloud = f"fastly acl list --version active -iq -s {fastly_service_id} --token='{fast_token}'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

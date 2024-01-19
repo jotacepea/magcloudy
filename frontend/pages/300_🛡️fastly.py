@@ -5,7 +5,7 @@ from pages.common.globalconf import pageconfig, theend
 pageconfig()
 
 
-@st.cache_data(ttl=300)
+@st.cache_data(ttl=30)
 def fastly_backend_request(projid, envid, apiendpoint='fastly', apiparameter=None):
     if apiparameter is None:
         resp = requests.get(
@@ -62,19 +62,19 @@ with tab2:
                     fastsrvline = fastcredline.split(':')
                     print(fastsrvline)
                     print(fastsrvline[1])
-                    fast_srv_name=fastsrvline[1]
+                    fast_srv_name=fastsrvline[1].strip()
                     st.write(f" ```{fast_srv_name}``` ")
                 if ' ID:' in fastcredline:
                     fastidline = fastcredline.split(':')
                     print(fastidline)
                     print(fastidline[1])
-                    fast_srv_id=fastidline[1]
+                    fast_srv_id=fastidline[1].strip()
                     st.write(f" ```{fast_srv_id}``` ")
                 if ' Token:' in fastcredline:
                     fasttokline = fastcredline.split(':')
                     print(fasttokline)
                     print(fasttokline[1])
-                    fast_token=fasttokline[1]
+                    fast_token=fasttokline[1].strip()
                     st.write(f" ```{fast_token}``` ")
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
@@ -110,6 +110,15 @@ with tab5:
                                             apiparameter=f'domain?fast_token={fast_token}')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
+            for indx, fastdomainsline in enumerate(response.text.strip().split('\n')):
+                print(fastdomainsline)
+                if f'{fast_srv_id}' in fastdomainsline:
+                    fastdnsline = fastdomainsline.split(' ')
+                    print(fastdnsline)
+                    print(fastdnsline[8])
+                    fast_dns_name=fastdnsline[8].strip()                  
+                    st.write(f"Adobe Commerce Fastly Tester Tool: https://{fast_dns_name}")
+                    st.write(f"https://adobe-commerce-tester.freetls.fastly.net/adobe-commerce-tester/#https://{fast_dns_name}||{fast_srv_id}")
 
 with tab6:
     st.header("Fastly Stats")
