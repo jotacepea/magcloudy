@@ -10,7 +10,7 @@ pageconfig()
 
 st.warning('This is a MagCloudy Beta Version!!!', icon="⚠️")
 
-st.snow()
+###st.snow()
 
 st.write("# Welcome to MagCloudy! :dizzy:")
 

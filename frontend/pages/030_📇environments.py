@@ -29,7 +29,7 @@ tab1, tab2 = st.tabs(["Environments", "Env Info"])
 with tab1:
     st.header("All Environments")
     if st.session_state.projectid != 'noprojid':
-        st.write(f"_{st.session_state.projectid}_")
+        st.write(f"From project _{st.session_state.projectid}_")
         response = environments_backend_request(
             projid=st.session_state.projectid)
         if response:
@@ -37,11 +37,28 @@ with tab1:
 
 with tab2:
     st.header("Environment Info")
-    environment_id_input = st.text_input(
-        "Enter some environment name 👇",
-        value=st.session_state.environmentid if st.session_state.environmentid != 'noenvid' else '',
-        placeholder="staging",
+    response_list = environments_backend_request(
+        projid=st.session_state.projectid,
+        envid='pipe')
+    if response_list:
+        environments_list = []
+        for indx, branchesinfoline in enumerate(response_list.text.strip().split('\n')):
+            print(branchesinfoline)
+            environments_list.append(branchesinfoline)
+        print(environments_list)
+
+    environment_id_input = st.selectbox(
+        "Would you like to get environment info? (please, select one of those...)",
+        environments_list,
+        index=None,
+        placeholder="Select project ENV...",
     )
+
+    # environment_id_input = st.text_input(
+    #     "Enter some environment name 👇",
+    #     value=st.session_state.environmentid if st.session_state.environmentid != 'noenvid' else '',
+    #     placeholder="staging",
+    # )
     if environment_id_input:
         st.session_state.environmentid = environment_id_input
     if environment_id_input and st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':

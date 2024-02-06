@@ -19,6 +19,9 @@ def projconfig_backend_request(projid, envid, apiendpoint='files', apiparameter=
 
 st.header("MagCloudy :blue[Project Configuration] :pencil2:")
 
+if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    st.info(f"**magento-cloud read -p {st.session_state.projectid} -e {st.session_state.environmentid} \
+            '.magento/routes.yaml'**")
 
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs(
     ["Project Root", "Mage .app.", "Mage .env.", "Mage -vars-", "Mage -config-", "Mage services", "Mage routes", "Mage php.ini"])
