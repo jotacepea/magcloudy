@@ -53,8 +53,8 @@ with tab2:
                     nr_account_id=nrinfoline.strip().split(':')[1]
                     print(nrinfoline)
                     print(nr_account_id)
-                    st.write(f" ```{nrinfoline}``` ")
-                    st.write(f" ```{nr_account_id}``` ")
+                    #st.write(f" ```{nrinfoline}``` ")
+                    #st.write(f" ```{nr_account_id}``` ")
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab3:

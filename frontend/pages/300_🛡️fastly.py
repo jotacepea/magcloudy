@@ -63,19 +63,19 @@ with tab2:
                     print(fastsrvline)
                     print(fastsrvline[1])
                     fast_srv_name=fastsrvline[1].strip()
-                    st.write(f" ```{fast_srv_name}``` ")
+                    #st.write(f" ```{fast_srv_name}``` ")
                 if ' ID:' in fastcredline:
                     fastidline = fastcredline.split(':')
                     print(fastidline)
                     print(fastidline[1])
                     fast_srv_id=fastidline[1].strip()
-                    st.write(f" ```{fast_srv_id}``` ")
+                    #st.write(f" ```{fast_srv_id}``` ")
                 if ' Token:' in fastcredline:
                     fasttokline = fastcredline.split(':')
                     print(fasttokline)
                     print(fasttokline[1])
                     fast_token=fasttokline[1].strip()
-                    st.write(f" ```{fast_token}``` ")
+                    #st.write(f" ```{fast_token}``` ")
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab3:
@@ -115,8 +115,10 @@ with tab5:
                 if f'{fast_srv_id}' in fastdomainsline:
                     fastdnsline = fastdomainsline.split(' ')
                     print(fastdnsline)
-                    print(fastdnsline[8])
-                    fast_dns_name=fastdnsline[8].strip()                  
+                    clean_fastdnsline = [str for str in fastdnsline if len(str) > 0]
+                    print(clean_fastdnsline)
+                    print(clean_fastdnsline[-1])
+                    fast_dns_name=clean_fastdnsline[-1].strip()                  
                     st.write(f"Adobe Commerce Fastly Tester Tool: https://{fast_dns_name}")
                     st.write(f"https://adobe-commerce-tester.freetls.fastly.net/adobe-commerce-tester/#https://{fast_dns_name}||{fast_srv_id}")
 

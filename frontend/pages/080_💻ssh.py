@@ -23,8 +23,13 @@ if st.session_state.projectid != 'noprojid' and st.session_state.environmentid !
     st.info(f"**clush -LNw $(magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} --all --pipe |\
             tr '\\n' ',' | rev | cut -c2- | rev) 'date'**", icon="ℹ️")
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(
-    ["SSH CMD", "SSH CLI", "SSH Crontab", "SSH php-fpm", "SSH CpuInfo"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
+    ["SSH CMD",
+     "SSH CLI",
+     "SSH Crontab",
+     "SSH php-fpm",
+     "SSH CpuInfo",
+     "SSH Mem"])
 
 if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
     response_instances = ssh_backend_request(projid=st.session_state.projectid,
@@ -158,6 +163,34 @@ with tab5:
                     reqresponse = ssh_backend_request(projid=st.session_state.projectid,
                                                       envid=st.session_state.environmentid,
                                                       apiendpoint='ssh/cpu',
+                                                      apiparameter=indx + 1)
+                    print(indx, inst, reqresponse)
+                    st.write(f" ```\n{reqresponse.text.strip()}\n``` ")
+
+with tab6:
+    st.header("Cpu Mem")
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+        st.write(
+            f"Reading Memory Info for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        if response_instances:
+            if len(response_instances.text.strip().split()) == 1:
+                st.caption(
+                    "**Note:** this section does NOT work for containerized environments!!! :bricks:)")
+                st.write(
+                    f" ``` magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid}``` ")
+                reqresponse = ssh_backend_request(projid=st.session_state.projectid,
+                                                  envid=st.session_state.environmentid,
+                                                  apiendpoint='ssh/free',
+                                                  apiparameter=0)
+                print(reqresponse)
+                st.write(f" ```\n{reqresponse.text.strip()}\n``` ")
+            else:
+                for indx, inst in enumerate(response_instances.text.strip().split()):
+                    st.write(
+                        f" ``` magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -I {indx + 1}``` ")
+                    reqresponse = ssh_backend_request(projid=st.session_state.projectid,
+                                                      envid=st.session_state.environmentid,
+                                                      apiendpoint='ssh/free',
                                                       apiparameter=indx + 1)
                     print(indx, inst, reqresponse)
                     st.write(f" ```\n{reqresponse.text.strip()}\n``` ")
