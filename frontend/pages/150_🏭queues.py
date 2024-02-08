@@ -17,20 +17,16 @@ with tab1:
         st.write(
             f"Reading db queues for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
 
-
 with tab2:
     st.header("Messages")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
             f"Getting messages info for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
 
-
-
 with tab3:
     st.header("Status")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
             f"Getting message status log for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
-
 
 theend()

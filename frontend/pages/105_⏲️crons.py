@@ -17,7 +17,6 @@ def ssh_backend_request(projid, envid, apiendpoint='ssh', apiparameter=None):
 
 st.header("MagCloudy :blue[Crons] :timer_clock:")
 
-
 tab1, tab2 = st.tabs(
     ["CronTab", "Cron List"])
 

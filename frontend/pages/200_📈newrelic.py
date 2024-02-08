@@ -4,7 +4,6 @@ from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-
 @st.cache_data(ttl=300)
 def newrelic_backend_request(projid, envid, apiendpoint='newrelic', apiparameter=None):
     if apiparameter is None:
@@ -15,7 +14,6 @@ def newrelic_backend_request(projid, envid, apiendpoint='newrelic', apiparameter
             f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
     print(resp)
     return resp
-
 
 st.header("MagCloudy :blue[NewRelic] :chart_with_upwards_trend:")
 

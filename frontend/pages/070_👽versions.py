@@ -6,7 +6,6 @@ pageconfig()
 
 st.header("MagCloudy :blue[Software Versions] :alien:")
 
-
 tab1, tab2, tab3, tab4, tab5 = st.tabs(
     ["Magento Version", "ECE-Tools version", "PHP Version", "Nginx Version", "Backend Services"])
 

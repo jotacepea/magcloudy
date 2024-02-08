@@ -4,7 +4,6 @@ from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-
 @st.cache_data(ttl=300)
 def environments_backend_request(projid, apiendpoint='environments', envid=None, apiparameter=None):
     if apiparameter is None:
@@ -20,9 +19,7 @@ def environments_backend_request(projid, apiendpoint='environments', envid=None,
     print(resp)
     return resp
 
-
 st.header("MagCloudy :blue[Environments] :card_index:")
-
 
 tab1, tab2 = st.tabs(["Environments", "Env Info"])
 

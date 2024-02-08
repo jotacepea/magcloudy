@@ -4,7 +4,6 @@ from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-
 @st.cache_data(ttl=300)
 def search_backend_request(projid, envid, apiendpoint='opensearch', apiparameter=None):
     if apiparameter is None:
@@ -38,12 +37,14 @@ def ssh_backend_request(projid, envid, apiendpoint='ssh', apiparameter=None):
     print(resp)
     return resp
 
-
 st.header("MagCloudy :blue[OpenSearch] :knot:")
 st.caption("**_In older versions could be ElasticSearch_**")
 
 tab1, tab2, tab3, tab4 = st.tabs(
-    ["Search Engine", "Opensearch Version", "Opensearch Health", "Opensearch Indices"])
+    ["Search Engine",
+     "Opensearch Version",
+     "Opensearch Health",
+     "Opensearch Indices"])
 
 with tab1:
     st.header("Search Engine Defined")

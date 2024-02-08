@@ -28,9 +28,11 @@ if st.session_state.projectid != 'noprojid':
         st.write(
             f"### Cloud Project [Web UI]({response.text.strip()}) // [ACC Tools](https://acc-tools.corp.adobe.com/project/{st.session_state.projectid}/cluster) ###")
 
-
 tab1, tab2, tab3, tab4 = st.tabs(
-    ["Project Info", "Project Subscription", "Project Settings", "Project Users"])
+    ["Project Info",
+     "Project Subscription",
+     "Project Settings",
+     "Project Users"])
 
 with tab1:
     st.header("Info")

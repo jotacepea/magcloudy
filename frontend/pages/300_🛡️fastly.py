@@ -4,7 +4,6 @@ from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-
 @st.cache_data(ttl=30)
 def fastly_backend_request(projid, envid, apiendpoint='fastly', apiparameter=None):
     if apiparameter is None:
@@ -15,7 +14,6 @@ def fastly_backend_request(projid, envid, apiendpoint='fastly', apiparameter=Non
             f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
     print(resp)
     return resp
-
 
 st.header("MagCloudy :blue[Fastly] :shield:")
 

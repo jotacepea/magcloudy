@@ -4,7 +4,6 @@ from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-
 @st.cache_data(ttl=300)
 def variables_backend_request(projid, apiendpoint='variables', envid=None, apioption=None):
     if envid is None:

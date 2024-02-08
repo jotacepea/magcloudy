@@ -4,7 +4,6 @@ from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-
 @st.cache_data(ttl=300)
 def projconfig_backend_request(projid, envid, apiendpoint='files', apiparameter=None):
     if apiparameter is None:
@@ -15,7 +14,6 @@ def projconfig_backend_request(projid, envid, apiendpoint='files', apiparameter=
             f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
     print(resp)
     return resp
-
 
 st.header("MagCloudy :blue[Project Configuration] :pencil2:")
 

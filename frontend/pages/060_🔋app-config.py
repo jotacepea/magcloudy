@@ -4,7 +4,6 @@ from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-
 @st.cache_data(ttl=300)
 def appconfig_backend_request(projid, envid, apiendpoint='binmagento', apiparameter=None):
     if apiparameter == None:
@@ -18,9 +17,7 @@ def appconfig_backend_request(projid, envid, apiendpoint='binmagento', apiparame
     print(resp)
     return resp
 
-
 st.header("MagCloudy :blue[App Configuration] :battery:")
-
 
 tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(
     ["Version", "Default URL", "Store Url", "CMS Url", "Admin Url", "maintenance Status", "App Etc env.php"])

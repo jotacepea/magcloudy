@@ -4,7 +4,6 @@ from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-
 @st.cache_data(ttl=300)
 def appconfig_backend_request(projid, envid, apiendpoint='binmagento', apiparameter=None):
     if apiparameter == None:
@@ -18,9 +17,7 @@ def appconfig_backend_request(projid, envid, apiendpoint='binmagento', apiparame
     print(resp)
     return resp
 
-
 st.header("MagCloudy :blue[App Indexers] :card_index_dividers:")
-
 
 tab1, tab2 = st.tabs(
     ["Mage Indexer", "Mage Indexer Cron"])

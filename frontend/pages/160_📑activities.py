@@ -12,7 +12,9 @@ activity_id_input = st.text_input(
 )
 
 tab1, tab2, tab3 = st.tabs(
-    ["Activities", "Activity Info", "Activity Log"])
+    ["Activities",
+     "Activity Info",
+     "Activity Log"])
 
 with tab1:
     st.header("Last Project Activities in this Env")

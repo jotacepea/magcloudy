@@ -4,7 +4,6 @@ from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-
 @st.cache_data(ttl=300)
 def rabbitmq_backend_request(projid, envid, apiendpoint='rabbitmq', apiparameter=None):
     if apiparameter is None:
@@ -18,7 +17,6 @@ def rabbitmq_backend_request(projid, envid, apiendpoint='rabbitmq', apiparameter
     print(resp)
     return resp
 
-
 @st.cache_data(ttl=60)
 def ssh_backend_request(projid, envid, apiendpoint='ssh', apiparameter=None):
     if apiparameter is None:
@@ -30,9 +28,7 @@ def ssh_backend_request(projid, envid, apiendpoint='ssh', apiparameter=None):
     print(resp)
     return resp
 
-
 st.header("MagCloudy :blue[RabbitMQ] :rabbit:")
-
 
 tab1, tab2, tab3, tab4, tab5 = st.tabs(
     ["Rabbit Version", "Rabbit Info", "Rabbit Queues", "App Consumers", "Rabbit Healthchecks"])

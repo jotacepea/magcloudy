@@ -6,9 +6,9 @@ pageconfig()
 
 st.header("MagCloudy :blue[Code Commits] :scroll:")
 
-
 tab1, tab2 = st.tabs(
-    ["Commits", "Commit Info"])
+    ["Commits",
+     "Commit Info"])
 
 with tab1:
     st.header("Last commits")

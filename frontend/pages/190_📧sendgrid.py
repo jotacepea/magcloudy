@@ -4,7 +4,6 @@ from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-
 @st.cache_data(ttl=300)
 def sendgrid_backend_request(projid, envid, apiendpoint='sendgrid', apiparameter=None):
     if apiparameter is None:
@@ -30,7 +29,6 @@ def ssh_backend_request(projid, envid, apiendpoint='ssh', apiparameter=None):
             f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
     print(resp)
     return resp
-
 
 st.header("MagCloudy :blue[SendGrid] :e-mail:")
 
@@ -164,6 +162,5 @@ with tab10:
                                             envid=pcresponse_platformcluster.strip(), apiparameter='blocklist')
             if response:
                 st.write(f" ```\n{response.text.strip()}\n``` ")
-
 
 theend()

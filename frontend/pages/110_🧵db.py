@@ -12,7 +12,15 @@ if st.session_state.projectid != 'noprojid' and st.session_state.environmentid !
         st.info(f"**magento-cloud sql -p {st.session_state.projectid} -e {st.session_state.environmentid} -r database-slave**")
 
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs(
-    ["Db Version", "Db Size", "Db Tables Size", "Db Process", "DB Status", "Cluster Status", "MyISAM tables", "Primary Key on tables", "Percona Tool MySQL Summary"])
+    ["Db Version",
+     "Db Size",
+     "Db Tables Size",
+     "Db Process",
+     "DB Status",
+     "Cluster Status",
+     "MyISAM tables",
+     "Primary Key on tables",
+     "Percona Tool MySQL Summary"])
 
 with tab1:
     st.header("DB Version")

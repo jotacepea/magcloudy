@@ -4,7 +4,6 @@ from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-
 @st.cache_data(ttl=300)
 def ecetools_backend_request(projid, envid, apiendpoint='ece-tools', apiparameter='version'):
     if envid is None:
@@ -16,9 +15,7 @@ def ecetools_backend_request(projid, envid, apiendpoint='ece-tools', apiparamete
     print(resp)
     return resp
 
-
 st.header("MagCloudy :blue[ECE-Tools] :fairy:")
-
 
 tab1, tab2, tab3, tab4, tab5 = st.tabs(
     ["ECE-Tools Version",

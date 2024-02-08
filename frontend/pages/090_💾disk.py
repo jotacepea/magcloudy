@@ -17,7 +17,6 @@ def ssh_backend_request(projid, envid, apiendpoint='ssh', apiparameter=None):
 
 st.header("MagCloudy :blue[Disk Usage] :floppy_disk:")
 
-
 tab1, tab2, tab3 = st.tabs(
     ["Disk",
      "Mounts",
