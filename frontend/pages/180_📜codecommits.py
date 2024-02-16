@@ -6,6 +6,12 @@ pageconfig()
 
 st.header("MagCloudy :blue[Code Commits] :scroll:")
 
+if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    st.info(f"**magento-cloud get -p {st.session_state.projectid} -e {st.session_state.environmentid}**")
+    st.info(f"**git clone -b {st.session_state.environmentid} \
+            {st.session_state.projectid}@git.{st.session_state.projectregiondomain}\:{st.session_state.projectid}.git**")
+
+
 tab1, tab2 = st.tabs(
     ["Commits",
      "Commit Info"])
@@ -15,8 +21,6 @@ with tab1:
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
             f"Reading Commits for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
-        st.write(
-            f" ```magento-cloud get -p {st.session_state.projectid} -e {st.session_state.environmentid}``` ")
         response = requests.get(
             f"{st.session_state.reqfqdn}/commits/{st.session_state.projectid}/{st.session_state.environmentid}")
         print(response)

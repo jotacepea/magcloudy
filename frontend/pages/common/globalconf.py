@@ -44,3 +44,9 @@ def theend():
     else:
         st.sidebar.write(
             f"Environment Type: :orange[{st.session_state.env_target_type}]")
+    if st.session_state.projectregiondomain is None:
+        st.sidebar.write(
+            f"Project Region Domain: :red[{st.session_state.projectregiondomain}]")
+    else:
+        st.sidebar.write(
+            f"Project Region Domain: :orange[{st.session_state.projectregiondomain}]")

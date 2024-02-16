@@ -47,6 +47,13 @@ with tab1:
                 projinfoline = projinfoline.replace("|", "")
                 print(projinfoline)
                 st.write(f" ```{projinfoline}``` ")
+            if 'region' in projinfoline:
+                projinfoline = projinfoline.replace("|", "")
+                print(projinfoline)
+                st.write(f" ```{projinfoline}``` ")
+                projregionline = projinfoline.strip().split()
+                print(projregionline)
+                st.session_state.projectregiondomain = projregionline[1]
         st.write(f" ```\n{response.text.strip()}\n``` ")
 with tab2:
     st.header("Subscription")

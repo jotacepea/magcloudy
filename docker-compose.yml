@@ -1,5 +1,4 @@
-x-app:
-  &default-app
+x-app: &default-app
   env_file:
     - ".env"
   restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"

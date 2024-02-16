@@ -4,7 +4,7 @@ from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-@st.cache_data(ttl=30)
+@st.cache_data(ttl=120)
 def fastly_backend_request(projid, envid, apiendpoint='fastly', apiparameter=None):
     if apiparameter is None:
         resp = requests.get(
@@ -21,8 +21,9 @@ st.caption(
     f"[Fastly GUI](https://manage.fastly.com/) // \
     [Fastly Cli](https://developer.fastly.com/reference/cli/)")
 
-tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10, tab11, tab12 = st.tabs(
-    ["Fastly Module",
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10, tab11, tab12, tab13 = st.tabs(
+    ["Cache Status",
+     "Fastly Module",
      "Fastly Credentials",
      "Fastly Service",
      "Fastly Backends",
@@ -36,6 +37,18 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10, tab11, tab12 = st.t
      "Fastly Healthchecks"])
 
 with tab1:
+    st.header("Cache Status")
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+        st.write(
+            f"Getting magento cache status for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        response = fastly_backend_request(projid=st.session_state.projectid,
+                                            envid=st.session_state.environmentid,
+                                            apiendpoint='binmagento',
+                                            apiparameter='cache')
+        if response:
+            st.write(f" ```\n{response.text.strip()}\n``` ")
+
+with tab2:
     st.header("Fastly Module")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
@@ -45,7 +58,7 @@ with tab1:
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
-with tab2:
+with tab3:
     st.header("Fastly Credentials")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
@@ -76,7 +89,7 @@ with tab2:
                     #st.write(f" ```{fast_token}``` ")
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
-with tab3:
+with tab4:
     st.header("Fastly Service")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
@@ -87,7 +100,7 @@ with tab3:
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
-with tab4:
+with tab5:
     st.header("Fastly Backends")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
@@ -98,7 +111,7 @@ with tab4:
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
-with tab5:
+with tab6:
     st.header("Fastly Domains")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
@@ -120,7 +133,7 @@ with tab5:
                     st.write(f"Adobe Commerce Fastly Tester Tool: https://{fast_dns_name}")
                     st.write(f"https://adobe-commerce-tester.freetls.fastly.net/adobe-commerce-tester/#https://{fast_dns_name}||{fast_srv_id}")
 
-with tab6:
+with tab7:
     st.header("Fastly Stats")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
@@ -131,7 +144,7 @@ with tab6:
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
-with tab7:
+with tab8:
     st.header("Fastly VCL Objects")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
@@ -157,7 +170,7 @@ with tab7:
             st.write("**snippets**")
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
-with tab8:
+with tab9:
     st.header("Fastly ACLs")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
@@ -168,7 +181,7 @@ with tab8:
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
-with tab9:
+with tab10:
     st.header("Fastly Products")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
@@ -179,7 +192,7 @@ with tab9:
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
-with tab10:
+with tab11:
     st.header("Fastly TLS Configurations")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
@@ -190,7 +203,7 @@ with tab10:
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
-with tab11:
+with tab12:
     st.header("Fastly Rate Limit")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
@@ -201,7 +214,7 @@ with tab11:
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
-with tab12:
+with tab13:
     st.header("Fastly Healthchecks")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(

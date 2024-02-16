@@ -16,7 +16,7 @@ def variables_backend_request(projid, apiendpoint='variables', envid=None, apiop
     print(resp)
     return resp
 
-@st.cache_data(ttl=1)
+@st.cache_data(ttl=120)
 def apps_backend_request(projid, envid, apiendpoint='apps', formatvalue='plain', columnsvalue='name', headervalue=0):
     resp = requests.get(
         f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}?format={formatvalue}&columns={columnsvalue}&header={headervalue}")

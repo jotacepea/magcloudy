@@ -112,3 +112,14 @@ def get_searchengine_binmagento(project_id, environment):
         return "An error occurred while trying to shell cmd: %s" % e
 
     return strip_ansi(result_command_magecloud)
+
+@binmagento_bp.get('/binmagento/<project_id>/<environment>/cache')
+def get_cache_binmagento(project_id, environment):
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} --no-interaction \'bin/magento cache:status\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
