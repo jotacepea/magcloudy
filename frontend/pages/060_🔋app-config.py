@@ -4,7 +4,7 @@ from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-@st.cache_data(ttl=300)
+@st.cache_data(ttl=120)
 def appconfig_backend_request(projid, envid, apiendpoint='binmagento', apiparameter=None):
     if apiparameter == None:
         apiparameter = 'version'
@@ -19,8 +19,16 @@ def appconfig_backend_request(projid, envid, apiendpoint='binmagento', apiparame
 
 st.header("MagCloudy :blue[App Configuration] :battery:")
 
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(
-    ["Version", "Default URL", "Store Url", "CMS Url", "Admin Url", "maintenance Status", "App Etc env.php"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs(
+    ["Version",
+     "Default URL",
+     "Store Url",
+     "CMS Url",
+     "Admin Url",
+     "Maintenance Status",
+     "App Etc env.php",
+     "Websites",
+     "Stores"])
 
 with tab1:
     st.header("Bin Magento Version (**Live**)")
@@ -80,6 +88,12 @@ with tab6:
         response = appconfig_backend_request(projid=st.session_state.projectid,
                                              envid=st.session_state.environmentid, apiparameter='maintenance')
         if response:
+            for indx, mstatusline in enumerate(response.text.strip().split('\n')):
+                if 'Status' in mstatusline:
+                    if 'not' in mstatusline:
+                        st.success("**Maintenance mode Off!**", icon="✅")
+                    else:
+                        st.error("**Maintenance Enabled!**", icon="🚨")
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab7:
@@ -94,5 +108,24 @@ with tab7:
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
+with tab8:
+    st.header("Websites (**Live**)")
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+        st.write(
+            f"Getting websites for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        response = appconfig_backend_request(projid=st.session_state.projectid,
+                                             envid=st.session_state.environmentid, apiparameter='websites')
+        if response:
+            st.write(f" ```\n{response.text.strip()}\n``` ")
+
+with tab9:
+    st.header("Stores (**Live**)")
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+        st.write(
+            f"Getting stores for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        response = appconfig_backend_request(projid=st.session_state.projectid,
+                                             envid=st.session_state.environmentid, apiparameter='stores')
+        if response:
+            st.write(f" ```\n{response.text.strip()}\n``` ")
 
 theend()

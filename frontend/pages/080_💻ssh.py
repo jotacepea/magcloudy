@@ -19,7 +19,7 @@ st.header("MagCloudy :blue[Secure Shell] :computer:")
 
 if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
     st.info(f"**clush -LNw $(magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} --all --pipe |\
-            tr '\\n' ',' | rev | cut -c2- | rev) 'date'**", icon="ℹ️")
+            tr '\\n' ',' | rev | cut -c2- | rev) 'hostname;date'**", icon="ℹ️")
 
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
     ["SSH CMD",
@@ -163,10 +163,18 @@ with tab5:
                                                       apiendpoint='ssh/cpu',
                                                       apiparameter=indx + 1)
                     print(indx, inst, reqresponse)
+                    if reqresponse and indx == 0:
+                        for indx, cpuinfoline in enumerate(reqresponse.text.strip().split('\n')):
+                            if 'Hypervisor' in cpuinfoline:
+                                if 'Microsoft' in cpuinfoline:
+                                    st.info("**Azure Provider!**", icon="ℹ️")
+                                    st.warning("**Maybe the region of the cluster is not accurate... Review in Slack #cloud-botrequests (Rosie)**", icon="⛑️")
+                                else:
+                                    st.info("**AWS Provider!**", icon="ℹ️")
                     st.write(f" ```\n{reqresponse.text.strip()}\n``` ")
 
 with tab6:
-    st.header("Cpu Mem")
+    st.header("Mem Info")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
             f"Reading Memory Info for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")

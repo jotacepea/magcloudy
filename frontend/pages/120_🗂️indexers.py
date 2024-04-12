@@ -42,6 +42,8 @@ with tab2:
                                              apiendpoint='db',
                                              apiparameter='indexercron')
         if response:
+            code_query_line="select count(*), status, job_code, created_at, scheduled_at, executed_at, finished_at, messages from cron_schedule where job_code like 'indexer%' and DATE(created_at) = DATE(CURDATE()) group by status, job_code;"
+            st.code(code_query_line, language='bash')
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 

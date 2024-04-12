@@ -64,6 +64,15 @@ with tab2:
             f"{st.session_state.reqfqdn}/projects/{st.session_state.projectid}/subscription"
         )
         print(response)
+        for indx, projsubsline in enumerate(response.text.strip().split('\n')):
+            if 'project_region_label' in projsubsline:
+                projsubsline = projsubsline.replace("|", "")
+                print(projsubsline)
+                st.write(f" ```{projsubsline}``` ")
+            if 'plan ' in projsubsline:
+                projsubsline = projsubsline.replace("|", "")
+                print(projsubsline)
+                st.write(f" ```{projsubsline}``` ")
         st.write(f" ```\n{response.text.strip()}\n``` ")
 with tab3:
     st.header("Settings")

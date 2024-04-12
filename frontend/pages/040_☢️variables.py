@@ -34,7 +34,9 @@ if st.session_state.projectid != 'noprojid' and st.session_state.environmentid !
     st.info(f"**magento-cloud environment\:relationships -p {st.session_state.projectid} -e {st.session_state.environmentid} --no-interaction --property redis.0**")
 
 tab1, tab2, tab3 = st.tabs(
-    ["Project Vars", "Environment Vars", "Env Relationships"])
+    ["Project Vars",
+     "Environment Vars",
+     "Env Relationships"])
 
 if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
     response_apps = apps_backend_request(projid=st.session_state.projectid,

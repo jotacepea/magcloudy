@@ -17,12 +17,17 @@ def ecetools_backend_request(projid, envid, apiendpoint='ece-tools', apiparamete
 
 st.header("MagCloudy :blue[ECE-Tools] :fairy:")
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(
+if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    st.info(f"**vendor/bin/ece-tools env:config:show**")
+    st.info(f"**vendor/bin/ece-patches status**")
+    
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
     ["ECE-Tools Version",
      "ECE-Tools Show Error",
      "ECE-Tools Show Env Config",
      "ECE-Tools Validate Cloud Config",
-     "ECE-Tools Check Wizards"])
+     "ECE-Tools Check Wizards",
+     "ECE-Patches Status"])
 
 with tab1:
     st.header("ECE Version")
@@ -76,6 +81,16 @@ with tab5:
             f"Checking ece-tools wizards for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = ecetools_backend_request(projid=st.session_state.projectid,
                                             envid=st.session_state.environmentid, apiparameter='wizards')
+        if response:
+            st.write(f" ```\n{response.text.strip()}\n``` ")
+
+with tab6:
+    st.header("ECE Patches")
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+        st.write(
+            f"Checking ece-tools patches for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        response = ecetools_backend_request(projid=st.session_state.projectid,
+                                            envid=st.session_state.environmentid, apiparameter='patches')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 

@@ -21,7 +21,11 @@ def environments_backend_request(projid, apiendpoint='environments', envid=None,
 
 st.header("MagCloudy :blue[Environments] :card_index:")
 
-tab1, tab2 = st.tabs(["Environments", "Env Info"])
+tab1, tab2, tab3, tab4 = st.tabs(
+    ["Environments",
+     "Env Info",
+     "Env Config Smtp State",
+     "Env Config Crons State"])
 
 with tab1:
     st.header("All Environments")
@@ -47,7 +51,7 @@ with tab2:
     environment_id_input = st.selectbox(
         "Would you like to get environment info? (please, select one of those...)",
         environments_list,
-        index=None,
+        index=environments_list.index(st.session_state.environmentid) if st.session_state.environmentid != 'noenvid' else None,
         placeholder="Select project ENV...",
     )
 
@@ -60,13 +64,15 @@ with tab2:
         st.session_state.environmentid = environment_id_input
     if environment_id_input and st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(f"Getting info for Environment: **{environment_id_input}**")
+            
         response = environments_backend_request(projid=st.session_state.projectid,
-                                                envid=environment_id_input, apiparameter='url')
+                                                envid=st.session_state.environmentid, apiparameter='url')
         if response:
             st.write(
                 f"### Cloud Env [URL]({response.text.strip()}) ###")
+            
         response = environments_backend_request(projid=st.session_state.projectid,
-                                                envid=environment_id_input, apiparameter='info')
+                                                envid=st.session_state.environmentid, apiparameter='info')
         if response:
             for indx, envinfoline in enumerate(response.text.strip().split('\n')):
                 if 'deployment_target' in envinfoline:
@@ -79,6 +85,24 @@ with tab2:
                     else:
                         st.session_state.env_target_type = 'Instances (Unified Cluster)'
                         st.caption(f"**_{st.session_state.env_target_type}_**")
+            st.write(f" ```\n{response.text.strip()}\n``` ")
+
+with tab3:
+    st.header("Smtp State")
+    if environment_id_input and st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+        st.write(f"Getting smtp config for environment: **{st.session_state.environmentid}**")
+        response = environments_backend_request(projid=st.session_state.projectid,
+                                                envid=st.session_state.environmentid, apiparameter='enablesmtpstatus')
+        if response:
+            st.write(f" ```\n{response.text.strip()}\n``` ")
+
+with tab4:
+    st.header("Crons State")
+    if environment_id_input and st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+        st.write(f"Getting smtp config for environment: **{st.session_state.environmentid}**")
+        response = environments_backend_request(projid=st.session_state.projectid,
+                                                envid=st.session_state.environmentid, apiparameter='deploymentstatecrons')
+        if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 theend()

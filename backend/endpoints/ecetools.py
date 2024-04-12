@@ -64,3 +64,14 @@ def get_wizards_ecetools(project_id, environment):
         return "An error occurred while trying to shell cmd: %s" % e
 
     return strip_ansi(result_command_magecloud)
+
+@ecetools_bp.get('/ece-tools/<project_id>/<environment>/patches')
+def get_patches_ecetools(project_id, environment):
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'vendor/bin/ece-patches status -n\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)

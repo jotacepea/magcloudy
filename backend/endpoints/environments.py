@@ -68,3 +68,25 @@ def get_environment_relationships(project_id, environment):
         return "An error occurred while trying to shell cmd: %s" % e
 
     return strip_ansi(result_command_magecloud)
+
+@environments_bp.get('/environments/<project_id>/<environment>/enablesmtpstatus')
+def get_environment_enablesmtpstatus(project_id, environment):
+    command_magecloud = f"magento-cloud env:info enable_smtp -p {project_id} -e {environment} --no-interaction"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+@environments_bp.get('/environments/<project_id>/<environment>/deploymentstatecrons')
+def get_environment_deploymentstatecrons(project_id, environment):
+    command_magecloud = f"magento-cloud env:info deployment_state.crons -p {project_id} -e {environment} --no-interaction"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)

@@ -115,7 +115,84 @@ def get_db_process_r(project_id, environment):
 
 @db_bp.get('/db/<project_id>/<environment>/indexercron')
 def get_db_indexercron(project_id, environment):
-    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \"SELECT * FROM cron_schedule WHERE job_code LIKE 'indexer_%' LIMIT 100;\""
+    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \"select count(*), status, job_code, created_at, scheduled_at, executed_at, finished_at, messages from cron_schedule where job_code like 'indexer%' and DATE(created_at) > DATE(CURDATE() - 5) group by status, job_code;\""
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+@db_bp.get('/db/<project_id>/<environment>/consumerercron')
+def get_db_consumercron(project_id, environment):
+    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \"select count(*), status, job_code, created_at, scheduled_at, executed_at, finished_at, messages from cron_schedule where job_code like 'consumers%' and DATE(created_at) > DATE(CURDATE() - 5) group by status, job_code;\""
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+@db_bp.get('/db/<project_id>/<environment>/othercron')
+def get_db_othercron(project_id, environment):
+    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \"select count(*), status, job_code, created_at, scheduled_at, executed_at, finished_at, messages from cron_schedule where job_code NOT like 'consumers%' and job_code NOT like 'indexer%' and DATE(created_at) > DATE(CURDATE() - 5) group by status, job_code;\""
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+@db_bp.get('/db/<project_id>/<environment>/cronlist')
+def get_db_cronlist(project_id, environment):
+    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \"select job_code, created_at from cron_schedule group by job_code;\""
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+@db_bp.get('/db/<project_id>/<environment>/queuelist')
+def get_db_queuelist(project_id, environment):
+    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \"select id,name from queue;\""
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+@db_bp.get('/db/<project_id>/<environment>/queuemessages')
+def get_db_queuemessages(project_id, environment):
+    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \"select count(*) as Messages, topic_name from queue_message group by topic_name;\""
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+@db_bp.get('/db/<project_id>/<environment>/queuemsgstatus')
+def get_db_queuemsgstatus(project_id, environment):
+    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \"SELECT count(*), topic_name, queue_id, updated_at, status FROM queue_message qm INNER JOIN queue_message_status qms ON qm.id = qms.message_id WHERE DATE(updated_at) > DATE(CURDATE() - 5) GROUP BY topic_name, status LIMIT 50;\""
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+@db_bp.get('/db/<project_id>/<environment>/queuemsgtrials')
+def get_db_queuemsgtrials(project_id, environment):
+    command_magecloud = f"magento-cloud db:sql -p {project_id} -e {environment} -r database \"select count(*), name, status, number_of_trials from queue_message_status s join queue q on s.queue_id = q.id WHERE DATE(updated_at) > DATE(CURDATE() - 5) GROUP BY status, name, number_of_trials LIMIT 50;\""
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

@@ -97,6 +97,14 @@ with tab3:
                     print(openhealthline)
                     openhealthvalues = openhealthline.strip().split(':')
                     print(openhealthvalues)
+                    if openhealthvalues[1] == 'green':
+                        st.success("**Cluster in Green State!**", icon="✅")
+                    else:
+                        if openhealthvalues[1] == 'yellow':
+                            st.warning("**Cluster in Yellow State**", icon="🚧")
+                        else:
+                            st.error("**Cluster in Red State!**", icon="⛑️")
+                            
                     # Warning: becuase of split... brackets already there.
                     mkdbody = f":{openhealthvalues[1]}{openhealthvalues}"
                     print(mkdbody)

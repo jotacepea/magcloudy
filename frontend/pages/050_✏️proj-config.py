@@ -22,10 +22,17 @@ if st.session_state.projectid != 'noprojid' and st.session_state.environmentid !
             '.magento/routes.yaml'**")
 
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs(
-    ["Project Root", "Mage .app.", "Mage .env.", "Mage -vars-", "Mage -config-", "Mage services", "Mage routes", "Mage php.ini"])
+    ["Project Root",
+     "Mage .app.",
+     "Mage .env.",
+     "Mage -vars-",
+     "Mage -config-",
+     "Mage services",
+     "Mage routes",
+     "Mage php.ini"])
 
 with tab1:
-    st.header("Repo files in Project (**Repos**)")
+    st.header("Repo files in Project (**Git-Repos**)")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
             f"Getting project **repos** files for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
@@ -35,7 +42,7 @@ with tab1:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab2:
-    st.header("Read file .magento.app.yaml (**Repos**)")
+    st.header("Read file .magento.app.yaml (**Git-Repos**)")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
             f"Getting project **repos** files for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
@@ -45,7 +52,7 @@ with tab2:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab3:
-    st.header("Read file .magento.env.yaml (**Repos**)")
+    st.header("Read file .magento.env.yaml (**Git-Repos**)")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
             f"Getting project **repos** files for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
@@ -55,7 +62,7 @@ with tab3:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab4:
-    st.header("Read file magento-vars.php (**Repos**)")
+    st.header("Read file magento-vars.php (**Git-Repos**)")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
             f"Getting project **repos** files for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
@@ -65,7 +72,7 @@ with tab4:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab5:
-    st.header("Read file config.php (**Repos**)")
+    st.header("Read file config.php (**Git-Repos**)")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
             f"Getting project **repos** files for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
@@ -75,17 +82,21 @@ with tab5:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab6:
-    st.header("Read file .magento/services.yaml (**Repos**)")
+    st.header("Read file .magento/services.yaml (**Git-Repos**)")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
             f"Getting project **repos** files for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        st.caption(
+            "**Note:** this config file is applied on containerized environments only :bricks:")
+        st.caption(
+            "**Note:** for Prod production and for Prod staging kind of environments... verify services and versions installed!")
         response = projconfig_backend_request(projid=st.session_state.projectid,
                                               envid=st.session_state.environmentid, apiparameter='.magento/services.yaml')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab7:
-    st.header("Read file .magento/routes.yaml (**Repos**)")
+    st.header("Read file .magento/routes.yaml (**Git-Repos**)")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
             f"Getting project **repos** files for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
@@ -95,7 +106,7 @@ with tab7:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab8:
-    st.header("Read file php.ini (**Repos**)")
+    st.header("Read file php.ini (**Git-Repos**)")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
             f"Getting project **repos** files for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")

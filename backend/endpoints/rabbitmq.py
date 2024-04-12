@@ -8,7 +8,7 @@ rabbitmq_bp = APIBlueprint('rabbitmq-blueprint', __name__)
 
 get_rabbit_user_cmd = "echo $MAGENTO_CLOUD_RELATIONSHIPS | base64 -d | jq -r .rabbitmq[].username"
 get_rabbit_pass_cmd = "echo $MAGENTO_CLOUD_RELATIONSHIPS | base64 -d | jq -r .rabbitmq[].password"
-
+get_rabbit_port_cmd = "echo $MAGENTO_CLOUD_RELATIONSHIPS | base64 -d | jq -r .rabbitmq[].port | xargs echo -n"
 
 @rabbitmq_bp.get('/rabbitmq/<project_id>/<environment>/version')
 @rabbitmq_bp.input(
@@ -20,7 +20,7 @@ def get_version_rabbitmq(project_id, environment, query_data):
     if query_data['containerized'] == 0:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -u $USER:$(" + \
             f"{get_rabbit_pass_cmd}" + \
-            ") -sk http://localhost:15672/api/overview |jq .|grep version\'"
+            ") -sk http://localhost:1" + "$(" + f"{get_rabbit_port_cmd}" + ")" + "/api/overview |jq .|grep version\'"
     else:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -u guest:guest -sk http://rabbitmq.internal:15672/api/overview |json_pp |grep version\'"
     try:
@@ -42,7 +42,7 @@ def get_listqueues_rabbitmq(project_id, environment, query_data):
     if query_data['containerized'] == 0:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -u $USER:$(" + \
             f"{get_rabbit_pass_cmd}" + \
-            ") -sk http://localhost:15672/api/queues |jq -r .[].name\'"
+            ") -sk http://localhost:1" + "$(" + f"{get_rabbit_port_cmd}" + ")" + "/api/queues |jq -r .[].name\'"
     else:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -u guest:guest -sk http://rabbitmq.internal:15672/api/queues |json_pp|grep name\'"
     try:
@@ -64,7 +64,7 @@ def get_show_rabbitmq(project_id, environment, query_data):
     if query_data['containerized'] == 0:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -u $USER:$(" + \
             f"{get_rabbit_pass_cmd}" + \
-            ") -sk http://localhost:15672/api/overview | jq .\'"
+            ") -sk http://localhost:1" + "$(" + f"{get_rabbit_port_cmd}" + ")" + "/api/overview | jq .\'"
     else:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -u guest:guest -sk http://rabbitmq.internal:15672/api/overview | json_pp\'"
     try:
@@ -84,9 +84,11 @@ def get_show_rabbitmq(project_id, environment, query_data):
 def get_healthchecks_rabbitmq(project_id, environment, query_data):
     print(query_data['containerized'])
     if query_data['containerized'] == 0:
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -u $USER:$(" + \
-            f"{get_rabbit_pass_cmd}" + \
-            ") -sk http://localhost:15672/api/healthchecks/node | jq .\'"
+        #TODO!!
+        #for i in range(1,4):
+            command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -I 3 \'curl -u $USER:$(" + \
+                f"{get_rabbit_pass_cmd}" + \
+                ") -sk http://localhost:1" + "$(" + f"{get_rabbit_port_cmd}" + ")" + "/api/healthchecks/node | jq .\'"
     else:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} \'curl -u guest:guest -sk http://rabbitmq.internal:15672/api/healthchecks/node | json_pp\'"
     try:
