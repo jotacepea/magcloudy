@@ -58,9 +58,9 @@ def get_environment_url(project_id, environment):
 
 
 #TODO: add option to choose APP when app and worker running in the same env.
-@environments_bp.get('/environments/<project_id>/<environment>/relationships')
-def get_environment_relationships(project_id, environment):
-    command_magecloud = f"magento-cloud environment:relationships -p {project_id} -e {environment} --no-interaction"
+@environments_bp.get('/environments/<project_id>/<environment>/<appid>/relationships')
+def get_environment_relationships(project_id, environment, appid):
+    command_magecloud = f"magento-cloud environment:relationships -p {project_id} -e {environment} -A {appid} --no-interaction"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

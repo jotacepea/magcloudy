@@ -74,11 +74,25 @@ with tab2:
         response = environments_backend_request(projid=st.session_state.projectid,
                                                 envid=st.session_state.environmentid, apiparameter='info')
         if response:
+            appresponse = requests.get(
+            f"{st.session_state.reqfqdn}/apps/{st.session_state.projectid}/{environment_id_input}/pipe")
+            print(appresponse.text)
+            numberapps=len(appresponse.text.strip().split('\n'))
+            print(numberapps)
+            if numberapps > 1:
+                st.warning("**More than One App running in this Env...**", icon="🚧")
+                st.write(f" ```\n{appresponse.text.strip()}\n``` ")
+            else:
+                if numberapps == 1:
+                    st.session_state.envappid = appresponse.text.strip()
+                else:
+                    st.session_state.envappid = "AppsIdErrorAppsIdErrorAppsIdErrorAppsIdError"
+
             for indx, envinfoline in enumerate(response.text.strip().split('\n')):
                 if 'deployment_target' in envinfoline:
                     envinfoline = envinfoline.replace("|", "")
                     print(envinfoline)
-                    st.write(f" ```{envinfoline}``` ")
+                    #st.write(f" ```{envinfoline}``` ")
                     if 'local' in envinfoline:
                         st.session_state.env_target_type = 'containerized'
                         st.caption(f"**_{st.session_state.env_target_type}_**")

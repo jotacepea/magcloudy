@@ -30,6 +30,18 @@ def ssh_backend_request(projid, envid, apiendpoint='ssh', apiparameter=None):
 
 st.header("MagCloudy :blue[RabbitMQ] :rabbit:")
 
+if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.env_target_type.lower() == 'containerized':
+        st.info(f"""
+                **magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} 
+                \'curl -u guest:guest -sk http://rabbitmq.internal:15672/api/queues | json_pp | grep name\'**
+            """)
+    else:
+        st.info(f"""
+                **magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} 
+                \'curl -u $USER -sk http://localhost:15672/api/queues | jq -r .[].name\'**
+            """)
+
 tab1, tab2, tab3, tab4 = st.tabs(
     ["Rabbit Version",
      "Rabbit Info",

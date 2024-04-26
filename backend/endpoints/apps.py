@@ -27,3 +27,25 @@ def get_apps(project_id, environment, query_data):
         return "An error occurred while trying to shell cmd: %s" % e
 
     return result_command_magecloud
+
+@apps_bp.get('/apps/<project_id>/<environment>/pipe')
+def get_apps_pipe(project_id, environment):
+    command_magecloud = f"magento-cloud apps -p {project_id} -e {environment} --pipe "
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return result_command_magecloud
+
+@apps_bp.get('/apps/<project_id>/<environment>/<app>/config')
+def get_apps_config(project_id, environment, app):
+    command_magecloud = f"magento-cloud app:config-get -p {project_id} -e {environment} -A {app} "
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return result_command_magecloud

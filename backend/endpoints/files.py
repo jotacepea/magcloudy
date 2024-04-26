@@ -19,9 +19,9 @@ def get_files(project_id, environment, filepath='/'):
     return strip_ansi(result_command_magecloud)
 
 
-@files_bp.get('/files/live/<project_id>/<environment>/<path:filepath>')
-def get_files_live(project_id, environment, filepath):
-    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} --no-interaction \'cat ./{filepath}\'"
+@files_bp.get('/files/live/<project_id>/<environment>/<appid>/<path:filepath>')
+def get_files_live(project_id, environment, appid, filepath):
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} --no-interaction \'cat ./{filepath}\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

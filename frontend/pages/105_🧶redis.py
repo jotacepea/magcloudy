@@ -20,9 +20,9 @@ def redis_backend_request(projid, envid, apiendpoint='redis', apiparameter=None)
 st.header("MagCloudy :blue[Redis] :yarn:")
 
 if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
-    st.info(f"**magento-cloud sql -p {st.session_state.projectid} -e {st.session_state.environmentid} -r redis**")
+    st.info(f"**magento-cloud redis -p {st.session_state.projectid} -e {st.session_state.environmentid} -r redis INFO**")
     if st.session_state.env_target_type.lower() != 'containerized':
-        st.info(f"**magento-cloud sql -p {st.session_state.projectid} -e {st.session_state.environmentid} -r redis-slave**")
+        st.info(f"**magento-cloud redis -p {st.session_state.projectid} -e {st.session_state.environmentid} -r redis-slave INFO**")
 
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
     ["Redis Check",

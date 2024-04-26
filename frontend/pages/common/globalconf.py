@@ -38,6 +38,12 @@ def theend():
     else:
         st.sidebar.write(
             f"Selected Environment ID: :green[{st.session_state.environmentid}]")
+    if st.session_state.envappid == 'noenvappid':
+        st.sidebar.write(
+            f"Selected App ID: :red[{st.session_state.envappid}]")
+    else:
+        st.sidebar.write(
+            f"Selected App ID: :green[{st.session_state.envappid}]")
     if st.session_state.env_target_type is None:
         st.sidebar.write(
             f"Environment Type: :red[{st.session_state.env_target_type}]")

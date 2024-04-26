@@ -5,15 +5,15 @@ from pages.common.globalconf import pageconfig, theend
 pageconfig()
 
 @st.cache_data(ttl=120)
-def appconfig_backend_request(projid, envid, apiendpoint='binmagento', apiparameter=None):
+def appconfig_backend_request(projid, envid, appid, apiendpoint='binmagento', apiparameter=None):
     if apiparameter == None:
         apiparameter = 'version'
     if apiendpoint == 'files':
         resp = requests.get(
-            f"{st.session_state.reqfqdn}/{apiendpoint}/live/{projid}/{envid}/{apiparameter}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/live/{projid}/{envid}/{appid}/{apiparameter}")
     else:
         resp = requests.get(
-            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{appid}/{apiparameter}")
     print(resp)
     return resp
 
@@ -32,61 +32,72 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs(
 
 with tab1:
     st.header("Bin Magento Version (**Live**)")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
-            f"Getting Bin Magento Version for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+            f"Getting Bin Magento Version for: **{st.session_state.envappid}** in **{st.session_state.environmentid}** from **{st.session_state.projectid}**")
         response = appconfig_backend_request(projid=st.session_state.projectid,
-                                             envid=st.session_state.environmentid)
+                                             envid=st.session_state.environmentid,
+                                             appid=st.session_state.envappid)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab2:
     st.header("Default Url (**Live**)")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
-            f"Getting app default url for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+            f"Getting app default url for: **{st.session_state.envappid}** in **{st.session_state.environmentid}** from **{st.session_state.projectid}**")
         response = appconfig_backend_request(projid=st.session_state.projectid,
-                                             envid=st.session_state.environmentid, apiparameter='defaulturl')
+                                             envid=st.session_state.environmentid,
+                                             appid=st.session_state.envappid,
+                                             apiparameter='defaulturl')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab3:
     st.header("Store Url (**Live**)")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
-            f"Getting store url for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+            f"Getting store url for: **{st.session_state.envappid}** in **{st.session_state.environmentid}** from **{st.session_state.projectid}**")
         response = appconfig_backend_request(projid=st.session_state.projectid,
-                                             envid=st.session_state.environmentid, apiparameter='storeurl')
+                                             envid=st.session_state.environmentid,
+                                             appid=st.session_state.envappid,
+                                             apiparameter='storeurl')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab4:
     st.header("Cms Url (**Live**)")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
-            f"Getting cms url for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+            f"Getting cms url for: **{st.session_state.envappid}** in **{st.session_state.environmentid}** from **{st.session_state.projectid}**")
         response = appconfig_backend_request(projid=st.session_state.projectid,
-                                             envid=st.session_state.environmentid, apiparameter='cmspageurl')
+                                             envid=st.session_state.environmentid,
+                                             appid=st.session_state.envappid,
+                                             apiparameter='cmspageurl')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab5:
     st.header("Admin Url (**Live**)")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
-            f"Getting admin url for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+            f"Getting admin url for: **{st.session_state.envappid}** in **{st.session_state.environmentid}** from **{st.session_state.projectid}**")
         response = appconfig_backend_request(projid=st.session_state.projectid,
-                                             envid=st.session_state.environmentid, apiparameter='adminurl')
+                                             envid=st.session_state.environmentid,
+                                             appid=st.session_state.envappid,
+                                             apiparameter='adminurl')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab6:
     st.header("Maintenance Status (**Live**)")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
-            f"Getting maintenance status for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+            f"Getting maintenance status for: **{st.session_state.envappid}** in **{st.session_state.environmentid}** from **{st.session_state.projectid}**")
         response = appconfig_backend_request(projid=st.session_state.projectid,
-                                             envid=st.session_state.environmentid, apiparameter='maintenance')
+                                             envid=st.session_state.environmentid,
+                                             appid=st.session_state.envappid,
+                                             apiparameter='maintenance')
         if response:
             for indx, mstatusline in enumerate(response.text.strip().split('\n')):
                 if 'Status' in mstatusline:
@@ -98,33 +109,38 @@ with tab6:
 
 with tab7:
     st.header("App Etc ENV.php (**Live**)")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
-            f"Getting env.php config file for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+            f"Getting env.php config file for: **{st.session_state.envappid}** in **{st.session_state.environmentid}** from **{st.session_state.projectid}**")
         response = appconfig_backend_request(apiendpoint='files',
                                              projid=st.session_state.projectid,
                                              envid=st.session_state.environmentid,
+                                             appid=st.session_state.envappid,
                                              apiparameter='app/etc/env.php')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab8:
     st.header("Websites (**Live**)")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
-            f"Getting websites for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+            f"Getting websites for: **{st.session_state.envappid}** in **{st.session_state.environmentid}** from **{st.session_state.projectid}**")
         response = appconfig_backend_request(projid=st.session_state.projectid,
-                                             envid=st.session_state.environmentid, apiparameter='websites')
+                                             envid=st.session_state.environmentid,
+                                             appid=st.session_state.envappid,
+                                             apiparameter='websites')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab9:
     st.header("Stores (**Live**)")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
-            f"Getting stores for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+            f"Getting stores for: **{st.session_state.envappid}** in **{st.session_state.environmentid}** from **{st.session_state.projectid}**")
         response = appconfig_backend_request(projid=st.session_state.projectid,
-                                             envid=st.session_state.environmentid, apiparameter='stores')
+                                             envid=st.session_state.environmentid,
+                                             appid=st.session_state.envappid,
+                                             apiparameter='stores')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 

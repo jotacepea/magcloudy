@@ -5,14 +5,17 @@ from pages.common.globalconf import pageconfig, theend
 pageconfig()
 
 @st.cache_data(ttl=300)
-def variables_backend_request(projid, apiendpoint='variables', envid=None, apioption=None):
-    if envid is None:
-        envid = 'master'
-    if apiendpoint == 'variables' and apioption is None:
-        apioption = 'p'
-    resp = requests.get(
-        f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apioption}")
-    #print(resp.text)
+def variables_backend_request(projid, apiendpoint='variables', envid=None, appid=None, apioption=None):
+    if apiendpoint == 'environments':
+        resp = requests.get(
+        f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{appid}/{apioption}")
+    else:
+        if envid is None:
+            envid = 'master'
+        if apioption is None:
+            apioption = 'p'
+        resp = requests.get(
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apioption}")
     print(resp)
     return resp
 
@@ -26,12 +29,12 @@ def apps_backend_request(projid, envid, apiendpoint='apps', formatvalue='plain',
 
 st.header("MagCloudy :blue[Environment Variables] :radioactive_sign:")
 
-if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
     st.info(f"**magento-cloud var -p {st.session_state.projectid} -e {st.session_state.environmentid}**")
     st.info(f"**magento-cloud vget -p {st.session_state.projectid} -e {st.session_state.environmentid} ADMIN_FIRSTNAME**")
 
-    st.info(f"**magento-cloud environment\:relationships -p {st.session_state.projectid} -e {st.session_state.environmentid} --no-interaction --property database.0**")
-    st.info(f"**magento-cloud environment\:relationships -p {st.session_state.projectid} -e {st.session_state.environmentid} --no-interaction --property redis.0**")
+    st.info(f"**magento-cloud environment\:relationships -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} --no-interaction --property database.0**")
+    st.info(f"**magento-cloud environment\:relationships -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} --no-interaction --property redis.0**")
 
 tab1, tab2, tab3 = st.tabs(
     ["Project Vars",
@@ -53,7 +56,7 @@ with tab1:
 
 with tab2:
     st.header("Env Variables at Environment Level :exclamation:")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
             f"Getting Env Vars for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = variables_backend_request(
@@ -63,19 +66,28 @@ with tab2:
 
 with tab3:
     st.header("Env Relationships at Environment Level :exclamation:")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
-            f"Getting Env Relationships values for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+            f"Getting Env Relationships values for: **{st.session_state.envappid}** in **{st.session_state.environmentid}** from **{st.session_state.projectid}**")
         if response_apps:
             if len(response_apps.text.strip().split()) == 1:
-                reqresponse = variables_backend_request(apiendpoint='environments', projid=st.session_state.projectid,
-                                             envid=st.session_state.environmentid, apioption='relationships')
+                reqresponse = variables_backend_request(
+                    apiendpoint='environments',
+                    projid=st.session_state.projectid,
+                    envid=st.session_state.environmentid,
+                    appid=st.session_state.envappid,
+                    apioption='relationships')
                 print(reqresponse)
                 st.write(f" ```\n{reqresponse.text.strip()}\n``` ")
             else:
                 for indx, inst in enumerate(response_apps.text.strip().split()):
-                    reqresponse = variables_backend_request(apiendpoint='environments', projid=st.session_state.projectid,
-                                             envid=st.session_state.environmentid, apioption='relationships')
+                    st.write(f" ```{inst}``` ")
+                    reqresponse = variables_backend_request(
+                        apiendpoint='environments',
+                        projid=st.session_state.projectid,
+                        envid=st.session_state.environmentid,
+                        appid=st.session_state.envappid,
+                        apioption='relationships')
                     print(indx, inst, reqresponse)
                     st.write(f" ```\n{reqresponse.text.strip()}\n``` ")   
 
