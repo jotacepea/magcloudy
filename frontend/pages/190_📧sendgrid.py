@@ -4,7 +4,7 @@ from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-@st.cache_data(ttl=300)
+@st.cache_data(ttl=180)
 def sendgrid_backend_request(projid, envid, apiendpoint='sendgrid', apiparameter=None):
     if apiparameter is None:
         resp = requests.get(
@@ -19,14 +19,14 @@ def sendgrid_backend_request(projid, envid, apiendpoint='sendgrid', apiparameter
     print(resp)
     return resp
 
-@st.cache_data(ttl=60)
-def ssh_backend_request(projid, envid, apiendpoint='ssh', apiparameter=None):
+@st.cache_data(ttl=120)
+def ssh_backend_request(projid, envid, appid, apiendpoint='ssh', apiparameter=None):
     if apiparameter is None:
         resp = requests.get(
-            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{appid}")
     else:
         resp = requests.get(
-            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{appid}/{apiparameter}")
     print(resp)
     return resp
 
@@ -50,7 +50,7 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10 = st.tabs(
 
 with tab1:
     st.header("SendGrid Accounts")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
             f"Getting sendgrid accounts for: **{st.session_state.projectid}**")
         response = sendgrid_backend_request(projid=st.session_state.projectid,
@@ -60,11 +60,12 @@ with tab1:
 
 with tab2:
     st.header("SendGrid Info")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
             f"Getting sendgrid info for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         pcresponse = ssh_backend_request(projid=st.session_state.projectid,
                                             envid=st.session_state.environmentid,
+                                            appid=st.session_state.envappid,
                                             apiendpoint='ssh/platformcluster',
                                             apiparameter=0)
         if pcresponse:
@@ -77,7 +78,7 @@ with tab2:
 
 with tab3:
     st.header("SendGrid Domains")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
             f"Getting sendgrid domains info for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         if pcresponse:
@@ -88,7 +89,7 @@ with tab3:
 
 with tab4:
     st.header("SendGrid Stats")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
             f"Getting sendgrid stats for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         if pcresponse:
@@ -99,7 +100,7 @@ with tab4:
 
 with tab5:
     st.header("SendGrid Credit")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
             f"Getting sendgrid credit info for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         if pcresponse:
@@ -110,7 +111,7 @@ with tab5:
 
 with tab6:
     st.header("SendGrid Bounce")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
             f"Getting sendgrid bounce info for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         if pcresponse:
@@ -121,7 +122,7 @@ with tab6:
 
 with tab7:
     st.header("SendGrid Dropped")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
             f"Getting sendgrid dropped info for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         if pcresponse:
@@ -132,7 +133,7 @@ with tab7:
 
 with tab8:
     st.header("SendGrid Msg Get")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
             f"Getting sendgrid messages info for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         if pcresponse:
@@ -143,7 +144,7 @@ with tab8:
 
 with tab9:
     st.header("SendGrid Msg History")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
             f"Getting sendgrid messages info for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         if pcresponse:
@@ -154,7 +155,7 @@ with tab9:
 
 with tab10:
     st.header("SendGrid Blocklist")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
             f"Getting sendgrid blocklist info for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         if pcresponse:

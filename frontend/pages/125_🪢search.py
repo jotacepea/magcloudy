@@ -4,36 +4,36 @@ from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-@st.cache_data(ttl=300)
-def search_backend_request(projid, envid, apiendpoint='opensearch', apiparameter=None):
+@st.cache_data(ttl=120)
+def search_backend_request(projid, envid, appid, apiendpoint='opensearch', apiparameter=None):
     if apiparameter is None:
         apiparameter = 'version'
     if st.session_state.env_target_type.lower() == 'containerized':
         resp = requests.get(
-            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}?containerized=1")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{appid}/{apiparameter}?containerized=1")
     else:
         resp = requests.get(
-            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{appid}/{apiparameter}")
     print(resp)
     return resp
 
-@st.cache_data(ttl=150)
-def appconfig_backend_request(projid, envid, apiendpoint='binmagento', apiparameter=None):
+@st.cache_data(ttl=120)
+def appconfig_backend_request(projid, envid, appid, apiendpoint='binmagento', apiparameter=None):
     if apiparameter == None:
         apiparameter = 'version'
     resp = requests.get(
-        f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+        f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{appid}/{apiparameter}")
     print(resp)
     return resp
 
-@st.cache_data(ttl=60)
-def ssh_backend_request(projid, envid, apiendpoint='ssh', apiparameter=None):
+@st.cache_data(ttl=120)
+def ssh_backend_request(projid, envid, appid, apiendpoint='ssh', apiparameter=None):
     if apiparameter is None:
         resp = requests.get(
-            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{appid}")
     else:
         resp = requests.get(
-            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{appid}/{apiparameter}")
     print(resp)
     return resp
 
@@ -48,22 +48,24 @@ tab1, tab2, tab3, tab4 = st.tabs(
 
 with tab1:
     st.header("Search Engine Defined")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
-            f"Getting magento search engine defined for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+            f"Getting magento search engine defined for: **{st.session_state.envappid}** in **{st.session_state.environmentid}** from **{st.session_state.projectid}**")
         response = appconfig_backend_request(projid=st.session_state.projectid,
                                              envid=st.session_state.environmentid,
+                                             appid=st.session_state.envappid,
                                              apiparameter='searchengine')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab2:
     st.header("Version")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
-            f"Get Opensearch Version for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+            f"Get Opensearch Version for: **{st.session_state.envappid}** in **{st.session_state.environmentid}** from **{st.session_state.projectid}**")
         response = ssh_backend_request(projid=st.session_state.projectid,
-                                       envid=st.session_state.environmentid)
+                                       envid=st.session_state.environmentid,
+                                       appid=st.session_state.envappid)
         print(response)
         if response:
             st.caption(
@@ -77,17 +79,22 @@ with tab2:
                         f" ```ssh -L 19200:localhost:9200 {inst}``` ")
         st.write(st.session_state.env_target_type)
         response = search_backend_request(
-            projid=st.session_state.projectid, envid=st.session_state.environmentid)
+            projid=st.session_state.projectid,
+            envid=st.session_state.environmentid,
+            appid=st.session_state.envappid)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab3:
     st.header("Health")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
-            f"Getting Opensearch Health for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+            f"Getting Opensearch Health for: **{st.session_state.envappid}** in **{st.session_state.environmentid}** from **{st.session_state.projectid}**")
         response = search_backend_request(
-            projid=st.session_state.projectid, envid=st.session_state.environmentid, apiparameter='health')
+            projid=st.session_state.projectid,
+            envid=st.session_state.environmentid,
+            appid=st.session_state.envappid,
+            apiparameter='health')
         if response:
             for indx, openhealthline in enumerate(response.text.strip().split('\n')):
                 if 'status' in openhealthline:
@@ -112,11 +119,14 @@ with tab3:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 with tab4:
     st.header("Indices")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
-            f"Getting Opensearch Indices for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+            f"Getting Opensearch Indices for: **{st.session_state.envappid}** in **{st.session_state.environmentid}** from **{st.session_state.projectid}**")
         response = search_backend_request(
-            projid=st.session_state.projectid, envid=st.session_state.environmentid, apiparameter='indices')
+            projid=st.session_state.projectid,
+            envid=st.session_state.environmentid,
+            appid=st.session_state.envappid,
+            apiparameter='indices')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 

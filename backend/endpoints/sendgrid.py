@@ -68,7 +68,8 @@ def get_sendgrid_stats(project_id, environment_username):
 @sendgrid_bp.get('/sendgrid/<project_id>/<environment_username>/credit')
 def get_sendgrid_credit(project_id, environment_username):
     command_magecloud = f"curl -A \"{project_id}-{environment_username}\" -H \"Authorization: Bearer $(magento-cloud a:t 2>/dev/null)\" -s \
-        https://magento.sendgrid.pltfrm.sh/api/v1/sendgrid/credit/report/{environment_username}"
+        https://magento.sendgrid.pltfrm.sh/api/v1/sendgrid/credit/report/{environment_username} \
+        -XPOST -d '{{\"limit\": 90}}' "
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -80,7 +81,8 @@ def get_sendgrid_credit(project_id, environment_username):
 @sendgrid_bp.get('/sendgrid/<project_id>/<environment_username>/bounce')
 def get_sendgrid_bounce(project_id, environment_username):
     command_magecloud = f"curl -A \"{project_id}-{environment_username}\" -H \"Authorization: Bearer $(magento-cloud a:t 2>/dev/null)\" -s \
-        https://magento.sendgrid.pltfrm.sh/api/v1/sendgrid/messages/bounce/{environment_username}"
+        https://magento.sendgrid.pltfrm.sh/api/v1/sendgrid/messages/bounce/{environment_username} \
+        -XPOST -d '{{\"limit\": 90}}' "
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -92,7 +94,8 @@ def get_sendgrid_bounce(project_id, environment_username):
 @sendgrid_bp.get('/sendgrid/<project_id>/<environment_username>/dropped')
 def get_sendgrid_dropped(project_id, environment_username):
     command_magecloud = f"curl -A \"{project_id}-{environment_username}\" -H \"Authorization: Bearer $(magento-cloud a:t 2>/dev/null)\" -s \
-        https://magento.sendgrid.pltfrm.sh/api/v1/sendgrid/messages/dropped/{environment_username}"
+        https://magento.sendgrid.pltfrm.sh/api/v1/sendgrid/messages/dropped/{environment_username} \
+        -XPOST -d '{{\"limit\": 90}}' "
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -104,7 +107,8 @@ def get_sendgrid_dropped(project_id, environment_username):
 @sendgrid_bp.get('/sendgrid/<project_id>/<environment_username>/msgget')
 def get_sendgrid_messages_get(project_id, environment_username):
     command_magecloud = f"curl -A \"{project_id}-{environment_username}\" -H \"Authorization: Bearer $(magento-cloud a:t 2>/dev/null)\" -s \
-        https://magento.sendgrid.pltfrm.sh/api/v1/sendgrid/messages/get/{environment_username}"
+        https://magento.sendgrid.pltfrm.sh/api/v1/sendgrid/messages/get/{environment_username} \
+        -XPOST -d '{{\"limit\": 90}}' "
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -116,7 +120,8 @@ def get_sendgrid_messages_get(project_id, environment_username):
 @sendgrid_bp.get('/sendgrid/<project_id>/<environment_username>/msghist')
 def get_sendgrid_messages_history(project_id, environment_username):
     command_magecloud = f"curl -A \"{project_id}-{environment_username}\" -H \"Authorization: Bearer $(magento-cloud a:t 2>/dev/null)\" -s \
-        https://magento.sendgrid.pltfrm.sh/api/v1/sendgrid/messages/history/{environment_username}"
+        https://magento.sendgrid.pltfrm.sh/api/v1/sendgrid/messages/history/{environment_username} \
+        -XPOST -d '{{\"limit\": 90}}' "
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

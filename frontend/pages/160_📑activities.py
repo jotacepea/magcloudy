@@ -6,6 +6,10 @@ pageconfig()
 
 st.header("MagCloudy :blue[Activities] :bookmark_tabs:")
 
+if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
+    st.info(f"**magento-cloud act -p {st.session_state.projectid} -e {st.session_state.environmentid} -x cron --limit 15**")
+    st.info(f"**magento-cloud activity\:log -p {st.session_state.projectid} -e {st.session_state.environmentid} -x cron**")
+    
 activity_id_input = st.text_input(
     "Enter some activity id 👇",
     placeholder='2eqedl7pxynpa',

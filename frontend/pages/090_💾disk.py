@@ -34,14 +34,14 @@ with tab1:
         st.write(
             f"Getting disk usage for: **{st.session_state.envappid}** in **{st.session_state.environmentid}** from **{st.session_state.projectid}** Instances")
         if response_instances:
-            if len(response.text.strip().split()) == 1:
-                st.write(f" ```HD Usage {response.text.strip().split()}``` ")
+            if len(response_instances.text.strip().split()) == 1:
+                st.write(f" ```HD Usage {response_instances.text.strip().split()}``` ")
                 response = requests.get(
                     f"{st.session_state.reqfqdn}/disk/{st.session_state.projectid}/{st.session_state.environmentid}/{st.session_state.envappid}")
                 print(response)
                 st.write(f" ```\n{response.text.strip()}\n``` ")
             else:
-                for indx, inst in enumerate(response.text.strip().split()):
+                for indx, inst in enumerate(response_instances.text.strip().split()):
                     st.write(f" ```HD Usage {inst}``` ")
                     response = requests.get(
                         f"{st.session_state.reqfqdn}/disk/{st.session_state.projectid}/{st.session_state.environmentid}/{st.session_state.envappid}/{indx + 1}")
