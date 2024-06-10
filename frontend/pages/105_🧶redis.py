@@ -96,7 +96,7 @@ with tab3:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab4:
-    st.header("Big Lazy")
+    st.header("Redis Lazy Config")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
             f"Getting Redis Lazyfree-Lazy Server Config for: **{st.session_state.envappid}** in **{st.session_state.environmentid}** from **{st.session_state.projectid}**")

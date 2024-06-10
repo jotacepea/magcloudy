@@ -58,7 +58,7 @@ def get_ssh_fpm(project_id, environment, appid, instance=0):
     if instance == 0:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \'ps axuf | grep fpm | grep -v grep\'"
     else:
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} -I {instance} \'ps axuf | grep fpm | grep pool | grep -v grep\'"
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} -I {instance} \'ps axuf | grep -A16 \"runsv site-$USER-php\" | grep -vi root | grep -v grep\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -139,9 +139,54 @@ def get_ssh_ptmysqlsummary(project_id, environment, appid, instance=0):
 @ssh_bp.get('/ssh/platformcluster/<project_id>/<environment>/<appid>/<int:instance>')
 def get_ssh_platform_cluster(project_id, environment, appid, instance=0):
     if instance == 0:
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \"grep 'PLATFORM_CLUSTER=' /etc/profile.d/motd.sh | awk -F'=' '{{print \$2}}'  \""
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \"grep 'PLATFORM_CLUSTER=' /etc/profile.d/motd.sh | awk -F'=' '{{print \$2}}'  \" "
     else:
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} -I {instance} \'echo $PLATFORM_CLUSTER\'"
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} -I {instance} \'echo $PLATFORM_CLUSTER\' "
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+@ssh_bp.get('/ssh/nginxsyntax/<project_id>/<environment>/<appid>')
+@ssh_bp.get('/ssh/nginxsyntax/<project_id>/<environment>/<appid>/<int:instance>')
+def get_ssh_nginx_syntax(project_id, environment, appid, instance=0):
+    if instance == 0:
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \"\$(whereis nginx | awk '{{print \$2}}') -t \""
+    else:
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} -I {instance} \"\$(whereis nginx | awk '{{print \$2}}') -t -c /etc/platform/\$USER/nginx.conf \" "
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+@ssh_bp.get('/ssh/nginxservername/<project_id>/<environment>/<appid>')
+@ssh_bp.get('/ssh/nginxservername/<project_id>/<environment>/<appid>/<int:instance>')
+def get_ssh_nginx_server_name(project_id, environment, appid, instance=0):
+    if instance == 0:
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \"cat /etc/nginx.conf|grep -A5 'listen 8080'|grep 'server_name '|awk '{{print \$2}}' \" "
+    else:
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} -I {instance} \"cat /etc/platform/\$USER/nginx.conf|grep -A5 'listen 8080'|grep 'server_name '|awk '{{print \$2}}' \" "
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
+@ssh_bp.get('/ssh/nginxlisten/<project_id>/<environment>/<appid>')
+@ssh_bp.get('/ssh/nginxlisten/<project_id>/<environment>/<appid>/<int:instance>')
+def get_ssh_nginx_listen(project_id, environment, appid, instance=0):
+    if instance == 0:
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \"lsof -P -i -n | grep nginx | grep LISTEN | head\" "
+    else:
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} -I {instance} \'lsof -P -i -n | grep nginx | grep LISTEN | head\' "
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

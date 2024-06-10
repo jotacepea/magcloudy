@@ -40,11 +40,12 @@ def ssh_backend_request(projid, envid, appid, apiendpoint='ssh', apiparameter=No
 st.header("MagCloudy :blue[OpenSearch] :knot:")
 st.caption("**_In older versions could be ElasticSearch_**")
 
-tab1, tab2, tab3, tab4 = st.tabs(
+tab1, tab2, tab3, tab4, tab5 = st.tabs(
     ["Search Engine",
      "Opensearch Version",
      "Opensearch Health",
-     "Opensearch Indices"])
+     "Openserch Indices",
+     "Opensearch Heap"])
 
 with tab1:
     st.header("Search Engine Defined")
@@ -127,6 +128,19 @@ with tab4:
             envid=st.session_state.environmentid,
             appid=st.session_state.envappid,
             apiparameter='indices')
+        if response:
+            st.write(f" ```\n{response.text.strip()}\n``` ")
+
+with tab5:
+    st.header("Heap")
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
+        st.write(
+            f"Getting Opensearch Heap for: **{st.session_state.envappid}** in **{st.session_state.environmentid}** from **{st.session_state.projectid}**")
+        response = search_backend_request(
+            projid=st.session_state.projectid,
+            envid=st.session_state.environmentid,
+            appid=st.session_state.envappid,
+            apiparameter='heap')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 

@@ -65,3 +65,22 @@ def get_indices_opensearch(project_id, environment, appid, query_data):
         return "An error occurred while trying to shell cmd: %s" % e
 
     return strip_ansi(result_command_magecloud)
+
+@opensearch_bp.get('/opensearch/<project_id>/<environment>/<appid>/heap')
+@opensearch_bp.input(
+    {'containerized': Integer(load_default=0)},
+    location='query'
+)
+def get_heap_opensearch(project_id, environment, appid, query_data):
+    print(query_data['containerized'])
+    if query_data['containerized'] == 0:  # Unified Cluster
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \'curl -sk \"http://localhost:9200/_cat/nodes?h=heap*&v\"\'"
+    else:
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \'curl -sk \"http://opensearch.internal:9200/_cat/nodes?h=heap*&v\"\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)

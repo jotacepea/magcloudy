@@ -19,6 +19,11 @@ def appconfig_backend_request(projid, envid, appid, apiendpoint='binmagento', ap
 
 st.header("MagCloudy :blue[App Configuration] :battery:")
 
+if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
+    st.info("**php bin/magento config\:show\:default-url**")
+    st.info("**php bin/magento maintenance\:status**")
+    st.info("**php bin/magento store\:list -n**")
+
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs(
     ["Version",
      "Default URL",

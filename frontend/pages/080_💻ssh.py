@@ -4,7 +4,7 @@ from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-@st.cache_data(ttl=300)
+@st.cache_data(ttl=120)
 def ssh_backend_request(projid, envid, appid, apiendpoint='ssh', apiparameter=None):
     if apiparameter is None:
         resp = requests.get(

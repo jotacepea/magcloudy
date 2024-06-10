@@ -140,10 +140,6 @@ with tab9:
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
     else:
-        response = requests.get(
-            f"{st.session_state.reqfqdn}/ssh/ptmysqlsummary/{st.session_state.projectid}/{st.session_state.environmentid}/{st.session_state.envappid}")
-        print(response)
-        if response:
-            st.write(f" ```\n{response.text.strip()}\n``` ")
+        st.write(f"No DB Percona Tool info --> {st.session_state.env_target_type}")
 
 theend()

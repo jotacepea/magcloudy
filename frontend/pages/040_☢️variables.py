@@ -4,7 +4,7 @@ from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-@st.cache_data(ttl=300)
+@st.cache_data(ttl=120)
 def variables_backend_request(projid, apiendpoint='variables', envid=None, appid=None, apioption=None):
     if apiendpoint == 'environments':
         resp = requests.get(

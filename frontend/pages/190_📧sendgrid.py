@@ -34,8 +34,12 @@ st.header("MagCloudy :blue[SendGrid] :e-mail:")
 
 st.caption(
     f"[ExperienceLeague SendGrid](https://experienceleague.adobe.com/docs/commerce-cloud-service/user-guide/project/sendgrid.html) // \
-    [Adobe Commerce Cloud SendGrid API](https://wiki.corp.adobe.com/display/ACCOPS/Sendgrid+API+Commands)")
+    [Adobe Commerce Cloud SendGrid API](https://wiki.corp.adobe.com/display/ACCOPS/Sendgrid+API+Commands) // \
+    [Overwatch](https://sendgrid.pltfrm.sh/docs/)")
 
+if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
+    st.info("**curl -H 'Authorization: Bearer $(magento-cloud a\:t 2>/dev/null)' -s https\://magento-admin.sendgrid.pltfrm.sh/api/v1/sendgrid/info/me**")
+    
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10 = st.tabs(
     ["SendGrid Search",
      "SendGrid Info",
@@ -147,6 +151,8 @@ with tab9:
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
             f"Getting sendgrid messages info for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        st.caption(
+                f"The History endpoint doesn't have everything (sampling). Sendgrid doesn't offer that under the current Adobe Commerce Cloud subscription.")
         if pcresponse:
             response = sendgrid_backend_request(projid=st.session_state.projectid,
                                             envid=pcresponse_platformcluster.strip(), apiparameter='msghist')

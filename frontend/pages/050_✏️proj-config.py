@@ -4,7 +4,7 @@ from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-@st.cache_data(ttl=300)
+@st.cache_data(ttl=120)
 def projconfig_backend_request(projid, envid, apiendpoint='files', apiparameter=None):
     if apiparameter is None:
         resp = requests.get(
@@ -27,8 +27,8 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs(
      "Mage .env.",
      "Mage -vars-",
      "Mage -config-",
-     "Mage services",
-     "Mage routes",
+     "Mage /services.",
+     "Mage /routes.",
      "Mage php.ini"])
 
 with tab1:
