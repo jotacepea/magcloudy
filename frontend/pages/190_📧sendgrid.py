@@ -38,7 +38,9 @@ st.caption(
     [Overwatch](https://sendgrid.pltfrm.sh/docs/)")
 
 if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
-    st.info("**curl -H 'Authorization: Bearer $(magento-cloud a\:t 2>/dev/null)' -s https\://magento-admin.sendgrid.pltfrm.sh/api/v1/sendgrid/info/me**")
+    st.info("**curl -sH \"Authorization: Bearer $(magento-cloud a\:t 2>/dev/null)\" 'https://magento-admin.sendgrid.pltfrm.sh/api/v1/sendgrid/info/me'**")
+    st.info(f"**clush -LNw $(magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} --all --pipe |\
+            tr '\\n' ',' | rev | cut -c2- | rev) 'hostname;grep sendgrid /var/log/mail.log | tail'**")
     
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10 = st.tabs(
     ["SendGrid Search",

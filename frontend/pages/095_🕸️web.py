@@ -4,7 +4,7 @@ from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-@st.cache_data(ttl=120)
+@st.cache_data(ttl=180)
 def ssh_backend_request(projid, envid, appid, apiendpoint='ssh', apiparameter=None):
     if apiparameter is None:
         resp = requests.get(
@@ -15,43 +15,72 @@ def ssh_backend_request(projid, envid, appid, apiendpoint='ssh', apiparameter=No
     print(resp)
     return resp
 
+@st.cache_data(ttl=180)
+def appconfig_backend_request(projid, envid, appid, apiendpoint='binmagento', apiparameter=None):
+    if apiparameter == None:
+        apiparameter = 'version'
+    resp = requests.get(
+        f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{appid}/{apiparameter}")
+    print(resp)
+    return resp
+
 st.header("MagCloudy :blue[Web] :spider_web:")
 
 if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
-    st.info(f"""
-        **magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} \
-            'echo;echo;echo curl -sI \"\$(php bin/magento config\:show\:default-url)/\" -H \"Fastly-Debug: True\" -H \"Fastly-No-Shield: 1\" \
-            -H \"X-Forwarded-Proto: https\" -H \"Host: \$(tst=\$(php bin/magento config\:show\:default-url) && echo \${{tst#\*//}})\" \
-            -A \"tatata\";echo;echo'**
-            """)
-    st.info(f"""
-       **magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} \
-            \'curl -sI "http://localhost:8080/" -H "X-Forwarded-Proto: https" -H "Host: \$(tmpmst=\$(php bin/magento config\:show\:default-url) && echo \${{tmpmst#\*//}})" \
-            -A "tatata-agent" \'**
-            """)
-    st.info(f"""
-       **magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} \
-            \'curl -sI "http://localhost:8080/static/deployed_version.txt" -H "X-Forwarded-Proto: https" -H "Host: \$(tmpmst=\$(php bin/magento config\:show\:default-url) && echo \${{tst#\*//}})" \
-            -A "tatata-agent" \'**
-            """)
-    st.info(f"""
-       **magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} \
-            \'curl -sI "http://localhost:8080/checkout/cart/" -H "X-Forwarded-Proto: https" -H "Host: \$(tmpmst=\$(php bin/magento config\:show\:default-url) && echo \${{tst#\*//}})" \
-            -A "tatata-agent" \'**
-            """)
-    st.info(f"""
-       **magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} \
-            \'curl -sI "http://localhost:8080/health_check.php" -H "X-Forwarded-Proto: https" -H "Host: \$(tst=\$(php bin/magento config\:show\:default-url) && echo \${{tst#\*//}})" \
-            -A "tatata-agent" \'**
-            """)
-    st.info(f"""
-       **magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} \
-            \'curl -sI "http://localhost:8080/magento_version" -H "X-Forwarded-Proto: https" -H "Host: \$(tmpmst=\$(php bin/magento config\:show\:default-url) && echo \${{tmpmst#\*//}})" \
-            -A "tatata-agent" \'**
-            """)
+    response = appconfig_backend_request(projid=st.session_state.projectid,
+                                            envid=st.session_state.environmentid,
+                                            appid=st.session_state.envappid,
+                                            apiparameter='defaulturl')
+    if response:
+        print(response)
+        storedefaulturl = response.text.strip()
+            
+    storedefaulturl_parts = storedefaulturl.split('/')
+    print(storedefaulturl_parts)
+    print(storedefaulturl_parts[2])
 
-tab1, tab2, tab3 = st.tabs(
-    ["Nginx Check",
+if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
+    st.info(f"""
+        **curl -sI \"{storedefaulturl}\" -A \"tatata-agent\" \
+            -H \"Fastly-Debug: True\" -H \"Fastly-No-Shield: 1\" \
+            -H \"X-Forwarded-Proto: https\" -H \"Host: {storedefaulturl_parts[2]}\"**
+        """)
+    st.info(f"""
+        **curl -LSsD - -o /dev/null \"{storedefaulturl}\" \
+            -H \"Content-Type: application/json\" -A \"tatata-agent\" \
+            -H \"Fastly-Debug: True\" -H \"Fastly-No-Shield: 1\" \
+            -H \"X-Forwarded-Proto: https\" -H \"Host: {storedefaulturl_parts[2]}\" \
+            -d \'{{ \"query\": \"mutation {{ createEmptyCart }}\" }}\'**
+        """)
+    st.info(f"""
+       **magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} \
+            \'curl -sI "http://localhost:8080/" -H "X-Forwarded-Proto: https" -H "Host: {storedefaulturl_parts[2]}" \
+            -A "tatata-agent" \'**
+        """)
+    st.info(f"""
+       **magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} \
+            \'curl -sI "http://localhost:8080/static/deployed_version.txt" -H "X-Forwarded-Proto: https" -H "Host: {storedefaulturl_parts[2]}" \
+            -A "tatata-agent" \'**
+        """)
+    st.info(f"""
+       **magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} \
+            \'curl -sI "http://localhost:8080/checkout/cart/" -H "X-Forwarded-Proto: https" -H "Host: {storedefaulturl_parts[2]}" \
+            -A "tatata-agent" \'**
+        """)
+    st.info(f"""
+       **magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} -I 1\
+            \'curl -sI "http://localhost:8080/health_check.php" -H "X-Forwarded-Proto: https" -H "Host: {storedefaulturl_parts[2]}" \
+            -A "tatata-agent" \'**
+        """)
+    st.info(f"""
+       **magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} -I 1\
+            \'curl -sI "http://localhost:8080/magento_version" -H "X-Forwarded-Proto: https" -H "Host: {storedefaulturl_parts[2]}" \
+            -A "tatata-agent" \'**
+        """)
+
+tab1, tab2, tab3, tab4 = st.tabs(
+    ["Nginx Version"
+     "Nginx Check",
      "Nginx Server Info",
      "Nginx Server Names"])
 

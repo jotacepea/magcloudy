@@ -19,6 +19,11 @@ def appconfig_backend_request(projid, envid, appid, apiendpoint='binmagento', ap
 
 st.header("MagCloudy :blue[App Indexers] :card_index_dividers:")
 
+if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
+    st.info("**php bin/magento indexer\:status**")
+    st.info("**php bin/magento indexer\:reset**")
+    st.info("**php bin/magento indexer\:reindex**")
+
 tab1, tab2 = st.tabs(
     ["Mage Indexer", "Mage Indexer Cron"])
 

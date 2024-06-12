@@ -4,7 +4,7 @@ from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-@st.cache_data(ttl=120)
+@st.cache_data(ttl=180)
 def appconfig_backend_request(projid, envid, appid, apiendpoint='binmagento', apiparameter=None):
     if apiparameter == None:
         apiparameter = 'version'
@@ -92,6 +92,14 @@ with tab5:
                                              appid=st.session_state.envappid,
                                              apiparameter='adminurl')
         if response:
+            st.write(f" ```\n{response.text.strip()}\n``` ")
+
+        response = appconfig_backend_request(projid=st.session_state.projectid,
+                                             envid=st.session_state.environmentid,
+                                             appid=st.session_state.envappid,
+                                             apiparameter='adminurlcustom')
+        if response:
+            st.write("Store Admin Url Custom Path (if defined):")
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab6:

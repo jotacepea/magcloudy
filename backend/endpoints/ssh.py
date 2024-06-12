@@ -154,7 +154,7 @@ def get_ssh_platform_cluster(project_id, environment, appid, instance=0):
 @ssh_bp.get('/ssh/nginxsyntax/<project_id>/<environment>/<appid>/<int:instance>')
 def get_ssh_nginx_syntax(project_id, environment, appid, instance=0):
     if instance == 0:
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \"\$(whereis nginx | awk '{{print \$2}}') -t \""
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \"\$(whereis nginx | awk '{{print \$2}}') -V \" "
     else:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} -I {instance} \"\$(whereis nginx | awk '{{print \$2}}') -t -c /etc/platform/\$USER/nginx.conf \" "
     try:
@@ -169,9 +169,9 @@ def get_ssh_nginx_syntax(project_id, environment, appid, instance=0):
 @ssh_bp.get('/ssh/nginxservername/<project_id>/<environment>/<appid>/<int:instance>')
 def get_ssh_nginx_server_name(project_id, environment, appid, instance=0):
     if instance == 0:
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \"cat /etc/nginx.conf|grep -A5 'listen 8080'|grep 'server_name '|awk '{{print \$2}}' \" "
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \"cat /etc/nginx/nginx.conf | grep -A5 'listen 8080' | grep 'server_name '| awk '{{print \$2}}' \" "
     else:
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} -I {instance} \"cat /etc/platform/\$USER/nginx.conf|grep -A5 'listen 8080'|grep 'server_name '|awk '{{print \$2}}' \" "
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} -I {instance} \"cat /etc/platform/\$USER/nginx.conf | grep -A5 'listen 8080' | grep 'server_name ' | awk '{{print \$2}}' \" "
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

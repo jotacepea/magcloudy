@@ -52,7 +52,7 @@ RUN newrelic-cli help
 
 # make sure all messages always reach console
 ENV PYTHONUNBUFFERED=1
-# create and activate virtual environment
+# create and activate virtual environment (not really needed, because it is a container, but it is a good practice!)
 RUN python3 -m venv ${APP_PATH}/venv
 ENV PATH="${APP_PATH}/venv/bin:$PATH"
 # install requirements

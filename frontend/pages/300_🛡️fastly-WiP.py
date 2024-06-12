@@ -4,7 +4,7 @@ from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
 
-@st.cache_data(ttl=120)
+@st.cache_data(ttl=180)
 def fastly_backend_request(projid, envid, apiendpoint='fastly', apiparameter=None):
     if apiparameter is None:
         resp = requests.get(
@@ -12,6 +12,15 @@ def fastly_backend_request(projid, envid, apiendpoint='fastly', apiparameter=Non
     else:
         resp = requests.get(
             f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+    print(resp)
+    return resp
+
+@st.cache_data(ttl=180)
+def appconfig_backend_request(projid, envid, appid, apiendpoint='binmagento', apiparameter=None):
+    if apiparameter == None:
+        apiparameter = 'version'
+    resp = requests.get(
+        f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{appid}/{apiparameter}")
     print(resp)
     return resp
 
@@ -38,11 +47,12 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10, tab11, tab12, tab13
 
 with tab1:
     st.header("Cache Status")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
             f"Getting magento cache status for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
-        response = fastly_backend_request(projid=st.session_state.projectid,
+        response = appconfig_backend_request(projid=st.session_state.projectid,
                                             envid=st.session_state.environmentid,
+                                            appid=st.session_state.envappid,
                                             apiendpoint='binmagento',
                                             apiparameter='cache')
         if response:
