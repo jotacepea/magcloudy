@@ -17,6 +17,16 @@ def ssh_backend_request(projid, envid, appid, apiendpoint='ssh', apiparameter=No
 
 st.header("MagCloudy :blue[Crons] :timer_clock:")
 
+if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
+    st.info("**php bin/magento config\:show | grep -i cron**")
+    st.info("**php bin/magento cron -h**")
+    st.info("**php vendor/bin/ece-tools cron -h**")
+    st.info(f"""
+       **magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} \
+            \"find ./app/ ./vendor/ -name 'cron_groups.xml' | xargs grep 'group id' | awk '{{print \\\$3}}' | sort | \
+                uniq | sed 's/id=//g' | sed 's/>//g' | xargs -I {{}} echo --group={{}}  \"**
+        """)
+    
 tab1, tab2, tab3 = st.tabs(
     ["CronTab",
      "Cron List",
