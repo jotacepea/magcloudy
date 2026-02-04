@@ -1,4 +1,4 @@
-FROM ubuntu:23.04
+FROM ubuntu:24.04
 
 # Install all OS dependencies for fully functional notebook server
 RUN apt-get update -y \
@@ -10,7 +10,7 @@ RUN apt-get update -y \
     git \
     unzip \
     vim \
-    php8.1 \
+    php \
     openssh-client \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
@@ -30,14 +30,14 @@ RUN mkdir ~/.ssh \
 # Install PHP: verify
 RUN php -v
 # Install cli
-RUN curl -s -S https://accounts.magento.cloud/cli/installer | php -- --min 1.46.1 --no-interaction
+RUN curl -s -S https://accounts.magento.cloud/cli/installer | php -- --min 1.47.0 --no-interaction
 RUN cp ~/.magento-cloud/bin/magento-cloud /usr/local/bin/
 RUN magento-cloud -V
 
 # Install Fastly cli
 ENV FASTLY_CLI_VER='10.7.0'
-RUN wget https://github.com/fastly/cli/releases/download/v${FASTLY_CLI_VER}/fastly_${FASTLY_CLI_VER}_linux_arm64.deb
-RUN apt-get install -y ./fastly_${FASTLY_CLI_VER}_linux_arm64.deb
+RUN wget https://github.com/fastly/cli/releases/download/v${FASTLY_CLI_VER}/fastly_${FASTLY_CLI_VER}_linux_$(dpkg --print-architecture).deb
+RUN apt-get install -y ./fastly_${FASTLY_CLI_VER}_linux_$(dpkg --print-architecture).deb
 RUN fastly version
 
 # Install NewRelic cli
@@ -59,9 +59,10 @@ ENV PATH="${APP_PATH}/venv/bin:$PATH"
 COPY requirements.txt .
 RUN pip3 install --no-cache-dir wheel
 RUN pip3 install --no-cache-dir -r requirements.txt
+
 # Copies everything to the working directory
 COPY . ${APP_PATH}
 
 ENV DEFAULT_SERVICE_PORT='5000'
 # Command to run on container start    
-CMD [ "python3" , "./app.py" ]
+CMD [ "python3", "./app.py" ]

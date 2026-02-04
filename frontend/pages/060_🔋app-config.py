@@ -114,7 +114,7 @@ with tab6:
         if response:
             for indx, mstatusline in enumerate(response.text.strip().split('\n')):
                 if 'Status' in mstatusline:
-                    if 'not' in mstatusline:
+                    if 'not' or 'disabled' in mstatusline:
                         st.success("**Maintenance mode Off!**", icon="✅")
                     else:
                         st.error("**Maintenance Enabled!**", icon="🚨")

@@ -1,5 +1,6 @@
 import streamlit as st
 
+enable_select_proj_env_warning = True
 
 def pageconfig():
     st.set_page_config(page_title="MagCloudy",
@@ -9,23 +10,23 @@ def pageconfig():
     hide_menu = """
     <style>
     #MainMenu {
-        visibility:hidden;
+        visibility: hidden;
     }
-    .stDeployButton {
-        display:none;
+    .stAppDeployButton {
+        display: none;
     }
     footer{
-        visibility:hidden;
+        visibility: hidden;
     }
     #stDecoration {
-        display:none;
+        display: none;
     }
     </style>
     """
     st.markdown(hide_menu, unsafe_allow_html=True)
 
 
-def theend():
+def theend(enable_select_proj_env_warning = True):
     if st.session_state.projectid == 'noprojid':
         st.sidebar.write(
             f"Selected Project ID: :red[{st.session_state.projectid}]")
@@ -56,3 +57,9 @@ def theend():
     else:
         st.sidebar.write(
             f"Project Region Domain: :orange[{st.session_state.projectregiondomain}]")
+    
+    # Warning message to remember users to select project and environment, if not already selected!!
+    if st.session_state.projectid == 'noprojid' or st.session_state.environmentid == 'noenvid':
+        if enable_select_proj_env_warning:
+            st.warning('''Please remember to select the Project ID **(in projects)** and 
+                       the Environment **(in environments info)** you would like to work with!!!''', icon="⚠️")

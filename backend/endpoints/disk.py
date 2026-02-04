@@ -11,7 +11,7 @@ def get_disk(project_id, environment, appid, instance=0):
     if instance == 0:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \'df -h\'"
     else:
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} -I {instance} \'df -h\'"
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} -I {instance} \'df -h | grep /dev/s \'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

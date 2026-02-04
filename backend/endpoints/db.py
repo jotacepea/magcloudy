@@ -53,6 +53,24 @@ def get_db_tablesize(project_id, environment, appid):
 
     return strip_ansi(result_command_magecloud)
 
+@db_bp.get('/db/<project_id>/<environment>/<appid>/tablesizefragratio')
+def get_db_tablesizefragratio(project_id, environment, appid):
+    command_magecloud = f"""magento-cloud db:sql -p {project_id} -e {environment} -A {appid} -r database \'
+                SELECT ENGINE, TABLE_SCHEMA AS `Db`, TABLE_NAME AS `Table`, 
+                    ROUND(((DATA_LENGTH) / 1024 / 1024), 2) as `Size in MB`, ROUND(((INDEX_LENGTH) / 1024 / 1024), 2) as `Index in MB`, ROUND(DATA_FREE/1024/1024, 2) as `Free in MB`, 
+                    (DATA_FREE/(INDEX_LENGTH+DATA_LENGTH)) as frag_ratio 
+                    FROM information_schema.TABLES 
+                    WHERE DATA_FREE > 0 
+                    ORDER BY DATA_FREE DESC LIMIT 15;
+                    \'"""
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
+
+    return strip_ansi(result_command_magecloud)
+
 
 @db_bp.get('/db/<project_id>/<environment>/<appid>/myisam')
 def get_db_myisam(project_id, environment, appid):

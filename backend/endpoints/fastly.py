@@ -7,9 +7,9 @@ from strip_ansi import strip_ansi
 fastly_bp = APIBlueprint('fastly-blueprint', __name__)
 
 
-@fastly_bp.get('/fastly/<project_id>/<environment>')
-def get_fastly(project_id, environment):
-    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} --no-interaction \'bin/magento fastly:conf:get -e -s -n --no-ansi\'"
+@fastly_bp.get('/fastly/<project_id>/<environment>/<appid>/info')
+def get_fastly_info(project_id, environment, appid):
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} --no-interaction \'bin/magento fastly:conf:get -e -s -n --no-ansi\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -18,10 +18,20 @@ def get_fastly(project_id, environment):
 
     return strip_ansi(result_command_magecloud)
 
+@fastly_bp.get('/fastly/<project_id>/<environment>/<appid>/moduleinfo')
+def get_fastly_moduleinfo(project_id, environment, appid):
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} --no-interaction \'grep version vendor/fastly/magento2/composer.json\'"
+    try:
+        result_command_magecloud = subprocess.check_output(
+            [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to shell cmd: %s" % e
 
-@fastly_bp.get('/fastly/<project_id>/<environment>/credentials')
-def get_fastly_credentials(project_id, environment):
-    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} --no-interaction \'grep -A2 ${{USER}} /mnt/shared/fastly_tokens.txt\'"
+    return strip_ansi(result_command_magecloud)
+
+@fastly_bp.get('/fastly/<project_id>/<environment>/<appid>/credentials')
+def get_fastly_credentials(project_id, environment, appid):
+    command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} --no-interaction \'grep -w -A2 ${{USER}} /mnt/shared/fastly_tokens.txt\'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -34,7 +44,7 @@ def get_fastly_credentials(project_id, environment):
 @fastly_bp.input(
     {'fast_token': String(load_default='tata-123-error-tata-123')},
     location='query'
-)    
+)
 def get_fastly_service(project_id, fastly_service_id, query_data):
     print(query_data['fast_token'])
     fast_token = query_data['fast_token']
@@ -149,7 +159,6 @@ def get_fastly_stats(project_id, fastly_service_id, query_data):
 
     return result_command_magecloud
 
-
 @fastly_bp.get('/fastly/<project_id>/<fastly_service_id>/tlsconfig')
 @fastly_bp.input(
     {'fast_token': String(load_default='tata-123-error-tata-123')},
@@ -166,7 +175,6 @@ def get_fastly_tlsconfig(project_id,fastly_service_id, query_data):
         return "An error occurred while trying to shell cmd: %s" % e
 
     return result_command_magecloud
-
 
 @fastly_bp.get('/fastly/<project_id>/<fastly_service_id>/vclcondition')
 @fastly_bp.input(

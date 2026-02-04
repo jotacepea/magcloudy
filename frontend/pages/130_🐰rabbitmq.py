@@ -84,6 +84,11 @@ with tab2:
             appid=st.session_state.envappid,
             apiparameter='show')
         if response:
+            for indx, rabbitinfoline in enumerate(response.text.strip().split('\n')):
+                if 'queues' in rabbitinfoline:
+                    rabbitinfoline = rabbitinfoline.replace(":", " ")
+                    print(rabbitinfoline)
+                    st.write(f" ```{rabbitinfoline}``` ")
             st.write(f" ```\n{response.text.strip()}\n``` ")
 with tab3:
     st.header("Queues")
@@ -96,6 +101,9 @@ with tab3:
             appid=st.session_state.envappid,
             apiparameter='listqueues')
         if response:
+            num_of_rmq_queues=len(response.text.strip().split('\n'))
+            print(num_of_rmq_queues)
+            st.caption(f"**_Number of RabbitMQ queues defined_** ---> ```{num_of_rmq_queues}``` ")
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab4:

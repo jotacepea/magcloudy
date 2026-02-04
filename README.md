@@ -8,7 +8,7 @@ MagCloudy is a local tool running in docker containers for reviewing and for deb
 
 ## Requirements
 
-- Docker and Docker Compose: [Install](https://docs.docker.com/guides/getting-started/get-docker-desktop/#explanation)
+- Docker and Docker Compose: [Install](https://docs.docker.com/desktop/)
 - Magento Cloud CLI: [API Token](https://experienceleague.adobe.com/en/docs/commerce-cloud-service/user-guide/project/multi-factor-authentication#connect-to-an-environment-using-ssh-with-an-api-token)
 
 ## Good to have
@@ -51,13 +51,11 @@ FrontEnd container offering GUI in Python [Streamlit](https://docs.streamlit.io/
 Because it is very easy to create web pages and you do not need to have deep knowledge about HTML, CSS and JS.
 Of course, if you have this frontend knowledge then, you can create even better web pages.
 
-Streamlit scripts are executed secuentially then, we do not put extra work over the environemnt we are reviewing.
+Streamlit scripts are executed secuentially then, we do not put extra work/pressure over the environemnt we are reviewing.
 
 More [info](https://docs.streamlit.io/get-started/fundamentals/summary).
 
 ## Notes
 
-- The Adobe Global Protect VPN can add some small delay to the background commands.
-- Sometimes and for some projects, the Magento Cloud API service has performance issues.
-
-
+- Sometimes and for some projects, the Magento Cloud API service has performance issues. It is not because of this tool. (Contact your Cloud Support)
+- The NewRelic section is not fully supported jet (Wip).

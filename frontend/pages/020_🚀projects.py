@@ -99,4 +99,7 @@ with tab4:
         print(response)
         st.write(f" ```\n{response.text.strip()}\n``` ")
 
-theend()
+if st.session_state.projectid != 'noprojid':
+    theend(enable_select_proj_env_warning = False)
+else:
+    theend()

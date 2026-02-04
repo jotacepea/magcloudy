@@ -11,10 +11,11 @@ if st.session_state.projectid != 'noprojid' and st.session_state.environmentid !
     if st.session_state.env_target_type.lower() != 'containerized':
         st.info(f"**magento-cloud sql -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} -r database-slave**")
 
-tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs(
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10 = st.tabs(
     ["Db Version",
      "Db Size",
      "Db Tables Size",
+     "Db Tables Frag Ratio",
      "Db Process",
      "DB Status",
      "Cluster Status",
@@ -55,9 +56,30 @@ with tab3:
             f"{st.session_state.reqfqdn}/db/{st.session_state.projectid}/{st.session_state.environmentid}/{st.session_state.envappid}/tablesize")
         print(response)
         if response:
+            code_query_line="SELECT table_schema as `Database`, table_name AS `Table`, ROUND(((data_length + index_length) / 1024 / 1024), 2) `Size in MB` FROM information_schema.TABLES ORDER BY (data_length + index_length) DESC LIMIT 15;"
+            st.code(code_query_line, language='bash')
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab4:
+    st.header("DB Table Frag Space")
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+        st.write(
+            f"Getting DB Tables Frag Free size for: **{st.session_state.envappid}** in **{st.session_state.environmentid}** from **{st.session_state.projectid}**")
+        response = requests.get(
+            f"{st.session_state.reqfqdn}/db/{st.session_state.projectid}/{st.session_state.environmentid}/{st.session_state.envappid}/tablesizefragratio")
+        print(response)
+        if response:
+            code_query_line="""SELECT ENGINE, TABLE_SCHEMA AS `Db`, TABLE_NAME AS `Table`, 
+                ROUND(((DATA_LENGTH) / 1024 / 1024), 2) as `Size in MB`, ROUND(((INDEX_LENGTH) / 1024 / 1024), 2) as `Index in MB`, ROUND(DATA_FREE/1024/1024, 2) as `Free in MB`, 
+                (DATA_FREE/(INDEX_LENGTH+DATA_LENGTH)) as frag_ratio 
+                FROM information_schema.TABLES 
+                WHERE DATA_FREE > 0 
+                ORDER BY DATA_FREE DESC LIMIT 15;
+                """
+            st.code(code_query_line, language='bash')
+            st.write(f" ```\n{response.text.strip()}\n``` ")
+
+with tab5:
     st.header("DB Process")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(
@@ -76,7 +98,7 @@ with tab4:
                 st.write("Read connection...")
                 st.write(f" ```\n{response.text.strip()}\n``` ")
 
-with tab5:
+with tab6:
     st.header("DB Stats")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.env_target_type.lower() != 'containerized':
         st.write(
@@ -89,7 +111,7 @@ with tab5:
     else:
         st.write(f"No DB status info --> {st.session_state.env_target_type}")
 
-with tab6:
+with tab7:
     st.header("DB Cluster Status")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.env_target_type.lower() != 'containerized':
         st.write(
@@ -102,7 +124,7 @@ with tab6:
     else:
         st.write(f"No DB Cluster info --> {st.session_state.env_target_type}")
 
-with tab7:
+with tab8:
     st.header("Check MyISAM tables")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.env_target_type.lower() != 'containerized':
         st.write(
@@ -115,7 +137,7 @@ with tab7:
     else:
         st.write(f"No DB tables info --> {st.session_state.env_target_type}")
 
-with tab8:
+with tab9:
     st.header("Check Primary KEY on tables")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.env_target_type.lower() != 'containerized':
         st.write(
@@ -129,7 +151,7 @@ with tab8:
         st.write(f"No DB tables info --> {st.session_state.env_target_type}")
 
 
-with tab9:
+with tab10:
     st.header("PT MySQL Summary")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.env_target_type.lower() != 'containerized':
         st.write(

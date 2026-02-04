@@ -81,6 +81,15 @@ with tab2:
             appid=st.session_state.envappid,
             apiparameter='sinfo')
         if response:
+            for indx, rediserverinfoline in enumerate(response.text.strip().split('\n')):
+                if 'version' in rediserverinfoline:
+                    rediserverinfoline = rediserverinfoline.replace(":", " ")
+                    print(rediserverinfoline)
+                    st.write(f" ```{rediserverinfoline}``` ")
+                if 'days' in rediserverinfoline:
+                    rediserverinfoline = rediserverinfoline.replace(":", " ")
+                    print(rediserverinfoline)
+                    st.write(f" ```{rediserverinfoline}``` ")
             st.write(f" ```\n{response.text.strip()}\n``` ")
 with tab3:
     st.header("Info")
@@ -93,6 +102,15 @@ with tab3:
             appid=st.session_state.envappid,
             apiparameter='info')
         if response:
+            for indx, redisinfoline in enumerate(response.text.strip().split('\n')):
+                if 'human' in redisinfoline:
+                    redisinfoline = redisinfoline.replace(":", " ")
+                    print(redisinfoline)
+                    st.write(f" ```{redisinfoline}``` ")
+                if 'avg_ttl' in redisinfoline:
+                    redisinfoline = redisinfoline.replace(":", " ")
+                    print(redisinfoline)
+                    st.write(f" ```{redisinfoline}``` ")
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab4:

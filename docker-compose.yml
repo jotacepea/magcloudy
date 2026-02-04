@@ -1,20 +1,26 @@
 x-app: &default-app
-  env_file:
-    - ".env"
+  ## env_file:
+  ##   - ".env"
   restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
   stop_grace_period: "3s"
   tty: true
-  healthcheck:
-    interval: "15s"
-    timeout: "3s"
-    start_period: "5s"
+  healthcheck: &default-healthcheck
+    interval: "3s"
+    timeout: "1s"
+    start_period: "1s"
     retries: 3
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "${LOG_MAX_SIZE:-20m}"
+      max-file: "${LOG_MAX_FILE:-10}"
+      compress: "true"
 
 services:
   apibackend:
     <<: *default-app
     build:
-      context: "./backend"
+      context: './backend'
       dockerfile: Dockerfile
       args:
         - "APP_ENV=${APP_ENV}"
@@ -24,6 +30,7 @@ services:
     ports:
       - "${DOCKER_BACKEND_PORT_FORWARD}:${BACKEND_PORT}"
     healthcheck:
+      <<: *default-healthcheck
       test: "${DOCKER_BACKEND_HEALTHCHECK_TEST}"
 
   frontend:
@@ -31,11 +38,12 @@ services:
     depends_on:
       - "apibackend"
     build:
-      context: "./frontend"
+      context: './frontend'
       dockerfile: Dockerfile
       args:
         - "APP_ENV=${APP_ENV}"
     ports:
       - "${DOCKER_FRONTEND_PORT_FORWARD}:${FRONTEND_PORT}"
     healthcheck:
+      <<: *default-healthcheck
       test: "${DOCKER_FRONTEND_HEALTHCHECK_TEST}"

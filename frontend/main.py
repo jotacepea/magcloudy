@@ -43,4 +43,4 @@ if 'env_target_type' not in st.session_state:
 if 'projectregiondomain' not in st.session_state:
     st.session_state.projectregiondomain = None
 
-theend()
+theend(enable_select_proj_env_warning = False)

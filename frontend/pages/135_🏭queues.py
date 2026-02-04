@@ -6,6 +6,17 @@ pageconfig()
 
 st.header("MagCloudy :blue[Queues] :factory:")
 
+if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
+    st.info("""
+**Message queue status codes:**          
+- The message queue with the status **2** denotes the status “New”. 
+- The message queue with the status **3** denotes “In Progress”. 
+- The message queue with the status **4** denotes the status “Completed”. 
+- The message queue with the status **5** denotes the “Retry Required” status. It is due to the process being stuck due to any runtime issue. 
+- The message queue with the status **6** denotes the status “Error”. It means the queue cannot execute due to the error.            
+- The message queue with the status **7** denotes the status “Delete”.
+""")
+
 tab1, tab2, tab3, tab4 = st.tabs(
     ["DB Queues",
      "DB Queue Messages",
@@ -23,6 +34,9 @@ with tab1:
         if response:
             code_query_line="select id, name from queue;"
             st.code(code_query_line, language='bash')
+            num_of_db_queues=len(response.text.strip().split('\n')) - 4 #The number 4 is for cleaning DB SQL output ---
+            print(num_of_db_queues)
+            st.caption(f"**_Number of DB queues defined_** ---> ```{num_of_db_queues}``` ")
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab2:

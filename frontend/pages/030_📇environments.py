@@ -80,7 +80,7 @@ with tab2:
             numberapps=len(appresponse.text.strip().split('\n'))
             print(numberapps)
             if numberapps > 1:
-                st.warning("**More than One App running in this Env...**", icon="🚧")
+                st.warning("**More than One App running in this Env... Please, select one of them (in apps info)**", icon="🚧")
                 st.write(f" ```\n{appresponse.text.strip()}\n``` ")
             else:
                 if numberapps == 1:

@@ -29,6 +29,9 @@ def apps_backend_request(projid, envid, apiendpoint='apps', formatvalue='plain',
 
 st.header("MagCloudy :blue[Environment Variables] :radioactive_sign:")
 
+if st.session_state.envappid == 'noenvappid':
+    st.warning("**Please, select one of them (in apps)**", icon="🚧")
+
 if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
     st.info(f"**magento-cloud var -p {st.session_state.projectid} -e {st.session_state.environmentid}**")
     st.info(f"**magento-cloud vget -p {st.session_state.projectid} -e {st.session_state.environmentid} ADMIN_FIRSTNAME**")
@@ -70,25 +73,15 @@ with tab3:
         st.write(
             f"Getting Env Relationships values for: **{st.session_state.envappid}** in **{st.session_state.environmentid}** from **{st.session_state.projectid}**")
         if response_apps:
-            if len(response_apps.text.strip().split()) == 1:
+            for indx, inst in enumerate(response_apps.text.strip().split()):
+                st.write(f" ```{inst}``` ")
                 reqresponse = variables_backend_request(
                     apiendpoint='environments',
                     projid=st.session_state.projectid,
                     envid=st.session_state.environmentid,
                     appid=st.session_state.envappid,
                     apioption='relationships')
-                print(reqresponse)
+                print(indx, inst, reqresponse)
                 st.write(f" ```\n{reqresponse.text.strip()}\n``` ")
-            else:
-                for indx, inst in enumerate(response_apps.text.strip().split()):
-                    st.write(f" ```{inst}``` ")
-                    reqresponse = variables_backend_request(
-                        apiendpoint='environments',
-                        projid=st.session_state.projectid,
-                        envid=st.session_state.environmentid,
-                        appid=st.session_state.envappid,
-                        apioption='relationships')
-                    print(indx, inst, reqresponse)
-                    st.write(f" ```\n{reqresponse.text.strip()}\n``` ")   
 
 theend()

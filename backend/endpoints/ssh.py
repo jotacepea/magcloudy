@@ -139,9 +139,9 @@ def get_ssh_ptmysqlsummary(project_id, environment, appid, instance=0):
 @ssh_bp.get('/ssh/platformcluster/<project_id>/<environment>/<appid>/<int:instance>')
 def get_ssh_platform_cluster(project_id, environment, appid, instance=0):
     if instance == 0:
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \"grep 'PLATFORM_CLUSTER=' /etc/profile.d/motd.sh | awk -F'=' '{{print \$2}}'  \" "
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \'echo $MAGENTO_CLOUD_ENVIRONMENT\' "
     else:
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} -I {instance} \'echo $PLATFORM_CLUSTER\' "
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} -I {instance} \"grep 'PLATFORM_CLUSTER=' /etc/profile.d/motd.sh | awk -F'=' '{{print \$2}}' \" "
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -169,9 +169,9 @@ def get_ssh_nginx_syntax(project_id, environment, appid, instance=0):
 @ssh_bp.get('/ssh/nginxservername/<project_id>/<environment>/<appid>/<int:instance>')
 def get_ssh_nginx_server_name(project_id, environment, appid, instance=0):
     if instance == 0:
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \"cat /etc/nginx/nginx.conf | grep -A5 'listen 8080' | grep 'server_name '| awk '{{print \$2}}' \" "
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \"cat /etc/nginx/nginx.conf | grep -A5 'listen 8080' | grep 'server_name ' | awk '{{\$1=fakenull; print \$0}}' \" "
     else:
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} -I {instance} \"cat /etc/platform/\$USER/nginx.conf | grep -A5 'listen 8080' | grep 'server_name ' | awk '{{print \$2}}' \" "
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} -I {instance} \"cat /etc/platform/\$USER/nginx.conf | grep -A5 'listen 8080' | grep 'server_name ' | awk '{{\$1=fakenull; print \$0}}' \" "
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

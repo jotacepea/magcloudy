@@ -26,4 +26,4 @@ with tab3:
     print(response)
     st.write(f" ```\n{response.text.strip()}\n``` ")
 
-theend()
+theend(enable_select_proj_env_warning = False)

@@ -34,12 +34,17 @@ if st.session_state.projectid != 'noprojid' and st.session_state.environmentid !
     if response:
         print(response)
         storedefaulturl = response.text.strip()
-            
+
     storedefaulturl_parts = storedefaulturl.split('/')
     print(storedefaulturl_parts)
     print(storedefaulturl_parts[2])
 
 if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
+
+    privatewebport = '8080'
+    if st.session_state.env_target_type.lower() == 'containerized':
+        privatewebport = '80'
+
     st.info(f"""
         **curl -sI \"{storedefaulturl}\" -A \"tatata-agent\" \
             -H \"Fastly-Debug: True\" -H \"Fastly-No-Shield: 1\" \
@@ -54,31 +59,31 @@ if st.session_state.projectid != 'noprojid' and st.session_state.environmentid !
         """)
     st.info(f"""
        **magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} \
-            \'curl -sI "http://localhost:8080/" -H "X-Forwarded-Proto: https" -H "Host: {storedefaulturl_parts[2]}" \
+            \'curl -sI "http://localhost:{privatewebport}/" -H "X-Forwarded-Proto: https" -H "Host: {storedefaulturl_parts[2]}" \
             -A "tatata-agent" \'**
         """)
     st.info(f"""
        **magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} \
-            \'curl -sI "http://localhost:8080/static/deployed_version.txt" -H "X-Forwarded-Proto: https" -H "Host: {storedefaulturl_parts[2]}" \
+            \'curl -sI "http://localhost:{privatewebport}/static/deployed_version.txt" -H "X-Forwarded-Proto: https" -H "Host: {storedefaulturl_parts[2]}" \
             -A "tatata-agent" \'**
         """)
     st.info(f"""
        **magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} \
-            \'curl -sI "http://localhost:8080/checkout/cart/" -H "X-Forwarded-Proto: https" -H "Host: {storedefaulturl_parts[2]}" \
+            \'curl -sI "http://localhost:{privatewebport}/checkout/cart/" -H "X-Forwarded-Proto: https" -H "Host: {storedefaulturl_parts[2]}" \
             -A "tatata-agent" \'**
         """)
     st.info(f"""
        **magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} -I 1\
-            \'curl -sI "http://localhost:8080/health_check.php" -H "X-Forwarded-Proto: https" -H "Host: {storedefaulturl_parts[2]}" \
+            \'curl -sI "http://localhost:{privatewebport}/health_check.php" -H "X-Forwarded-Proto: https" -H "Host: {storedefaulturl_parts[2]}" \
             -A "tatata-agent" \'**
         """)
     st.info(f"""
        **magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} -I 1\
-            \'curl -sI "http://localhost:8080/magento_version" -H "X-Forwarded-Proto: https" -H "Host: {storedefaulturl_parts[2]}" \
+            \'curl -sI "http://localhost:{privatewebport}/magento_version" -H "X-Forwarded-Proto: https" -H "Host: {storedefaulturl_parts[2]}" \
             -A "tatata-agent" \'**
         """)
 
-tab1, tab2, tab3, tab4 = st.tabs(
+tab1, tab2, tab3 = st.tabs(
     ["Nginx Version"
      "Nginx Check",
      "Nginx Server Info",
@@ -165,7 +170,9 @@ with tab3:
                                                   apiendpoint='ssh/nginxservername',
                                                   apiparameter=0)
                 print(reqresponse)
-                st.write(f" ```\n{reqresponse.text.strip()}\n``` ")
+                if reqresponse:
+                    for indx, listenservname in enumerate(reqresponse.text.strip().split()):
+                        st.write(f" ```\n{listenservname}\n``` ")
             else:
                 for indx, inst in enumerate(response_instances.text.strip().split()):
                     st.write(
@@ -176,6 +183,7 @@ with tab3:
                                                       apiendpoint='ssh/nginxservername',
                                                       apiparameter=indx + 1)
                     print(indx, inst, reqresponse)
-                    st.write(f" ```\n{reqresponse.text.strip()}\n``` ")
-
+                    if reqresponse:
+                        for indx, listenservname in enumerate(reqresponse.text.strip().split()):
+                            st.write(f" ```\n{listenservname}\n``` ")
 theend()

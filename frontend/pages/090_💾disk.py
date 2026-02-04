@@ -58,7 +58,7 @@ with tab2:
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
         response = requests.get(
-            f"{st.session_state.reqfqdn}/mounts/{st.session_state.projectid}/{st.session_state.environmentid}/{st.session_state.envappid}/size")
+            f"{st.session_state.reqfqdn}/mounts/{st.session_state.projectid}/{st.session_state.environmentid}/{st.session_state.envappid}/size-STOP-TODO-REVIEW")
         print(response)
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")

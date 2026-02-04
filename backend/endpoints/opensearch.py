@@ -15,7 +15,7 @@ opensearch_bp = APIBlueprint('opensearch-blueprint', __name__)
 def get_version_opensearch(project_id, environment, appid, query_data):
     print(query_data['containerized'])
     if query_data['containerized'] == 0:  # Unified Cluster
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \'curl -sk http://localhost:9200/ |jq\'"
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \'curl -sk http://localhost:9200/ | jq . \'"
     else:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \'curl -sk http://opensearch.internal:9200/ |json_pp\'"
     try:
@@ -35,7 +35,7 @@ def get_version_opensearch(project_id, environment, appid, query_data):
 def get_health_opensearch(project_id, environment, appid, query_data):
     print(query_data['containerized'])
     if query_data['containerized'] == 0:  # Unified Cluster
-        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \'curl -sk http://localhost:9200/_cluster/health |jq\'"
+        command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \'curl -sk http://localhost:9200/_cluster/health | jq .\'"
     else:
         command_magecloud = f"magento-cloud ssh -p {project_id} -e {environment} -A {appid} \'curl -sk http://opensearch.internal:9200/_cluster/health |json_pp\'"
     try:

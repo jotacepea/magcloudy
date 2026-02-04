@@ -5,13 +5,13 @@ from pages.common.globalconf import pageconfig, theend
 pageconfig()
 
 @st.cache_data(ttl=180)
-def fastly_backend_request(projid, envid, apiendpoint='fastly', apiparameter=None):
-    if apiparameter is None:
-        resp = requests.get(
-            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}")
-    else:
+def fastly_backend_request(projid, envid, apiendpoint='fastly', apiparameter='info', appid=None):
+    if appid is None:
         resp = requests.get(
             f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{apiparameter}")
+    else:
+        resp = requests.get(
+            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{appid}/{apiparameter}")
     print(resp)
     return resp
 
@@ -50,31 +50,43 @@ with tab1:
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
             f"Getting magento cache status for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
-        response = appconfig_backend_request(projid=st.session_state.projectid,
-                                            envid=st.session_state.environmentid,
-                                            appid=st.session_state.envappid,
-                                            apiendpoint='binmagento',
-                                            apiparameter='cache')
+        response = appconfig_backend_request(apiendpoint='binmagento',
+                                             projid=st.session_state.projectid,
+                                             envid=st.session_state.environmentid,
+                                             appid=st.session_state.envappid,
+                                             apiparameter='cache')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab2:
     st.header("Fastly Module")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
-            f"Getting fastly module status for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+            f"Getting fastly module status and version for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
+        st.write("https://github.com/fastly/fastly-magento2/tags")
         response = fastly_backend_request(projid=st.session_state.projectid,
-                                            envid=st.session_state.environmentid)
+                                        envid=st.session_state.environmentid,
+                                        appid=st.session_state.envappid,
+                                        apiparameter='info')
+        if response:
+            st.write(f" ```\n{response.text.strip()}\n``` ")
+
+        st.write("Version:")
+        response = fastly_backend_request(projid=st.session_state.projectid,
+                                        envid=st.session_state.environmentid,
+                                        appid=st.session_state.envappid,
+                                        apiparameter='moduleinfo')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
 with tab3:
     st.header("Fastly Credentials")
-    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
             f"Getting fastly credentials for: **{st.session_state.projectid}** in **{st.session_state.environmentid}**")
         response = fastly_backend_request(projid=st.session_state.projectid,
                                             envid=st.session_state.environmentid,
+                                            appid=st.session_state.envappid,
                                             apiparameter='credentials')
         if response:
             print(response)
@@ -140,8 +152,11 @@ with tab6:
                     print(clean_fastdnsline)
                     print(clean_fastdnsline[-1])
                     fast_dns_name=clean_fastdnsline[-1].strip()                  
-                    st.write(f"Adobe Commerce Fastly Tester Tool: https://{fast_dns_name}")
+                    st.write("Adobe Commerce Fastly Tester Tool for:")
+                    st.write(f"https://{fast_dns_name}")
                     st.write(f"https://adobe-commerce-tester.freetls.fastly.net/adobe-commerce-tester/#https://{fast_dns_name}||{fast_srv_id}")
+                    st.write("Adobe Commerce Platform SSL Cert Check Tool:")
+                    st.write(f"https://certcheck.pltfrm.sh/?domain={fast_dns_name}")
 
 with tab7:
     st.header("Fastly Stats")
