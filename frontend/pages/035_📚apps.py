@@ -33,7 +33,7 @@ with tab1:
             projid=st.session_state.projectid,
             envid=st.session_state.environmentid)
         if response:
-            st.write(f" ```\n{response.text.strip()}\n``` ")
+            st.code(response.text.strip(), language='vim')
 
 with tab2:
     st.header("App Info")
@@ -66,6 +66,6 @@ with tab2:
             appid=app_id_input,
             apiparameter='config')
         if response:
-            st.write(f" ```\n{response.text.strip()}\n``` ")
+            st.code(response.text.strip(), language='yaml')
 
 theend()

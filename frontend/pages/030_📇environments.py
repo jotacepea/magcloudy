@@ -21,6 +21,9 @@ def environments_backend_request(projid, apiendpoint='environments', envid=None,
 
 st.header("MagCloudy :blue[Environments] :card_index:")
 
+if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+    st.info(f"**magento-cloud environments -p {st.session_state.projectid} -I -c +created,machine_name,updated**")
+
 tab1, tab2, tab3, tab4 = st.tabs(
     ["Environments",
      "Env Info",
@@ -31,22 +34,31 @@ with tab1:
     st.header("All Environments")
     if st.session_state.projectid != 'noprojid':
         st.write(f"From project _{st.session_state.projectid}_")
-        response = environments_backend_request(
-            projid=st.session_state.projectid)
-        if response:
-            st.write(f" ```\n{response.text.strip()}\n``` ")
+        if not st.session_state.get('environments_cached_full'):
+            response = environments_backend_request(
+                projid=st.session_state.projectid)
+            if response:
+                print(response.text.strip())
+                st.code(response.text.strip(), language='vim')
+        else:
+            print(st.session_state.environments_cached_full)
+            st.code(st.session_state.environments_cached_full, language='vim')
 
 with tab2:
     st.header("Environment Info")
-    response_list = environments_backend_request(
-        projid=st.session_state.projectid,
-        envid='pipe')
-    if response_list:
-        environments_list = []
-        for indx, branchesinfoline in enumerate(response_list.text.strip().split('\n')):
-            print(branchesinfoline)
-            environments_list.append(branchesinfoline)
-        print(environments_list)
+    if not st.session_state.get('environments_cached'):
+        response_list = environments_backend_request(
+            projid=st.session_state.projectid,
+            envid='pipe')
+        if response_list:
+            environments_list = []
+            for indx, branchesinfoline in enumerate(response_list.text.strip().split('\n')):
+                print(branchesinfoline)
+                environments_list.append(branchesinfoline)
+            print(environments_list)
+    else:
+        print(st.session_state.environments_cached)
+        environments_list = st.session_state.environments_cached
 
     environment_id_input = st.selectbox(
         "Would you like to get environment info? (please, select one of those...)",
@@ -55,11 +67,6 @@ with tab2:
         placeholder="Select project ENV...",
     )
 
-    # environment_id_input = st.text_input(
-    #     "Enter some environment name 👇",
-    #     value=st.session_state.environmentid if st.session_state.environmentid != 'noenvid' else '',
-    #     placeholder="staging",
-    # )
     if environment_id_input:
         st.session_state.environmentid = environment_id_input
     if environment_id_input and st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
@@ -99,7 +106,7 @@ with tab2:
                     else:
                         st.session_state.env_target_type = 'Instances (Unified Cluster)'
                         st.caption(f"**_{st.session_state.env_target_type}_**")
-            st.write(f" ```\n{response.text.strip()}\n``` ")
+            st.code(response.text.strip(), language='vim')
 
 with tab3:
     st.header("Smtp State")

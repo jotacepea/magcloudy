@@ -9,10 +9,10 @@ activities_bp = APIBlueprint('activities-blueprint', __name__)
 @activities_bp.get('/activities/<project_id>/<environment>/<activity>')
 def get_activities(project_id, environment, activity='list'):
     if activity == 'list':
-        command_magecloud = f"magento-cloud activity:list -p {project_id} -e {environment} -x cron --limit 15"
+        command_magecloud = f"magento-cloud activity:list -p {project_id} -e {environment} -t *push -c +completed,environments,time_build,time_deploy,time_execute,time_wait,type --limit 15"
     else:
         if activity == 'last':
-            command_magecloud = f"magento-cloud activity:get -p {project_id} -e {environment} -x cron"
+            command_magecloud = f"magento-cloud activity:get -p {project_id} -e {environment} -t *push -c +completed,environments,time_build,time_deploy,time_execute,time_wait,type"
         else:
             command_magecloud = f"magento-cloud activity:get -p {project_id} -e {environment} \'{activity}\'"
     try:
@@ -27,9 +27,9 @@ def get_activities(project_id, environment, activity='list'):
 @activities_bp.get('/activities/log/<project_id>/<environment>/<activity>')
 def get_activities_log(project_id, environment, activity='last'):
     if activity == 'last':
-        command_magecloud = f"magento-cloud activity:log -p {project_id} -e {environment} -x cron"
+        command_magecloud = f"magento-cloud activity:log -p {project_id} -e {environment} -x cron -t"
     else:
-        command_magecloud = f"magento-cloud activity:log -p {project_id} -e {environment} \'{activity}\'"
+        command_magecloud = f"magento-cloud activity:log -p {project_id} -e {environment} \'{activity}\' -t"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

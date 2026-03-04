@@ -10,10 +10,10 @@ def redis_backend_request(projid, envid, appid, apiendpoint='redis', apiparamete
         apiparameter = 'ping'
     if st.session_state.env_target_type.lower() == 'containerized':
         resp = requests.get(
-            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{appid}/{apiparameter}?containerized=1")
+            f"{st.session_state.reqfqdn}/inmemorycache/{apiendpoint}/{projid}/{envid}/{appid}/{apiparameter}?containerized=1")
     else:
         resp = requests.get(
-            f"{st.session_state.reqfqdn}/{apiendpoint}/{projid}/{envid}/{appid}/{apiparameter}")
+            f"{st.session_state.reqfqdn}/inmemorycache/{apiendpoint}/{projid}/{envid}/{appid}/{apiparameter}")
     print(resp)
     return resp
 
@@ -31,9 +31,20 @@ def ssh_backend_request(projid, envid, appid, apiendpoint='ssh', apiparameter=No
 st.header("MagCloudy :blue[Redis] :yarn:")
 
 if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
-    st.info(f"**magento-cloud redis -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} -r redis INFO**")
-    if st.session_state.env_target_type.lower() != 'containerized':
-        st.info(f"**magento-cloud redis -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} -r redis-slave INFO**")
+    if st.session_state.relationships.get('redis') != 'none':
+        inmemcacheapiendpoint = 'redis'
+        st.info(f"**{st.session_state.relationships.get('redis')}**")
+        st.info(f"**magento-cloud redis -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} -r redis INFO**")
+        if st.session_state.env_target_type.lower() != 'containerized':
+            st.info(f"**magento-cloud redis -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} -r redis-slave INFO**")
+    elif st.session_state.relationships.get('valkey') != 'none':
+        inmemcacheapiendpoint = 'valkey'
+        st.info(f"**{st.session_state.relationships.get('valkey')}**")
+        st.info(f"**magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} 'valkey-cli INFO'**")
+        if st.session_state.env_target_type.lower() != 'containerized':
+            st.info(f"**magento-cloud ssh -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} 'valkey-cli -r valkey-slave INFO'**")
+    else:
+        st.info("**No In Mem Cache Service (Redis/Valkey) found**")
 
 tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(
     ["Redis Check",
@@ -51,7 +62,8 @@ with tab1:
             f"Check Redis for: **{st.session_state.envappid}** in **{st.session_state.environmentid}** from **{st.session_state.projectid}**")
         response = ssh_backend_request(projid=st.session_state.projectid,
                                        envid=st.session_state.environmentid,
-                                       appid=st.session_state.envappid)
+                                       appid=st.session_state.envappid,
+                                       apiendpoint=inmemcacheapiendpoint)
         print(response)
         if response:
             st.caption(
@@ -79,6 +91,7 @@ with tab2:
             projid=st.session_state.projectid,
             envid=st.session_state.environmentid,
             appid=st.session_state.envappid,
+            apiendpoint=inmemcacheapiendpoint,
             apiparameter='sinfo')
         if response:
             for indx, rediserverinfoline in enumerate(response.text.strip().split('\n')):
@@ -100,6 +113,7 @@ with tab3:
             projid=st.session_state.projectid,
             envid=st.session_state.environmentid,
             appid=st.session_state.envappid,
+            apiendpoint=inmemcacheapiendpoint,
             apiparameter='info')
         if response:
             for indx, redisinfoline in enumerate(response.text.strip().split('\n')):
@@ -122,6 +136,7 @@ with tab4:
             projid=st.session_state.projectid,
             envid=st.session_state.environmentid,
             appid=st.session_state.envappid,
+            apiendpoint=inmemcacheapiendpoint,
             apiparameter='lazyfreelazy')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
@@ -135,6 +150,7 @@ with tab5:
             projid=st.session_state.projectid,
             envid=st.session_state.environmentid,
             appid=st.session_state.envappid,
+            apiendpoint=inmemcacheapiendpoint,
             apiparameter='bigkeys')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
@@ -148,6 +164,7 @@ with tab6:
             projid=st.session_state.projectid,
             envid=st.session_state.environmentid,
             appid=st.session_state.envappid,
+            apiendpoint=inmemcacheapiendpoint,
             apiparameter='memkeys')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
@@ -161,6 +178,7 @@ with tab7:
             projid=st.session_state.projectid,
             envid=st.session_state.environmentid,
             appid=st.session_state.envappid,
+            apiendpoint=inmemcacheapiendpoint,
             apiparameter='hotkeys')
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")

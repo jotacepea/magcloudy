@@ -10,4 +10,7 @@ COPY . .
 EXPOSE 8501
 ENV STR_PUB_WEB_PORT='8888'
 
-CMD python3 -m streamlit run main.py --server.port 8501 --server.address '0.0.0.0' --browser.serverAddress 'localhost' --browser.serverPort ${STR_PUB_WEB_PORT}
+CMD python3 -m streamlit run main.py --server.port 8501 --server.address '0.0.0.0' \
+    --browser.serverAddress 'localhost' --browser.serverPort ${STR_PUB_WEB_PORT} \
+    --browser.gatherUsageStats=false --server.enableStaticServing=true \
+    --server.fileWatcherType=none --client.toolbarMode=viewer

@@ -37,7 +37,7 @@ def ssh_backend_request(projid, envid, appid, apiendpoint='ssh', apiparameter=No
     print(resp)
     return resp
 
-st.header("MagCloudy :blue[OpenSearch] :knot:")
+st.header("MagCloudy :blue[OpenSearch] 🪢")
 st.caption("**_In older versions could be ElasticSearch_**")
 
 tab1, tab2, tab3, tab4, tab5 = st.tabs(

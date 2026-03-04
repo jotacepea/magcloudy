@@ -10,7 +10,7 @@ from endpoints.ecetools import ecetools_bp
 from endpoints.commits import commits_bp
 from endpoints.activities import activities_bp
 from endpoints.db import db_bp
-from endpoints.redis import redis_bp
+from endpoints.inmemorycache import inmemorycache_bp
 from endpoints.mounts import mounts_bp
 from endpoints.disk import disk_bp
 from endpoints.users import users_bp
@@ -43,7 +43,7 @@ app.register_blueprint(ecetools_bp)
 app.register_blueprint(commits_bp)
 app.register_blueprint(activities_bp)
 app.register_blueprint(db_bp)
-app.register_blueprint(redis_bp)
+app.register_blueprint(inmemorycache_bp)
 app.register_blueprint(mounts_bp)
 app.register_blueprint(disk_bp)
 app.register_blueprint(users_bp)

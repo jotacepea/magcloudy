@@ -13,7 +13,7 @@ def get_environments(project_id, active='active'):
     if active == 'all':
         command_magecloud = f"magento-cloud environments -p {project_id}"
     else:
-        command_magecloud = f"magento-cloud environments -I -p {project_id}"
+        command_magecloud = f"magento-cloud environments -p {project_id} -I -c +created,machine_name,updated"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

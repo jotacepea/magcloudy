@@ -15,7 +15,7 @@ def ssh_backend_request(projid, envid, appid, apiendpoint='ssh', apiparameter=No
     print(resp)
     return resp
 
-st.header("MagCloudy :blue[Crons] :timer_clock:")
+st.header("MagCloudy :blue[Crons] ⏲️")
 
 if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
     st.info("**php bin/magento config\:show | grep -i cron**")

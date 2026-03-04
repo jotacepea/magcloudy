@@ -15,7 +15,7 @@ def ecetools_backend_request(projid, envid, appid, apiendpoint='ece-tools', apip
     print(resp)
     return resp
 
-st.header("MagCloudy :blue[ECE-Tools] :fairy:")
+st.header("MagCloudy :blue[ECE-Tools] 🧚‍♀️")
 
 if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
     st.info("**php vendor/bin/ece-tools env\:config\:show**")

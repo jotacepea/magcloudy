@@ -39,7 +39,10 @@ with tab1:
         response = projconfig_backend_request(projid=st.session_state.projectid,
                                               envid=st.session_state.environmentid)
         if response:
-            st.write(f" ```\n{response.text.strip()}\n``` ")
+            if "auth.json" in response.text.split():
+                st.warning("**auth.json** file detected in project root! 🚧", icon="⚠️")
+            st.code(response.text.strip(), language='vim')
+
 
 with tab2:
     st.header("Read file .magento.app.yaml (**Git-Repos**)")
@@ -49,7 +52,7 @@ with tab2:
         response = projconfig_backend_request(projid=st.session_state.projectid,
                                               envid=st.session_state.environmentid, apiparameter='.magento.app.yaml')
         if response:
-            st.write(f" ```\n{response.text.strip()}\n``` ")
+            st.code(response.text.strip(), language='yaml')
 
 with tab3:
     st.header("Read file .magento.env.yaml (**Git-Repos**)")
@@ -59,7 +62,7 @@ with tab3:
         response = projconfig_backend_request(projid=st.session_state.projectid,
                                               envid=st.session_state.environmentid, apiparameter='.magento.env.yaml')
         if response:
-            st.write(f" ```\n{response.text.strip()}\n``` ")
+            st.code(response.text.strip(), language='yaml')
 
 with tab4:
     st.header("Read file magento-vars.php (**Git-Repos**)")
@@ -69,7 +72,7 @@ with tab4:
         response = projconfig_backend_request(projid=st.session_state.projectid,
                                               envid=st.session_state.environmentid, apiparameter='magento-vars.php')
         if response:
-            st.write(f" ```\n{response.text.strip()}\n``` ")
+            st.code(response.text.strip(), language='php')
 
 with tab5:
     st.header("Read file config.php (**Git-Repos**)")
@@ -79,7 +82,7 @@ with tab5:
         response = projconfig_backend_request(projid=st.session_state.projectid,
                                               envid=st.session_state.environmentid, apiparameter='app/etc/config.php')
         if response:
-            st.write(f" ```\n{response.text.strip()}\n``` ")
+            st.code(response.text.strip(), language='php')
 
 with tab6:
     st.header("Read file .magento/services.yaml (**Git-Repos**)")
@@ -93,7 +96,7 @@ with tab6:
         response = projconfig_backend_request(projid=st.session_state.projectid,
                                               envid=st.session_state.environmentid, apiparameter='.magento/services.yaml')
         if response:
-            st.write(f" ```\n{response.text.strip()}\n``` ")
+            st.code(response.text.strip(), language='yaml')
 
 with tab7:
     st.header("Read file .magento/routes.yaml (**Git-Repos**)")
@@ -103,7 +106,7 @@ with tab7:
         response = projconfig_backend_request(projid=st.session_state.projectid,
                                               envid=st.session_state.environmentid, apiparameter='.magento/routes.yaml')
         if response:
-            st.write(f" ```\n{response.text.strip()}\n``` ")
+            st.code(response.text.strip(), language='yaml')
 
 with tab8:
     st.header("Read file php.ini (**Git-Repos**)")
@@ -113,6 +116,6 @@ with tab8:
         response = projconfig_backend_request(projid=st.session_state.projectid,
                                               envid=st.session_state.environmentid, apiparameter='php.ini')
         if response:
-            st.write(f" ```\n{response.text.strip()}\n``` ")
+            st.code(response.text.strip(), language='ini')
 
 theend()

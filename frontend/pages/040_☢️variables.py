@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import yaml
 from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
@@ -27,7 +28,7 @@ def apps_backend_request(projid, envid, apiendpoint='apps', formatvalue='plain',
     print(resp)
     return resp
 
-st.header("MagCloudy :blue[Environment Variables] :radioactive_sign:")
+st.header("MagCloudy :blue[Environment Variables] ☢️")
 
 if st.session_state.envappid == 'noenvappid':
     st.warning("**Please, select one of them (in apps)**", icon="🚧")
@@ -82,6 +83,21 @@ with tab3:
                     appid=st.session_state.envappid,
                     apioption='relationships')
                 print(indx, inst, reqresponse)
-                st.write(f" ```\n{reqresponse.text.strip()}\n``` ")
+                
+                try:
+                    relships_data = yaml.safe_load(reqresponse.text)
+                    if isinstance(relships_data, dict):
+                        # Store the entire relationships dictionary in session state
+                        st.session_state.relationships = relships_data
+                        
+                        for s_name, s_info in st.session_state.relationships.items():
+                            if isinstance(s_info, list) and len(s_info) > 0:
+                                s_port = s_info[0].get('port')
+                                st.success(f"Service detected: **{s_name}** on port **{s_port}**")
+                except Exception as e:
+                    st.error(f"Error parsing relationships YAML: {e}")
+                
+                with st.expander("Show Raw Relationships YAML"):
+                    st.code(reqresponse.text.strip(), language='yaml')
 
 theend()

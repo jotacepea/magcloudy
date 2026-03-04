@@ -3,9 +3,17 @@ import streamlit as st
 enable_select_proj_env_warning = True
 
 def pageconfig():
-    st.set_page_config(page_title="MagCloudy",
-                       layout="wide",
-                       initial_sidebar_state="expanded")
+    st.set_page_config(
+        page_title="MagCloudy",
+        page_icon=":material/cloud_alert:",
+        layout="wide",
+        initial_sidebar_state="expanded",
+        menu_items={
+            'Get Help': 'https://www.extremelycoolapp.com/help',
+            'Report a bug': "https://www.extremelycoolapp.com/bug",
+            'About': "# This is a header. This is an *extremely* cool app!"
+        }
+    )
 
     hide_menu = """
     <style>

@@ -120,7 +120,88 @@ with tab7:
             f"{st.session_state.reqfqdn}/db/{st.session_state.projectid}/{st.session_state.environmentid}/{st.session_state.envappid}/wsrep")
         print(response)
         if response:
-            st.write(f" ```\n{response.text.strip()}\n``` ")
+            wsrep_data = response.text.strip()
+
+            # Highlighting wsrep_local_recv_queue related metrics
+            try:
+                # Basic parsing of the table output
+                lines = wsrep_data.split('\n')
+                recv_wsrep_queue_values = {}
+                for line in lines:
+                    if '|' in line and 'wsrep_local_recv_queue' in line:
+                        parts = [p.strip() for p in line.split('|')]
+                        if len(parts) >= 3:
+                            key = parts[1]
+                            val = parts[2]
+                            recv_wsrep_queue_values[key] = val
+
+                if recv_wsrep_queue_values:
+                    st.subheader("Receive Queue Metrics Highlight :chart_with_upwards_trend:")
+                    
+                    # Convert values to float for checking
+                    try:
+                        current_queue = float(recv_wsrep_queue_values.get('wsrep_local_recv_queue', 0))
+                    except (ValueError, TypeError):
+                        current_queue = 0
+                    
+                    # Display metrics in a nice ST Format
+                    col1, col2, col3, col4 = st.columns(4)
+                    col1.metric("WSREP Current Queue", recv_wsrep_queue_values.get('wsrep_local_recv_queue', 'N/A'), 
+                               delta=None, delta_color="inverse")
+                    col2.metric("WSREP Max Queue", recv_wsrep_queue_values.get('wsrep_local_recv_queue_max', 'N/A'))
+                    col3.metric("WSREP Min Queue", recv_wsrep_queue_values.get('wsrep_local_recv_queue_min', 'N/A'))
+                    col4.metric("WSREP Avg Queue", recv_wsrep_queue_values.get('wsrep_local_recv_queue_avg', 'N/A'))
+
+                    if current_queue > 0:
+                        st.error(f"⚠️ **Warning:** `wsrep_local_recv_queue` is **{current_queue}**!")
+                        st.error("This indicates that the DB node cannot keep up with the replication rate.")
+                    else:
+                        st.success("✅ `wsrep_local_recv_queue` is 0.")
+                        st.success("DB Nodes are keeping up with replication.")
+
+                # Highlighting wsrep_cluster_size and wsrep_cluster_weight
+                cluster_metrics = {}
+                for line in lines:
+                    if '|' in line and ('wsrep_cluster_size' in line or 'wsrep_cluster_weight' in line):
+                        parts = [p.strip() for p in line.split('|')]
+                        if len(parts) >= 3:
+                            cluster_metrics[parts[1]] = parts[2]
+
+                if cluster_metrics:
+                    st.subheader("Cluster Topology Metrics Highlight :dolls:")
+                    col1, col2 = st.columns(2)
+                    
+                    size_val = cluster_metrics.get('wsrep_cluster_size', 'N/A')
+                    weight_val = cluster_metrics.get('wsrep_cluster_weight', 'N/A')
+                    
+                    col1.metric("WSREP Cluster Size", size_val)
+                    col2.metric("WSREP Cluster Weight", weight_val)
+
+                    try:
+                        size_int = int(size_val)
+                    except (ValueError, TypeError):
+                        size_int = 0
+
+                    try:
+                        weight_int = int(weight_val)
+                    except (ValueError, TypeError):
+                        weight_int = 0
+
+                    if size_int != 3:
+                        st.error(f"⚠️ **Warning:** `wsrep_cluster_size` is **{size_val}**! Expected value is 3.")
+                    else:
+                        st.success(f"✅ `wsrep_cluster_size` is **{size_val}**.")
+
+                    if weight_int != 3:
+                        st.error(f"⚠️ **Warning:** `wsrep_cluster_weight` is **{weight_val}**! Expected value is 3.")
+                    else:
+                        st.success(f"✅ `wsrep_cluster_weight` is **{weight_val}**.")
+
+            except Exception as e:
+                st.error(f"Error parsing wsrep values: {e}")
+            
+            with st.expander("Show Raw Galera Status Output"):
+                st.write(f" ```\n{wsrep_data}\n``` ")
     else:
         st.write(f"No DB Cluster info --> {st.session_state.env_target_type}")
 

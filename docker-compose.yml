@@ -44,6 +44,8 @@ services:
         - "APP_ENV=${APP_ENV}"
     ports:
       - "${DOCKER_FRONTEND_PORT_FORWARD}:${FRONTEND_PORT}"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     healthcheck:
       <<: *default-healthcheck
       test: "${DOCKER_FRONTEND_HEALTHCHECK_TEST}"
