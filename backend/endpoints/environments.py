@@ -11,9 +11,9 @@ environments_bp = APIBlueprint('environments-blueprint', __name__)
 @environments_bp.get('/environments/<project_id>/<active>')
 def get_environments(project_id, active='active'):
     if active == 'all':
-        command_magecloud = f"magento-cloud environments -p {project_id}"
+        command_magecloud = f"magento-cloud project:curl -p {project_id} /environments"
     else:
-        command_magecloud = f"magento-cloud environments -p {project_id} -I -c +created,machine_name,updated"
+        command_magecloud = f"magento-cloud project:curl -p {project_id} /environments | jq ['.[] | select(.status==\"active\")']"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -24,7 +24,7 @@ def get_environments(project_id, active='active'):
 
 @environments_bp.get('/environments/<project_id>/pipe')
 def get_environment_pipe(project_id):
-    command_magecloud = f"magento-cloud environments -I -p {project_id} --pipe"
+    command_magecloud = f"magento-cloud project:curl -p {project_id} /environments | jq '.[] | select(.status==\"active\")' | jq -r .name"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

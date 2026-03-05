@@ -11,6 +11,7 @@ RUN apt-get update -y \
     unzip \
     vim \
     php \
+    jq \
     openssh-client \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \

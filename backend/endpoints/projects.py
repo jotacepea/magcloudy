@@ -19,7 +19,7 @@ def get_projects():
 
 @projects_bp.get('/projects/<project_id>/info')
 def get_project_info(project_id):
-    command_magecloud = f"magento-cloud project:info -p {project_id}"
+    command_magecloud = f"magento-cloud project:curl -p {project_id} /"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

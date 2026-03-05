@@ -3,8 +3,12 @@ from streamlit.runtime.scriptrunner import add_script_run_ctx, get_script_run_ct
 from concurrent.futures import ThreadPoolExecutor
 from functools import wraps
 import requests
+import json
 
-from pages.common.globalconf import pageconfig, theend
+from pages.common.globalconf import (
+    pageconfig,
+    theend
+)
 
 pageconfig()
 
@@ -42,6 +46,12 @@ main_project_id_input = st.text_input(
 )
 if main_project_id_input:
     st.session_state.projectid = main_project_id_input
+    if 'environments_cached' in st.session_state:
+        del st.session_state.environments_cached
+    if 'environments_cached_full' in st.session_state:
+        del st.session_state.environments_cached_full
+    if 'tp_executor' in st.session_state:
+        del st.session_state.tp_executor
 
 # Get Project Web UI/Console URL
 if st.session_state.projectid != 'noprojid':
@@ -115,27 +125,70 @@ with tab1:
     if st.session_state.projectid != 'noprojid':
         st.write("Getting info for Project ID: ",
                  st.session_state.projectid)
-        st.info(f"**magento-cloud project:info -p {st.session_state.projectid}**")
+        st.info(
+            f"**magento-cloud project:info -p {st.session_state.projectid}**"
+        )
         response = projects_backend_request(
             apiendpoint='projects',
             projid=st.session_state.projectid,
             apiparameter='info'
         )
         print(response)
-        for indx, projinfoline in enumerate(response.text.strip().split('\n')):
-            if 'title' in projinfoline:
-                projinfoline = projinfoline.replace("|", "")
-                print(projinfoline)
-                st.write(f" ```{projinfoline}``` ")
-            if 'region' in projinfoline:
-                projinfoline = projinfoline.replace("|", "")
-                print(projinfoline)
-                st.write(f" ```{projinfoline}``` ")
-                projregionline = projinfoline.strip().split()
-                print(projregionline)
-                st.session_state.projectregiondomain = projregionline[1]
-        with st.expander("Show Project Info"):
-            st.code(response.text.strip(), language='vim')
+        response_json = {}
+        try:
+            response_json = response.json()
+        except Exception:
+            pass
+
+        if response_json:
+            # Title extraction
+            proj_title = response_json.get('title', 'N/A')
+            st.write(f" **Title:** `{proj_title}` ")
+
+            # Region extraction
+            proj_region = response_json.get('region', 'N/A')
+            st.write(f" **Region:** `{proj_region}` ")
+            st.session_state.projectregiondomain = proj_region
+
+            # Subscription info
+            subscription = response_json.get('subscription', {})
+            proj_plan = subscription.get('plan', 'N/A')
+            proj_envs = subscription.get('environments', 'N/A')
+            proj_storage = subscription.get('storage', 'N/A')
+
+            st.write(f" **Plan:** `{proj_plan}` ")
+            st.write(f" **Environments:** `{proj_envs}` ")
+            st.write(f" **Storage:** `{proj_storage} MB` ")
+        else:
+            # Fallback for previous text-based parsing
+            for indx, projinfoline in enumerate(response.text.strip().split('\n')):
+                if 'title' in projinfoline:
+                    projinfoline = projinfoline.replace("|", "").strip()
+                    st.write(f" **Title:** `{projinfoline.split('title')[1].strip()}` ")
+                if 'plan:' in projinfoline:
+                    projinfoline = projinfoline.replace("|", "").strip()
+                    st.write(f" **Plan:** `{projinfoline.split('plan:')[1].strip()}` ")
+                if 'environments:' in projinfoline:
+                    projinfoline = projinfoline.replace("|", "").strip()
+                    st.write(
+                        f" **Environments:** `{projinfoline.split('environments:')[1].strip()}` "
+                    )
+                if 'storage:' in projinfoline:
+                    projinfoline = projinfoline.replace("|", "").strip()
+                    st.write(
+                        f" **Storage:** `{projinfoline.split('storage:')[1].strip()}` "
+                    )
+                if 'region' in projinfoline:
+                    projinfoline = projinfoline.replace("|", "").strip()
+                    st.write(
+                        f" **Region:** `{projinfoline.split('region')[1].strip()}` "
+                    )
+                    projregionline = projinfoline.split()
+                    if len(projregionline) > 1:
+                        st.session_state.projectregiondomain = projregionline[1]
+
+        with st.expander("Show Project Info (raw)"):
+            st.code(response.text.strip(), language='json')
 with tab2:
     st.header("Subscription")
     if st.session_state.projectid != 'noprojid':
@@ -149,15 +202,32 @@ with tab2:
         )
         print(response)
         for indx, projsubsline in enumerate(response.text.strip().split('\n')):
+            if 'username:' in projsubsline:
+                projsubsline = projsubsline.replace("|", "").strip()
+                st.write(f" **Username:** `{projsubsline.split('username:')[1].strip()}` ")
+            if 'project_id ' in projsubsline:
+                projsubsline = projsubsline.replace("|", "").strip()
+                st.write(f" **Project ID:** `{projsubsline.split('project_id')[1].strip()}` ")
+            if 'project_title' in projsubsline:
+                projsubsline = projsubsline.replace("|", "").strip()
+                st.write(f" **Project Title:** `{projsubsline.split('project_title')[1].strip()}` ")
+            if 'InstanceRole:' in projsubsline:
+                projsubsline = projsubsline.replace("|", "").strip()
+                st.write(f" **Instance Role:** `{projsubsline.split('InstanceRole:')[1].strip()}` ")
             if 'project_region_label' in projsubsline:
-                projsubsline = projsubsline.replace("|", "")
-                print(projsubsline)
-                st.write(f" ```{projsubsline}``` ")
+                projsubsline = projsubsline.replace("|", "").strip()
+                st.write(f" **Region Label:** `{projsubsline.split('project_region_label')[1].strip()}` ")
             if 'plan ' in projsubsline:
-                projsubsline = projsubsline.replace("|", "")
-                print(projsubsline)
-                st.write(f" ```{projsubsline}``` ")
-        with st.expander("Show Project Subscription"):
+                projsubsline = projsubsline.replace("|", "").strip()
+                st.write(f" **Plan:** `{projsubsline.split('plan')[1].strip()}` ")
+            if 'hipaa ' in projsubsline:
+                projsubsline = projsubsline.replace("|", "").strip()
+                hipaa_val = projsubsline.split('hipaa')[1].strip()
+                if hipaa_val == 'true':
+                    st.write(f" **HIPAA:** :red[{hipaa_val}] ")
+                else:
+                    st.write(f" **HIPAA:** :green[{hipaa_val}] ")
+        with st.expander("Show Project Subscription (raw)"):
             st.code(response.text.strip(), language='vim')
 with tab3:
     st.header("Settings")
@@ -171,28 +241,104 @@ with tab3:
             apiparameter='settings'
         )
         print(response)
-        for indx, projsettline in enumerate(response.text.strip().split('\n')):
-            if 'development_' in projsettline:
-                projsettline = projsettline.replace(",", "")
-                print(projsettline)
-                st.write(f" ```{projsettline}``` ")
-        with st.expander("Show Project Settings"):
+        response_json = {}
+        try:
+            response_json = response.json()
+        except Exception:
+            pass
+
+        if response_json:
+            # Title extraction
+            init_title = response_json.get('initialize', {}).get('stack', {}).get('title', 'N/A')
+            base_title = response_json.get('initialize', {}).get('values', {}).get('base', {}).get('title', 'N/A')
+            st.write(f" **Stack Title:** `{init_title}` ")
+            st.write(f" **Base Title:** `{base_title}` ")
+
+            # Product info
+            prod_name = response_json.get('product_name', 'N/A')
+            prod_code = response_json.get('product_code', 'N/A')
+            st.write(f" **Product:** `{prod_name} -- {prod_code}` ")
+
+            # Disk info
+            temp_disk = response_json.get('temporary_disk_size', 'N/A')
+            local_disk = response_json.get('local_disk_size', 'N/A')
+            st.write(f" **Disk:** `Temp: {temp_disk} MB` / `Local: {local_disk} MB` ")
+
+            # Previous development_ service info (preserved if present in keys)
+            dev_serv = response_json.get('development_service_size', 'N/A')
+            dev_app = response_json.get('development_application_size', 'N/A')
+            st.write(f" **Dev Size:** `Service: {dev_serv}` / `App: {dev_app}` ")
+        else:
+            # Fallback for non-JSON or partial text
+            for indx, projsettline in enumerate(response.text.strip().split('\n')):
+                if 'development_' in projsettline:
+                    projsettline = projsettline.replace(",", "").replace('"', '').strip()
+                    st.write(f" ```{projsettline}``` ")
+        
+        with st.expander("Show Project Settings (raw)"):
             st.code(response.text.strip(), language='json')
 with tab4:
     st.header("Users")
     if st.session_state.projectid != 'noprojid':
         st.write("Getting users for Project ID: ",
                  st.session_state.projectid)
-        st.info(f"**magento-cloud users -p {st.session_state.projectid}**")
+        st.info(f"**magento-cloud users -p {st.session_state.projectid} -q**")
+        response_user_owner = projects_backend_request(
+            apiendpoint='users',
+            projid=st.session_state.projectid,
+            apiparameter='owner'
+        )
+        print(response_user_owner.text)
+        owner_display_name = "N/A"
+        if response_user_owner and response_user_owner.text:
+            for line in response_user_owner.text.strip().split('\n'):
+                print(line)
+                if ':' in line:
+                    k, v = line.split(':', 1)
+                    if k.strip() in ['display_name']:
+                        owner_display_name = v.strip()
+                        break
+        st.success(f"Project Owner: **{owner_display_name}**")
+
         response = projects_backend_request(
             apiendpoint='users',
             apiparameter=st.session_state.projectid
         )
-        print(response)
-        with st.expander("Show Project Users"):
-            st.code(response.text.strip(), language='vim')
+        # Parse JSON list response
+        users_data = []
+        try:
+            response_json = response.json()
+            if isinstance(response_json, list):
+                for user_item in response_json:
+                    role = user_item.get('role', 'N/A')
+                    # Extract user details from _embedded.users[0]
+                    embedded_users = user_item.get('_embedded', {}).get('users', [])
+                    if embedded_users:
+                        user_info = embedded_users[0]
+                        display_name = user_info.get('display_name', 'N/A')
+                        email = user_info.get('email', 'N/A')
+
+                        if display_name in owner_display_name:
+                            role = f"**{role} (Owner)**"
+                            
+                        users_data.append({
+                            "Name": display_name,
+                            "Email": email,
+                            "Role": role
+                        })
+        except Exception as e:
+            st.error(f"Error parsing user JSON: {e}")
+
+        if users_data:
+            st.table(users_data)
+        else:
+            # Fallback or empty state
+            st.warning("No user data found in the response.")
+
+        with st.expander("Show Project Users (raw)"):
+            st.code(response.text.strip(), language='json')
 
 if st.session_state.projectid != 'noprojid':
-    theend(enable_select_proj_env_warning = False)
+    theend(enable_select_proj_env_warning=False)
 else:
     theend()

@@ -13,6 +13,19 @@ st.markdown("Chat with your local Ollama service.")
 # We could make this configurable through a sidebar if needed
 OLLAMA_HOST = st.sidebar.text_input("Ollama Host", value="http://host.docker.internal:11434")
 
+def get_education_context_md(path_to_md_file):
+    try:
+        with open(path_to_md_file, "r", encoding="utf-8") as f:
+            return f.read()
+    except Exception as e:
+        st.error(f"Error reading education context file: {e}. Note, we will use a default context --> 'You are a helpful assistant.'")
+        return "You are a helpful assistant. And talk like a cawboy."
+
+
+context_file = st.sidebar.text_input("Education Context MD Path", value="README.md")
+system_instructions = get_education_context_md(context_file)
+
+
 def get_models():
     try:
         # Check connection first
@@ -46,6 +59,14 @@ else:
     st.sidebar.warning("No models found. Make sure Ollama is running.")
     selected_model = None
 
+def get_education_context_md(path_to_md_file):
+    try:
+        with open(path_to_md_file, "r", encoding="utf-8") as f:
+            return f.read()
+    except Exception as e:
+        st.error(f"Error reading education context file: {e}")
+        return "You are a helpful assistant."
+
 # Initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -72,9 +93,13 @@ if prompt := st.chat_input("What is up?"):
             
             try:
                 client = ollama.Client(host=OLLAMA_HOST)
+                
+                # Prepend system role to messages sent to Ollama
+                messages_with_system = [{"role": "system", "content": system_instructions}] + st.session_state.messages
+                
                 response = client.chat(
                     model=selected_model,
-                    messages=st.session_state.messages,
+                    messages=messages_with_system,
                     stream=True,
                 )
                 

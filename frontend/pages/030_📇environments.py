@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import json
 from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
@@ -34,15 +35,47 @@ with tab1:
     st.header("All Environments")
     if st.session_state.projectid != 'noprojid':
         st.write(f"From project _{st.session_state.projectid}_")
+        def parse_envs_info(envs_json_info):
+            try:
+                # Parse the entire JSON list
+                data_list = json.loads(envs_json_info)
+                if isinstance(data_list, list):
+                    envs_table = []
+                    for data in data_list:
+                        if data.get('type', 'N/A') == 'production':
+                            ptype = f"**:red[{data.get('type', 'N/A')}]**"
+                        else:
+                            if data.get('type', 'N/A') == 'staging':
+                                ptype = f"**:blue[{data.get('type', 'N/A')}]**"
+                            else:
+                                ptype = data.get('type', 'N/A')
+                        envs_table.append({
+                            "ID": data.get('id', 'N/A'),
+                            "Name": data.get('name', 'N/A'),
+                            "Title": data.get('title', 'N/A'),
+                            "Type": ptype,
+                            "Last Active": data.get('last_active_at', 'N/A')
+                        })
+                    if envs_table:
+                        st.table(envs_table)
+                    else:
+                        st.warning("No environment data found.")
+                else:
+                    st.warning("Expected a JSON list of environments.")
+            except Exception as e:
+                st.error(f"Error parsing environment JSON: {e}")
+                st.code(envs_json_info)
+
         if not st.session_state.get('environments_cached_full'):
             response = environments_backend_request(
-                projid=st.session_state.projectid)
+                projid=st.session_state.projectid
+            )
             if response:
-                print(response.text.strip())
-                st.code(response.text.strip(), language='vim')
-        else:
-            print(st.session_state.environments_cached_full)
-            st.code(st.session_state.environments_cached_full, language='vim')
+                st.session_state.environments_cached_full = response.text.strip()
+        
+        parse_envs_info(st.session_state.environments_cached_full)
+        with st.expander("Show All Environments (raw)"):
+            st.code(st.session_state.environments_cached_full, language='json')
 
 with tab2:
     st.header("Environment Info")
@@ -78,8 +111,11 @@ with tab2:
             st.write(
                 f"### Cloud Env [URL]({response.text.strip()}) ###")
             
-        response = environments_backend_request(projid=st.session_state.projectid,
-                                                envid=st.session_state.environmentid, apiparameter='info')
+        response = environments_backend_request(
+            projid=st.session_state.projectid,
+            envid=st.session_state.environmentid,
+            apiparameter='info'
+        )
         if response:
             appresponse = requests.get(
             f"{st.session_state.reqfqdn}/apps/{st.session_state.projectid}/{environment_id_input}/pipe")
