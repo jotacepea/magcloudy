@@ -33,6 +33,29 @@ def pageconfig():
     """
     st.markdown(hide_menu, unsafe_allow_html=True)
 
+def set_default_cache_values():
+    if 'projectid' not in st.session_state:
+        st.session_state.projectid = 'noprojid'
+    if 'environmentid' not in st.session_state:
+        st.session_state.environmentid = 'noenvid'
+    if 'envappid' not in st.session_state:
+        st.session_state.envappid = 'noenvappid'
+    if 'env_target_type' not in st.session_state:
+        st.session_state.env_target_type = None
+    if 'projectregiondomain' not in st.session_state:
+        st.session_state.projectregiondomain = None
+
+def clear_session_state():
+    keys = list(st.session_state.keys())
+    for key in keys:
+        if key not in ['reqfqdn', 'default_api_backend_name', 'default_api_backend_port']:
+            st.session_state.pop(key)
+    set_default_cache_values()
+
+def clear_cache():
+    st.cache_data.clear()
+    #st.cache_resource.clear() # Not needed for now
+    clear_session_state()
 
 def theend(enable_select_proj_env_warning = True):
     if st.session_state.projectid == 'noprojid':

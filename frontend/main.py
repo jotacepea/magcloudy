@@ -1,6 +1,6 @@
 import os
 import streamlit as st
-from pages.common.globalconf import pageconfig, theend
+from pages.common.globalconf import pageconfig, set_default_cache_values, theend
 
 st.session_state.default_api_backend_name = os.environ.get("DEFAULT_API_BACKEND_NAME", "apibackend")
 st.session_state.default_api_backend_port = os.environ.get("DEFAULT_API_BACKEND_PORT", "5000")
@@ -32,15 +32,6 @@ st.markdown(
 """
 )
 
-if 'projectid' not in st.session_state:
-    st.session_state.projectid = 'noprojid'
-if 'environmentid' not in st.session_state:
-    st.session_state.environmentid = 'noenvid'
-if 'envappid' not in st.session_state:
-    st.session_state.envappid = 'noenvappid'
-if 'env_target_type' not in st.session_state:
-    st.session_state.env_target_type = None
-if 'projectregiondomain' not in st.session_state:
-    st.session_state.projectregiondomain = None
+set_default_cache_values()
 
 theend(enable_select_proj_env_warning = False)

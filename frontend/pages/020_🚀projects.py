@@ -7,12 +7,13 @@ import json
 
 from pages.common.globalconf import (
     pageconfig,
+    clear_cache,
     theend
 )
 
 pageconfig()
 
-@st.cache_data(ttl=240)
+@st.cache_data(ttl=240, show_spinner="Fetching data from Backend API: Projects Info...")
 def projects_backend_request(apiendpoint='projects',projid=None, apiparameter=None):
     if apiparameter is None:
         resp = requests.get(
@@ -45,13 +46,8 @@ main_project_id_input = st.text_input(
     placeholder="6fck2obu3244c",
 )
 if main_project_id_input:
+    clear_cache()
     st.session_state.projectid = main_project_id_input
-    if 'environments_cached' in st.session_state:
-        del st.session_state.environments_cached
-    if 'environments_cached_full' in st.session_state:
-        del st.session_state.environments_cached_full
-    if 'tp_executor' in st.session_state:
-        del st.session_state.tp_executor
 
 # Get Project Web UI/Console URL
 if st.session_state.projectid != 'noprojid':

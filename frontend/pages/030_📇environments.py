@@ -25,11 +25,9 @@ st.header("MagCloudy :blue[Environments] :card_index:")
 if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
     st.info(f"**magento-cloud environments -p {st.session_state.projectid} -I -c +created,machine_name,updated**")
 
-tab1, tab2, tab3, tab4 = st.tabs(
+tab1, tab2 = st.tabs(
     ["Environments",
-     "Env Info",
-     "Env Config Smtp State",
-     "Env Config Crons State"])
+     "Env Info"])
 
 with tab1:
     st.header("All Environments")
@@ -102,6 +100,8 @@ with tab2:
 
     if environment_id_input:
         st.session_state.environmentid = environment_id_input
+        if 'environment_info' in st.session_state:
+            del st.session_state.environment_info
     if environment_id_input and st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(f"Getting info for Environment: **{environment_id_input}**")
             
@@ -117,49 +117,69 @@ with tab2:
             apiparameter='info'
         )
         if response:
-            appresponse = requests.get(
-            f"{st.session_state.reqfqdn}/apps/{st.session_state.projectid}/{environment_id_input}/pipe")
-            print(appresponse.text)
-            numberapps=len(appresponse.text.strip().split('\n'))
-            print(numberapps)
+            st.session_state.environment_info = response.json()
+            webapps = st.session_state.environment_info.get('sizing', {}).get('webapps', {})
+            app_list = list(webapps.keys())
+            print(app_list)
+            numberapps = len(app_list)
             if numberapps > 1:
-                st.warning("**More than One App running in this Env... Please, select one of them (in apps info)**", icon="🚧")
-                st.write(f" ```\n{appresponse.text.strip()}\n``` ")
+                st.warning(
+                    "**More than One App running in this Env... "
+                    "Please, select one of them (in apps info)**",
+                    icon="🚧"
+                )
+                st.write(" ```\n" + "\n".join(app_list) + "\n``` ")
+            elif numberapps == 1:
+                st.session_state.envappid = app_list[0]
             else:
-                if numberapps == 1:
-                    st.session_state.envappid = appresponse.text.strip()
-                else:
-                    st.session_state.envappid = "AppsIdErrorAppsIdErrorAppsIdErrorAppsIdError"
+                st.session_state.envappid = "AppsIdErrorAppsIdErrorAppsIdErrorAppsIdError"
 
-            for indx, envinfoline in enumerate(response.text.strip().split('\n')):
-                if 'deployment_target' in envinfoline:
-                    envinfoline = envinfoline.replace("|", "")
-                    print(envinfoline)
-                    #st.write(f" ```{envinfoline}``` ")
-                    if 'local' in envinfoline:
-                        st.session_state.env_target_type = 'containerized'
-                        st.caption(f"**_{st.session_state.env_target_type}_**")
-                    else:
-                        st.session_state.env_target_type = 'Instances (Unified Cluster)'
-                        st.caption(f"**_{st.session_state.env_target_type}_**")
-            st.code(response.text.strip(), language='vim')
+            try:
+                env_data = response.json()
+                deployment_target = env_data.get('deployment_target', '')
 
-with tab3:
-    st.header("Smtp State")
-    if environment_id_input and st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
-        st.write(f"Getting smtp config for environment: **{st.session_state.environmentid}**")
-        response = environments_backend_request(projid=st.session_state.projectid,
-                                                envid=st.session_state.environmentid, apiparameter='enablesmtpstatus')
-        if response:
-            st.write(f" ```\n{response.text.strip()}\n``` ")
+                if deployment_target == 'local':
+                    st.session_state.env_target_type = 'containerized'
+                    st.write(f" **Instances type:** :red[{st.session_state.env_target_type}] ")
+                elif deployment_target:
+                    st.session_state.env_target_type = 'Instances (Unified Cluster)'
+                    st.write(f" **Instances type:** :blue[{st.session_state.env_target_type}] ")
+            except Exception as e:
+                st.error(f"Error parsing environment info JSON: {e}")
 
-with tab4:
-    st.header("Crons State")
-    if environment_id_input and st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
-        st.write(f"Getting smtp config for environment: **{st.session_state.environmentid}**")
-        response = environments_backend_request(projid=st.session_state.projectid,
-                                                envid=st.session_state.environmentid, apiparameter='deploymentstatecrons')
-        if response:
-            st.write(f" ```\n{response.text.strip()}\n``` ")
+            # Show a table with environment info here
+            if st.session_state.environment_info:
+                envinfo = st.session_state.environment_info
+                ds = envinfo.get('deployment_state', {})
+                env_info_data = []
+
+                # Adding fields one by one
+                fields_to_vals = [
+                    ("Project", envinfo.get('project', 'N/A')),
+                    ("ID", envinfo.get('id', 'N/A')),
+                    ("Name", envinfo.get('name', 'N/A')),
+                    ("Title", envinfo.get('title', 'N/A')),
+                    ("Type", envinfo.get('type', 'N/A')),
+                    ("Parent", envinfo.get('parent', 'N/A')),
+                    ("Status", envinfo.get('status', 'N/A')),
+                    ("HTTP Access Enabled",
+                     str(envinfo.get('http_access', {}).get('is_enabled', 'N/A'))),
+                    ("Enable SMTP", str(envinfo.get('enable_smtp', 'N/A'))),
+                    ("Restrict Robots",
+                     str(envinfo.get('restrict_robots', 'N/A'))),
+                    ("Crons", str(ds.get('crons', 'N/A'))),
+                    ("Created At", envinfo.get('created_at', 'N/A')),
+                    ("Updated At", envinfo.get('updated_at', 'N/A')),
+                    ("Last Active At", envinfo.get('last_active_at', 'N/A')),
+                    ("Last Deployment At", ds.get('last_deployment_at', 'N/A'))
+                ]
+
+                for field, val in fields_to_vals:
+                    env_info_data.append({"Field": field, "Value": val})
+
+                st.table(env_info_data)
+
+            with st.expander("Show Environment Info (raw)"):
+                st.code(response.text.strip(), language='json')
 
 theend()

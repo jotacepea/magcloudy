@@ -35,7 +35,7 @@ def get_environment_pipe(project_id):
 
 @environments_bp.get('/environments/<project_id>/<environment>/info')
 def get_environment_info(project_id, environment):
-    command_magecloud = f"magento-cloud environment:info -p {project_id} -e {environment}"
+    command_magecloud = f"magento-cloud project:curl -p {project_id} /environments/{environment} | jq -r ."
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
