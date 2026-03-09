@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import json
 from pages.common.globalconf import pageconfig, theend
 
 pageconfig()
@@ -27,6 +28,13 @@ tab1, tab2 = st.tabs(
 
 with tab1:
     st.header("All Apps&Workers")
+    response = apps_backend_request(
+            projid=st.session_state.projectid,
+            envid=st.session_state.environmentid
+            )
+    if response:
+        st.code(response.text.strip(), language='yaml')
+
     if st.session_state.get('environment_info'):
         envinfo = st.session_state.environment_info
         sizing = envinfo.get('sizing', {})
@@ -37,7 +45,7 @@ with tab1:
         
         for name, config in webapps.items():
             apps_workers_data.append({
-                "Type": "Webapp",
+                "Type": "**Webapp**",
                 "Name": name,
                 "Instances": config.get('instance_count', 'N/A'),
                 "Disk (MB)": config.get('disk', 'N/A')
@@ -53,6 +61,12 @@ with tab1:
             
         if apps_workers_data:
             st.table(apps_workers_data)
+            if webapps:
+                with st.expander("Show All Apps (raw)"):
+                    st.code(json.dumps(webapps, indent=2), language='json')
+            if workers:
+                with st.expander("Show All Workers (raw)"):
+                    st.code(json.dumps(workers, indent=2), language='json')
         else:
             st.warning("No Apps or Workers found in environment info.")
     else:
