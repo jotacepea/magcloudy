@@ -40,8 +40,9 @@ if st.session_state.projectid != 'noprojid' and st.session_state.environmentid !
     st.info(f"**magento-cloud environment\:relationships -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} --no-interaction --property database.0**")
     st.info(f"**magento-cloud environment\:relationships -p {st.session_state.projectid} -e {st.session_state.environmentid} -A {st.session_state.envappid} --no-interaction --property redis.0**")
 
-tab1, tab2, tab3 = st.tabs(
-    ["Project Vars",
+tab1, tab2, tab3, tab4 = st.tabs(
+    ["Variables",
+     "Project Vars",
      "Environment Vars",
      "Env Relationships"])
 
@@ -51,6 +52,30 @@ if st.session_state.projectid != 'noprojid' and st.session_state.environmentid !
     print(response_apps.text)
 
 with tab1:
+    st.header("Merged Env Variables :exclamation:")
+    if st.session_state.get('environment_topology'):
+        topology = st.session_state.environment_topology
+        variables = topology.get('variables', [])
+        
+        vars_data = []
+        for var in variables:
+            vars_data.append({
+                "Name": var.get('name'),
+                "Value": var.get('value'),
+                "Sensitive": var.get('is_sensitive'),
+                "JSON": var.get('is_json'),
+                "Build": var.get('visible_build'),
+                "Runtime": var.get('visible_runtime')
+            })
+            
+        if vars_data:
+            st.table(vars_data)
+        else:
+            st.warning("No merged variables found in environment topology.")
+    else:
+        st.warning("Environment topology not loaded. Please visit the 'Environments' page and click 'Env Topology' tab first.")
+
+with tab2:
     st.header("Env Variables at Project Level :exclamation:")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
         st.write(f"Getting Env Vars for:  **{st.session_state.projectid}**")
@@ -58,7 +83,7 @@ with tab1:
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
-with tab2:
+with tab3:
     st.header("Env Variables at Environment Level :exclamation:")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(
@@ -68,7 +93,7 @@ with tab2:
         if response:
             st.write(f" ```\n{response.text.strip()}\n``` ")
 
-with tab3:
+with tab4:
     st.header("Env Relationships at Environment Level :exclamation:")
     if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid' and st.session_state.envappid != 'noenvappid':
         st.write(

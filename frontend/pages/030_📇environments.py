@@ -25,9 +25,10 @@ st.header("MagCloudy :blue[Environments] :card_index:")
 if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
     st.info(f"**magento-cloud environments -p {st.session_state.projectid} -I -c +created,machine_name,updated**")
 
-tab1, tab2 = st.tabs(
+tab1, tab2, tab3 = st.tabs(
     ["Environments",
-     "Env Info"])
+     "Env Info",
+     "Env Topology"])
 
 with tab1:
     st.header("All Environments")
@@ -118,22 +119,6 @@ with tab2:
         )
         if response:
             st.session_state.environment_info = response.json()
-            webapps = st.session_state.environment_info.get('sizing', {}).get('webapps', {})
-            app_list = list(webapps.keys())
-            print(app_list)
-            numberapps = len(app_list)
-            if numberapps > 1:
-                st.warning(
-                    "**More than One App running in this Env... "
-                    "Please, select one of them (in apps info)**",
-                    icon="🚧"
-                )
-                st.write(" ```\n" + "\n".join(app_list) + "\n``` ")
-            elif numberapps == 1:
-                st.session_state.envappid = app_list[0]
-            else:
-                st.session_state.envappid = "AppsIdErrorAppsIdErrorAppsIdErrorAppsIdError"
-
             try:
                 env_data = response.json()
                 deployment_target = env_data.get('deployment_target', '')
@@ -181,5 +166,39 @@ with tab2:
 
             with st.expander("Show Environment Info (raw)"):
                 st.code(response.text.strip(), language='json')
+
+with tab3:
+    st.header("Environment Topology")
+    if st.session_state.projectid != 'noprojid' and st.session_state.environmentid != 'noenvid':
+        st.info(f"**magento-cloud project:curl -p {st.session_state.projectid} /environments/{st.session_state.environmentid}/deployments | jq '.[1]'**")
+        response = environments_backend_request(
+            projid=st.session_state.projectid,
+            envid=st.session_state.environmentid,
+            apiparameter='envtopology'
+        )
+        if response:
+            st.session_state.environment_topology = response.json()
+            webapps = st.session_state.environment_topology.get('webapps', {})
+            app_list = list(webapps.keys())
+            print('app_list: ', app_list)
+            numberapps = len(app_list)
+            if numberapps > 1:
+                st.warning(
+                    "**More than One App running in this Env...**",
+                    icon="🚧"
+                )
+                st.write(" ```\n" + "\n".join(app_list) + "\n``` ")
+                st.warning(
+                    f"**Right now, we will use the first one as default:** {app_list[0]}"
+                    "\n\n\n"
+                    "**But you can change it later (in apps info)**"
+                )
+                st.session_state.envappid = app_list[0]
+            elif numberapps == 1:
+                st.session_state.envappid = app_list[0]
+            else:
+                st.session_state.envappid = "AppsIdErrorAppsIdErrorAppsIdErrorAppsIdError"
+            with st.expander("Show Environment Topology (raw)"):
+                st.code(json.dumps(st.session_state.environment_topology, indent=2), language='json')
 
 theend()

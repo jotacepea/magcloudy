@@ -9,10 +9,10 @@ activities_bp = APIBlueprint('activities-blueprint', __name__)
 @activities_bp.get('/activities/<project_id>/<environment>/<activity>')
 def get_activities(project_id, environment, activity='list'):
     if activity == 'list':
-        command_magecloud = f"magento-cloud activity:list -p {project_id} -e {environment} -t *push -c +completed,environments,time_build,time_deploy,time_execute,time_wait,type --limit 15"
+        command_magecloud = f"magento-cloud activity:list -p {project_id} -e {environment} -t environment* -c +completed,environments,time_build,time_deploy,time_execute,time_wait,type --limit 15"
     else:
         if activity == 'last':
-            command_magecloud = f"magento-cloud activity:get -p {project_id} -e {environment} -t *push -c +completed,environments,time_build,time_deploy,time_execute,time_wait,type"
+            command_magecloud = f"magento-cloud activity:get -p {project_id} -e {environment} -t environment*"
         else:
             command_magecloud = f"magento-cloud activity:get -p {project_id} -e {environment} \'{activity}\'"
     try:

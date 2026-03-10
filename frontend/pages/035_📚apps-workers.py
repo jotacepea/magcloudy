@@ -35,11 +35,10 @@ with tab1:
     if response:
         st.code(response.text.strip(), language='yaml')
 
-    if st.session_state.get('environment_info'):
-        envinfo = st.session_state.environment_info
-        sizing = envinfo.get('sizing', {})
-        webapps = sizing.get('webapps', {})
-        workers = sizing.get('workers', {})
+    if st.session_state.get('environment_topology'):
+        envinfo = st.session_state.environment_topology
+        webapps = envinfo.get('webapps', {})
+        workers = envinfo.get('workers', {})
         
         apps_workers_data = []
         
@@ -77,8 +76,7 @@ with tab2:
     if st.session_state.get('environment_info'):
         envinfo = st.session_state.environment_info
         sizing = envinfo.get('sizing', {})
-        apps_list = list(sizing.get('webapps', {}).keys()) + \
-                    list(sizing.get('workers', {}).keys())
+        apps_list = list(sizing.get('webapps', {}).keys())
 
     app_id_input = st.selectbox(
         "Would you like to get app info? (please, select one of those...)",

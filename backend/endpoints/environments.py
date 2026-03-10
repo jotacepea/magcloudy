@@ -69,9 +69,9 @@ def get_environment_relationships(project_id, environment, appid):
 
     return strip_ansi(result_command_magecloud)
 
-@environments_bp.get('/environments/<project_id>/<environment>/enablesmtpstatus')
-def get_environment_enablesmtpstatus(project_id, environment):
-    command_magecloud = f"magento-cloud env:info enable_smtp -p {project_id} -e {environment} --no-interaction"
+@environments_bp.get('/environments/<project_id>/<environment>/envtopology')
+def get_environment_envtopology(project_id, environment):
+    command_magecloud = f"magento-cloud project:curl -p {project_id} /environments/{environment}/deployments | jq '.[1]'"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
