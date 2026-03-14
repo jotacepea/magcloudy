@@ -16,6 +16,13 @@ with tab1:
 
 with tab2:
     st.header("MagCloudy: Cli Auth Info")
+    st.markdown(
+    """
+    ### Cloud User Settings:
+    - Magento Cloud [user](https://accounts.magento.cloud/user)
+    
+"""
+)
     response = requests.get(f"{st.session_state.reqfqdn}/mgcliauth")
     print(response)
     st.write(f" ```\n{response.text.strip()}\n``` ")

@@ -13,7 +13,8 @@ def get_environments(project_id, active='active'):
     if active == 'all':
         command_magecloud = f"magento-cloud project:curl -p {project_id} /environments"
     else:
-        command_magecloud = f"magento-cloud project:curl -p {project_id} /environments | jq ['.[] | select(.status==\"active\")']"
+        # The "dirty" status is for environments that are being deployed.
+        command_magecloud = f"magento-cloud project:curl -p {project_id} /environments | jq ['.[] | select(.status==\"active\" or .status==\"dirty\")']" 
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)
@@ -24,7 +25,7 @@ def get_environments(project_id, active='active'):
 
 @environments_bp.get('/environments/<project_id>/pipe')
 def get_environment_pipe(project_id):
-    command_magecloud = f"magento-cloud project:curl -p {project_id} /environments | jq '.[] | select(.status==\"active\")' | jq -r .name"
+    command_magecloud = f"magento-cloud project:curl -p {project_id} /environments | jq '.[] | select(.status!=\"inactive\")' | jq -r .name"
     try:
         result_command_magecloud = subprocess.check_output(
             [command_magecloud], shell=True, env=os.environ, universal_newlines=True)

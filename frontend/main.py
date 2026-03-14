@@ -26,8 +26,8 @@ st.markdown(
     - Jump into our [documentation](https://experienceleague.adobe.com/docs/commerce-cloud-service/user-guide/overview.html?lang=en)
     
     ### Cloud Projects:
-    - Magento Cloud [projects](https://cloud.magento.com/admin/projectsearch)
-    - Magento Cloud [platform](https://accounts.magento.cloud/admin/platform/projects)
+    - Magento Cloud [projects](https://accounts.magento.cloud/admin/platform/projects)
+    - Magento Cloud [regions](https://accounts.magento.cloud/admin/commerce/platform/regions)
 
 """
 )

@@ -72,16 +72,21 @@ with tab1:
         st.warning("Environment info not loaded. Please visit the 'Environments' page first.")
 
 with tab2:
-    apps_list = []
-    if st.session_state.get('environment_info'):
+    wapps_list = []
+    # Try getting from environment_topology first (more direct)
+    if st.session_state.get('environment_topology'):
+        wapps_list = list(st.session_state.environment_topology.get('webapps', {}).keys())
+
+    # Fallback to environment_info sizing
+    if not wapps_list and st.session_state.get('environment_info'):
         envinfo = st.session_state.environment_info
         sizing = envinfo.get('sizing', {})
-        apps_list = list(sizing.get('webapps', {}).keys())
+        wapps_list = list(sizing.get('webapps', {}).keys())
 
     app_id_input = st.selectbox(
         "Would you like to get app info? (please, select one of those...)",
-        apps_list,
-        index=apps_list.index(st.session_state.envappid) if st.session_state.envappid in apps_list else None,
+        wapps_list,
+        index=wapps_list.index(st.session_state.envappid) if st.session_state.envappid in wapps_list else None,
         placeholder="Select APP...",
     )
 

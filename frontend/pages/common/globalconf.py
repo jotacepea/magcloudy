@@ -1,4 +1,7 @@
 import streamlit as st
+from streamlit.runtime.scriptrunner import add_script_run_ctx, get_script_run_ctx
+from concurrent.futures import ThreadPoolExecutor
+from functools import wraps
 
 enable_select_proj_env_warning = True
 
@@ -45,10 +48,28 @@ def set_default_cache_values():
     if 'projectregiondomain' not in st.session_state:
         st.session_state.projectregiondomain = None
 
+def run_in_thread(func):
+    """Decorator to run a function in a separate thread with Streamlit context."""
+    # Global ThreadPool Executor in Session State
+    print("run_in_thread: set session state tp_executor...")
+    if 'tp_executor' not in st.session_state:
+        st.session_state.tp_executor = ThreadPoolExecutor(max_workers=3)
+        print(st.session_state.tp_executor)
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        ctx = get_script_run_ctx()
+        print("run_in_thread: wrapper" + str(func) + "...")
+        print(st.session_state)
+        def func_with_ctx():
+            add_script_run_ctx(None, ctx)
+            return func(*args, **kwargs)
+        return st.session_state.tp_executor.submit(func_with_ctx)
+    return wrapper
+
 def clear_session_state():
     keys = list(st.session_state.keys())
     for key in keys:
-        if key not in ['reqfqdn', 'default_api_backend_name', 'default_api_backend_port']:
+        if key not in ['reqfqdn', 'default_api_backend_name', 'default_api_backend_port', 'tp_executor']:
             st.session_state.pop(key)
     set_default_cache_values()
 
