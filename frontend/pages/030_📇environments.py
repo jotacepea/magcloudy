@@ -98,18 +98,6 @@ if st.session_state.projectid != 'noprojid' and st.session_state.environmentid !
             )
             if response:
                 st.session_state.environment_info = response.json()
-                try:
-                    env_data = response.json()
-                    deployment_target = env_data.get('deployment_target', '')
-
-                    if deployment_target == 'local':
-                        st.session_state.env_target_type = 'containerized'
-                        st.write(f" **Instances type:** :red[{st.session_state.env_target_type}] ")
-                    elif deployment_target:
-                        st.session_state.env_target_type = 'Instances (Unified Cluster)'
-                        st.write(f" **Instances type:** :blue[{st.session_state.env_target_type}] ")
-                except Exception as e:
-                    st.error(f"Error parsing environment info JSON: {e}")
 
                 # Show a table with environment info here
                 if st.session_state.environment_info:

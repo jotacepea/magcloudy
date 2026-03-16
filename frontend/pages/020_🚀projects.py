@@ -47,7 +47,7 @@ def fetch_tp_envs_pipe(projid, reqfqdn):
         resp = requests.get(f"{reqfqdn}/environments/{projid}/pipe")
         print(resp.text.strip())
         if resp.status_code == 200:
-            st.session_state.environments_cached = resp.text.strip().split('\n')
+            st.session_state.environments_pipe_cached = resp.text.strip().split('\n')
     except Exception as e:
         print(f"Error in background metadata fetch: {e}")
 
@@ -58,7 +58,7 @@ def fetch_tp_envs_full(projid, reqfqdn):
         # Environments (Full)
         resp = requests.get(f"{reqfqdn}/environments/{projid}")
         if resp.status_code == 200:
-            st.session_state.environments_cached_full = resp.text.strip()
+            st.session_state.environments_full_cached = resp.text.strip()
     except Exception as e:
         print(f"Error in background metadata fetch: {e}")
 
@@ -84,14 +84,14 @@ with col1:
             clear_cache()
         st.session_state.projectid = main_project_id_input
 
-    if st.session_state.projectid != 'noprojid' and 'environments_cached' not in st.session_state:
+    if st.session_state.projectid != 'noprojid' and 'environments_pipe_cached' not in st.session_state:
         fetch_tp_envs_pipe(
             st.session_state.projectid,
             st.session_state.reqfqdn
         )
 with col2:
     if st.session_state.projectid != 'noprojid':
-        if not st.session_state.get('environments_cached'):
+        if not st.session_state.get('environments_pipe_cached'):
             print("Fetching environments pipe... Not in session cache!!")
             response_list = projects_backend_request(
                 apiendpoint='environments',
@@ -105,8 +105,8 @@ with col2:
                 print(environments_list)
         else:
             print("Fetching environments pipe... In session cache!!")
-            print(st.session_state.environments_cached)
-            environments_list = st.session_state.environments_cached
+            print(st.session_state.environments_pipe_cached)
+            environments_list = st.session_state.environments_pipe_cached
     else:
         environments_list=[]
 
@@ -121,6 +121,42 @@ with col2:
         st.session_state.environmentid = environment_id_input
         if 'environment_info' in st.session_state:
             del st.session_state.environment_info
+            
+        try:
+            # Apps (Pipe)
+            resp = requests.get(f"{st.session_state.reqfqdn}/apps/{st.session_state.projectid}/{st.session_state.environmentid}/pipe")
+            if resp.status_code == 200:
+                st.session_state.envappid = resp.text.strip().split('\n')[0]
+        except Exception as e:
+            print(f"Error in background apps fetch: {e}")
+        
+        if 'environments_full_cached' in st.session_state:
+            environments_full_cached_debug = json.loads(st.session_state.environments_full_cached)
+            for env_values_dict in environments_full_cached_debug:
+                print('environment_id_input', environment_id_input)
+                print('ID', env_values_dict.get('id'))
+                print('deployment_target', env_values_dict.get('deployment_target'))
+                
+                if env_values_dict.get('id') == environment_id_input:
+                    deployment_target = env_values_dict.get('deployment_target')
+                    print('deployment_target', deployment_target)
+                    break
+                else:
+                    deployment_target = None
+                    print('No match for deployment_target')
+            if 'deployment_target' not in st.session_state:
+                st.session_state.deployment_target = deployment_target
+            elif 'deployment_target' in st.session_state and st.session_state.deployment_target != deployment_target:
+                st.session_state.deployment_target = deployment_target
+
+            if 'deployment_target' in st.session_state:
+                env_deploy_target = st.session_state.deployment_target
+                if env_deploy_target == 'local':
+                    st.session_state.env_target_type = 'containerized'
+                    st.write(f" **Instances type:** :red[{st.session_state.env_target_type}] ")
+                elif env_deploy_target:
+                    st.session_state.env_target_type = 'Instances (Unified Cluster)'
+                    st.write(f" **Instances type:** :blue[{st.session_state.env_target_type}] ")
 
 # Get Project Web UI/Console URL
 if st.session_state.projectid != 'noprojid':
@@ -133,7 +169,7 @@ if st.session_state.projectid != 'noprojid':
         st.write(
             f"### Cloud Project [Web UI]({response.text.strip()}) // [ACC Tools](https://acc-tools.corp.adobe.com/project/{st.session_state.projectid}/cluster) ###")
 
-if st.session_state.projectid != 'noprojid' and 'environments_cached_full' not in st.session_state:
+if st.session_state.projectid != 'noprojid' and 'environments_full_cached' not in st.session_state:
     fetch_tp_envs_full(
         st.session_state.projectid,
         st.session_state.reqfqdn

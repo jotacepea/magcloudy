@@ -1,6 +1,7 @@
 import streamlit as st
 import ollama
 import httpx
+import time
 from pages.common.globalconf import pageconfig, theend
 
 # Initialize page configuration
@@ -22,8 +23,8 @@ def get_education_context_md(path_to_md_file):
         return "You are a helpful assistant. And talk like a cawboy."
 
 
-context_file = st.sidebar.text_input("Education Context MD Path", value="README.md")
-system_instructions = get_education_context_md(context_file)
+context_file = st.sidebar.text_input("Education Context MD Path", value="AGENT.md")
+system_instructions = get_education_context_md('llm/' + context_file)
 
 
 def get_models():
@@ -75,6 +76,8 @@ if "messages" not in st.session_state:
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
+        if "time_spent" in message:
+            st.caption(f"⏱️ Generated in {message['time_spent']:.2f} seconds")
 
 # React to user input
 if prompt := st.chat_input("What is up?"):
@@ -97,6 +100,8 @@ if prompt := st.chat_input("What is up?"):
                 # Prepend system role to messages sent to Ollama
                 messages_with_system = [{"role": "system", "content": system_instructions}] + st.session_state.messages
                 
+                start_time = time.time()
+                
                 response = client.chat(
                     model=selected_model,
                     messages=messages_with_system,
@@ -107,9 +112,18 @@ if prompt := st.chat_input("What is up?"):
                     full_response += chunk['message']['content']
                     message_placeholder.markdown(full_response + "▌")
                 
+                end_time = time.time()
+                time_spent = end_time - start_time
+                
                 message_placeholder.markdown(full_response)
+                st.caption(f"⏱️ Generated in {time_spent:.2f} seconds")
+                
                 # Add assistant response to chat history
-                st.session_state.messages.append({"role": "assistant", "content": full_response})
+                st.session_state.messages.append({
+                    "role": "assistant", 
+                    "content": full_response,
+                    "time_spent": time_spent
+                })
             except Exception as e:
                 st.error(f"Error communicating with Ollama: {e}")
 
