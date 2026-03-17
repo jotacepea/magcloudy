@@ -23,7 +23,7 @@ def get_education_context_md(path_to_md_file):
         return "You are a helpful assistant. And talk like a cawboy."
 
 
-context_file = st.sidebar.text_input("Education Context MD Path", value="AGENT.md")
+context_file = st.sidebar.text_input("Education Context MD Path", value="CUSTOM_PERSONA_INSTRUCTIONS.md")
 system_instructions = get_education_context_md('llm/' + context_file)
 
 
@@ -55,7 +55,7 @@ def get_models():
 # Sidebar for model selection
 available_models = get_models()
 if available_models:
-    selected_model = st.sidebar.selectbox("Select Model", available_models)
+    selected_model = st.sidebar.selectbox("Select Model (Recommended: llama3 or gemma3:4b)", available_models)
 else:
     st.sidebar.warning("No models found. Make sure Ollama is running.")
     selected_model = None
